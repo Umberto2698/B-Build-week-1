@@ -11,15 +11,16 @@ import java.util.Set;
 @Entity
 @Table(name = "transport")
 public class Mezzi {
+    @OneToMany(mappedBy = "mezzo")
+    Biglietti biglietto;
+    @OneToMany(mappedBy = "mezzoPeriodo")
+    Periodi periodo;
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
-
     @Column(name = "transport_type")
     private TipoMezzo tipoMezzo;
-
     @Column(name = "transport_state")
     private StatoMezzo statoMezzo = StatoMezzo.IN_SERVIZIO;
-
     @Column(name = "total_seats")
     private int postiTotali;
 

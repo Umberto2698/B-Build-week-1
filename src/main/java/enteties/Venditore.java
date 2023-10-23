@@ -8,7 +8,7 @@ import java.util.Random;
 @Table(name = "venditori")
 public abstract class Venditore {
     @Id
-    long id= (new Random().nextLong(1000000000000L, 10000000000000L));
+    private long id= (new Random().nextLong(1000000000000L, 10000000000000L));
 
     public Venditore() {
     }

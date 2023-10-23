@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class Rivenditore extends Venditore{
-    String adress;
+   private String adress;
 
     public Rivenditore() {
     }
@@ -25,7 +25,7 @@ public class Rivenditore extends Venditore{
     @Override
     public String toString() {
         return "enteties.Rivenditore{" +
-                "id=" + id +
+                "id=" + getId() +
                 "adress" + adress +
                 '}';
     }

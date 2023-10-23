@@ -19,6 +19,8 @@ public class Biglietti {
     @Column(name = "validation_name")
     private LocalDate dataValidazione = null;
 
+
+
     public Biglietti() {
     }
 

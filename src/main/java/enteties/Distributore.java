@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class Distributore extends Venditore{
-StatoDistributore stato = StatoDistributore.ATTIVO;
+private StatoDistributore stato = StatoDistributore.ATTIVO;
 
     public Distributore() {
     }
@@ -22,7 +22,7 @@ StatoDistributore stato = StatoDistributore.ATTIVO;
     @Override
     public String toString() {
         return "enteties.Distributore{" +
-                "id=" + id +
+                "id=" + getId() +
                 "stato=" + stato +
                 '}';
     }

@@ -14,6 +14,8 @@ public abstract class Venditore {
     @OneToMany(mappedBy = "venditore")
     private Set<Abbonamenti> abbonamenti = new HashSet<>();
 
+    @OneToMany(mappedBy = "IdPuntoVendita")
+    private Set<Biglietti> biglietti = new HashSet<>();
 
     public Venditore() {
     }

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -20,6 +21,7 @@ public class User {
     private Tessera tessera;
     @OneToMany(mappedBy = "user")
     private List<Abbonamenti> abbonamenti;
+
 
 
     public User(String nome, String cognome, LocalDate dataNascita) {

@@ -8,7 +8,7 @@ public class JpaUtils {
 
     static {
         try {
-            emf = Persistence.createEntityManagerFactory("archive");
+            emf = Persistence.createEntityManagerFactory("ateam1trasporti");
 
         } catch (Throwable ex) {
             System.err.println("Initial EntityManagerFactory creation failed." + ex);

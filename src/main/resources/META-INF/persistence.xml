@@ -2,13 +2,13 @@
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
              xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
-    <persistence-unit name="archive">
+    <persistence-unit name="ateam1trasporti">
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
             <property name="hibernate.default_schema" value="public"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/archive"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ateam1trasporti"/>
             <property name="javax.persistence.jdbc.user" value="postgres"/>
             <property name="javax.persistence.jdbc.password" value="1234"/>
         </properties>

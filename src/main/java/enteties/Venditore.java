@@ -13,7 +13,7 @@ public abstract class Venditore {
     long id = (new Random().nextLong(1000000000000L, 10000000000000L));
     @OneToMany(mappedBy = "venditore")
     private Set<Abbonamenti> abbonamenti = new HashSet<>();
-    
+
     public Venditore() {
     }
 

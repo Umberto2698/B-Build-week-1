@@ -35,13 +35,15 @@ public class MezziDAO {
     }
 
     public Mezzi getById(long id) {
-        return em.find(Mezzi.class, id);
+        TypedQuery<Mezzi> getElement = em.createQuery("SELECT m FROM Mezzi m WHERE m.id = :id", Mezzi.class);
+        getElement.setParameter("id", id);
+        return getElement.getSingleResult();
     }
 
-    public List<Mezzi> getAll() {
-        TypedQuery<Mezzi> bls = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :IN_SERVIZIO", Mezzi.class);
-        bls.setParameter("IN_SERVIZIO", StatoMezzo.IN_SERVIZIO);
-        return bls.getResultList();
+    public List<Mezzi> getAllOnService() {
+        TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :IN_SERVIZIO", Mezzi.class);
+        getElements.setParameter("IN_SERVIZIO", StatoMezzo.IN_SERVIZIO);
+        return getElements.getResultList();
     }
 
     public void delete(long id) throws InterruptedException {

@@ -11,11 +11,6 @@ import java.util.Set;
 @Entity
 @Table(name = "transport")
 public class Mezzi {
-    @OneToMany(mappedBy = "mezzo")
-    private Set<Biglietti> biglietti = new HashSet<>();
-
-    @OneToMany(mappedBy = "mezzoPeriodo")
-    private Set<Periodi> periodi = new HashSet<>();
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "transport_type")
@@ -28,6 +23,12 @@ public class Mezzi {
 
     @OneToMany(mappedBy = "mezzo", cascade = CascadeType.REMOVE)
     private Set<Tratta_Mezzo> tratteMezzo = new HashSet<>();
+
+    @OneToMany(mappedBy = "mezzo")
+    private Set<Biglietti> biglietti = new HashSet<>();
+
+    @OneToMany(mappedBy = "mezzo")
+    private Set<Periodi> periodi = new HashSet<>();
 
     public Mezzi() {
     }

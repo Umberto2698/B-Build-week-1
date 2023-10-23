@@ -4,18 +4,24 @@ import enteties.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.util.concurrent.TimeUnit;
 
 public class UserDAO {
     private final EntityManager em;
 
-    public UserDAO(EntityManager em) {this.em=em;}
-    public void save(User p) {
+    public UserDAO(EntityManager em) {
+        this.em = em;
+    }
+
+    public void save(User user) {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            em.persist(p);
+            em.persist(user);
             transaction.commit();
-            System.out.println("User salvato correttamente: " + p);
+            System.err.println("User salvato correttamente");
+            TimeUnit.MILLISECONDS.sleep(1000);
+            System.out.println(user);
         } catch (Exception ex) {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -29,15 +35,17 @@ public class UserDAO {
         return em.find(User.class, id);
     }
 
-    public void deleteById(long id ) {
-        User u = em.find(User.class, id);
-        if (u != null) {
+    public void deleteById(long id) {
+        User user = em.find(User.class, id);
+        if (user != null) {
             EntityTransaction transaction = em.getTransaction();
             try {
                 transaction.begin();
-                em.remove(u);
+                em.remove(user);
                 transaction.commit();
-                System.out.println("User eliminato correttamente: " + u);
+                System.err.println("User eliminato correttamente");
+                TimeUnit.MILLISECONDS.sleep(1000);
+                System.out.println(user);
             } catch (Exception ex) {
                 if (transaction.isActive()) {
                     transaction.rollback();

@@ -1,42 +1,37 @@
 package enteties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Random;
 
 @Entity
+@Table(name = "cards")
 public class Tessera {
     @Id
-    private long tessera_id = new Random().nextLong(1000000000000L, 100000000000L);
-    @Column(name = "data_emissione")
-    private LocalDate dataEmissione;
-    @Column(name = "data_scadenza")
-    private LocalDate dataScadenza;
-    @OneToOne(mappedBy = "tessera")
+    private long id = new Random().nextLong(1000000000000L, 100000000000L);
+    @Column(name = "emission_date")
+    private LocalDate dataEmissione = LocalDate.now();
+    @Column(name = "expiry_date")
+    private LocalDate dataScadenza = LocalDate.now().plusYears(1);
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Tessera() {
+    }
 
-    public Tessera(LocalDate dataEmissione, LocalDate dataScadenza) {
+    public Tessera(LocalDate dataEmissione, User user) {
         this.dataEmissione = dataEmissione;
-        this.dataScadenza = dataScadenza;
+        this.dataScadenza = dataEmissione.plusYears(1);
+        this.user = user;
     }
 
     public LocalDate getDataEmissione() {
         return dataEmissione;
     }
 
-    public void setDataEmissione(LocalDate dataEmissione) {
-        this.dataEmissione = dataEmissione;
-    }
-
     public LocalDate getDataScadenza() {
         return dataScadenza;
     }
 
-    public void setDataScadenza(LocalDate dataScadenza) {
-        this.dataScadenza = dataScadenza;
-    }
 }

@@ -1,5 +1,6 @@
 package enums;
 
 public enum StatoDistributore {
-    ATTIVO,FUORISERVIZIO,
+    ATTIVO,
+    FUORISERVIZIO
 }

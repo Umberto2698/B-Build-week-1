@@ -9,8 +9,8 @@ import java.util.Random;
 @Table(name = "periods")
 public class Periodi {
     @ManyToOne
-    @JoinColumn(name = "mezzo_id", nullable = false)
-    Mezzi mezzoPeriodo;
+    @JoinColumn(name = "transport_id", nullable = false)
+    Mezzi mezzo;
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "start_date")

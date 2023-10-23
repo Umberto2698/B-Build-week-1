@@ -4,24 +4,21 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @Entity
 public class User {
     @Id
-    private long user_id = new Random().nextLong(1000000000000L, 100000000000L);
+    private long id = new Random().nextLong(1000000000000L, 100000000000L);
     @Column(name = "name")
     private String nome;
     @Column(name = "surname")
     private String cognome;
-    @Column(name = "data_nascita")
+    @Column(name = "birthday")
     private LocalDate dataNascita;
-    @OneToOne
-    @JoinColumn(name = "tessera_id")
+    @OneToOne(mappedBy = "user")
     private Tessera tessera;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Abbonamenti> abbonamenti;
-
 
 
     public User(String nome, String cognome, LocalDate dataNascita) {
@@ -53,7 +50,4 @@ public class User {
         return dataNascita;
     }
 
-    public void setDataNascita(LocalDate dataNascita) {
-        this.dataNascita = dataNascita;
-    }
 }

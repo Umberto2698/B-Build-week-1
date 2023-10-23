@@ -4,10 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "trnsport_route")
+@Table(name = "transport_route")
 public class Tratta_Mezzo implements Serializable {
-
-
     @Column(name = "actual_time")
     private double tempoEffettivo;
     @Id

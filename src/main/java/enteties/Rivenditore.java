@@ -1,12 +1,16 @@
 package enteties;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
+
 @Entity
-public class Rivenditore extends Venditore{
-    String adress;
+public class Rivenditore extends Venditore {
+    @Column(name = "adress")
+    private String adress;
 
     public Rivenditore() {
+        super();
     }
 
     public Rivenditore(String adress) {
@@ -24,7 +28,7 @@ public class Rivenditore extends Venditore{
 
     @Override
     public String toString() {
-        return "enteties.Rivenditore{" +
+        return "Rivenditore{" +
                 "id=" + id +
                 "adress" + adress +
                 '}';

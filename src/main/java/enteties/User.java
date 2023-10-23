@@ -2,7 +2,6 @@ package enteties;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -10,7 +9,7 @@ import java.util.Set;
 @Entity
 public class User {
     @Id
-    private long user_id= new Random().nextLong(500000L,100000000000L);
+    private long user_id = new Random().nextLong(1000000000000L, 100000000000L);
     @Column(name = "name")
     private String nome;
     @Column(name = "surname")
@@ -20,6 +19,8 @@ public class User {
     @OneToOne
     @JoinColumn(name = "tessera_id")
     private Tessera tessera;
+    @OneToMany(mappedBy = "user")
+    private List<Abbonamenti> abbonamenti;
 
 
 

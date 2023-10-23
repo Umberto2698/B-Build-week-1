@@ -7,12 +7,18 @@ import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "venditori")
+@Table(name = "seller")
 public abstract class Venditore {
     @Id
+
     long id= (new Random().nextLong(1000000000000L, 10000000000000L));
     @OneToMany(mappedBy = "IdPuntoVendita")
     private Set<Biglietti> biglietti = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "venditore")
+    private Set<Abbonamenti> abbonamenti = new HashSet<>();
+
 
     public Venditore() {
     }

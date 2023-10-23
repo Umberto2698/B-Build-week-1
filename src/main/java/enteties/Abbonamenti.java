@@ -2,10 +2,9 @@ package enteties;
 
 import enums.TipoAbbonamento;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -22,6 +21,14 @@ public class Abbonamenti {
 
     @Column(name = "pass_type")
     private TipoAbbonamento tipoAbbonamento;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "venditore_id")
+    private Venditore venditore;
 
     public Abbonamenti() {
     }

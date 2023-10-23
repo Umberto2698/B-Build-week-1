@@ -19,6 +19,8 @@ public class User {
     @OneToOne
     @JoinColumn(name = "tessera_id")
     private Tessera tessera;
+    @OneToMany(mappedBy = "user")
+    private List<Abbonamenti> abbonamenti;
 
 
     public User(String nome, String cognome, LocalDate dataNascita) {

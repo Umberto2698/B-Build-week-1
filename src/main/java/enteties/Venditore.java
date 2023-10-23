@@ -1,7 +1,7 @@
 package enteties;
 
 import javax.persistence.*;
-import java.util.Random;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -9,6 +9,8 @@ import java.util.Random;
 public abstract class Venditore {
     @Id
     long id= (new Random().nextLong(1000000000000L, 10000000000000L));
+    @OneToMany(mappedBy = "venditore")
+    private Set<Abbonamenti> abbonamenti = new HashSet<>();
 
     public Venditore() {
     }

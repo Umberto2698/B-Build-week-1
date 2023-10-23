@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -19,6 +20,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "tessera_id")
     private Tessera tessera;
+
 
 
     public User(String nome, String cognome, LocalDate dataNascita) {

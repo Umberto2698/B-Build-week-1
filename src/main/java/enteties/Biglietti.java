@@ -7,9 +7,8 @@ import java.util.Random;
 
 @Entity
 public class Biglietti {
-
     @ManyToOne
-    @JoinColumn(name = "mezzo_id", nullable = false)
+    @JoinColumn(name = "mezzo_id")
     Mezzi mezzo;
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
@@ -20,11 +19,13 @@ public class Biglietti {
     @Column(name = "validation_name")
     private LocalDate dataValidazione = null;
     @ManyToOne
-    @JoinColumn(name = "IdPuntoVendita")
+    @JoinColumn(name = "IdPuntoVendita", nullable = false)
     private Venditore IdPuntoVendita;
-    public Biglietti (Venditore venditore) {
+
+    public Biglietti(Venditore venditore) {
         this.IdPuntoVendita = venditore;
     }
+
     public Biglietti() {
     }
 }

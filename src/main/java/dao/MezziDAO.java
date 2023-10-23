@@ -1,9 +1,12 @@
 package dao;
 
 import enteties.Mezzi;
+import enums.StatoMezzo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MezziDAO {
@@ -33,6 +36,12 @@ public class MezziDAO {
 
     public Mezzi getById(long id) {
         return em.find(Mezzi.class, id);
+    }
+
+    public List<Mezzi> getAll() {
+        TypedQuery<Mezzi> bls = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :IN_SERVIZIO", Mezzi.class);
+        bls.setParameter("IN_SERVIZIO", StatoMezzo.IN_SERVIZIO);
+        return bls.getResultList();
     }
 
     public void delete(long id) throws InterruptedException {

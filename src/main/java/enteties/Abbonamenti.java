@@ -4,7 +4,6 @@ import enums.TipoAbbonamento;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -23,11 +22,11 @@ public class Abbonamenti {
     private TipoAbbonamento tipoAbbonamento;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "venditore_id")
+    @JoinColumn(name = "venditore_id", nullable = false)
     private Venditore venditore;
 
     public Abbonamenti() {

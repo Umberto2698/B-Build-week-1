@@ -20,7 +20,7 @@ public class Tratta {
     @Column(name = "average_time")
     private double tempoMedio;
 
-    @OneToMany(mappedBy = "tratte", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tratta", cascade = CascadeType.REMOVE)
     private Set<Tratta_Mezzo> tratteMezzo = new HashSet<>();
 
     public Tratta() {

@@ -12,19 +12,21 @@ import java.util.Set;
 @Table(name = "transport")
 public class Mezzi {
     @OneToMany(mappedBy = "mezzo")
-    Biglietti biglietto;
+    private Set<Biglietti> biglietti = new HashSet<>();
+
     @OneToMany(mappedBy = "mezzoPeriodo")
-    Periodi periodo;
+    private Set<Periodi> periodi = new HashSet<>();
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "transport_type")
     private TipoMezzo tipoMezzo;
     @Column(name = "transport_state")
+    @Enumerated(EnumType.STRING)
     private StatoMezzo statoMezzo = StatoMezzo.IN_SERVIZIO;
     @Column(name = "total_seats")
     private int postiTotali;
 
-    @OneToMany(mappedBy = "mezzi", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "mezzo", cascade = CascadeType.REMOVE)
     private Set<Tratta_Mezzo> tratteMezzo = new HashSet<>();
 
     public Mezzi() {
@@ -36,5 +38,15 @@ public class Mezzi {
             case TRAM -> this.postiTotali = 53;
             case AUTOBUS -> this.postiTotali = 89;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Mezzi{" +
+                "id=" + id +
+                ", tipoMezzo=" + tipoMezzo +
+                ", statoMezzo=" + statoMezzo +
+                ", postiTotali=" + postiTotali +
+                '}';
     }
 }

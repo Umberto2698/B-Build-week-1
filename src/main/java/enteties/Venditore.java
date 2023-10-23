@@ -1,17 +1,19 @@
 package enteties;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "venditori")
+@Table(name = "seller")
 public abstract class Venditore {
     @Id
-    long id= (new Random().nextLong(1000000000000L, 10000000000000L));
+    long id = (new Random().nextLong(1000000000000L, 10000000000000L));
     @OneToMany(mappedBy = "venditore")
     private Set<Abbonamenti> abbonamenti = new HashSet<>();
-
+    
     public Venditore() {
     }
 

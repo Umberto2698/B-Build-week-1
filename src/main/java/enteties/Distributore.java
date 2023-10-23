@@ -2,13 +2,16 @@ package enteties;
 
 import enums.StatoDistributore;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class Distributore extends Venditore{
-StatoDistributore stato = StatoDistributore.ATTIVO;
+public class Distributore extends Venditore {
+    @Column(name = "state")
+    private StatoDistributore stato = StatoDistributore.ATTIVO;
 
     public Distributore() {
+        super();
     }
 
     public StatoDistributore getStato() {
@@ -21,7 +24,7 @@ StatoDistributore stato = StatoDistributore.ATTIVO;
 
     @Override
     public String toString() {
-        return "enteties.Distributore{" +
+        return "Distributore{" +
                 "id=" + id +
                 "stato=" + stato +
                 '}';

@@ -10,8 +10,7 @@ import java.util.Random;
 @Entity
 public class Tessera {
     @Id
-
-    private long tessera_id = new Random().nextLong(50000000L,100000000000L);
+    private long tessera_id = new Random().nextLong(1000000000000L, 100000000000L);
     @Column(name = "data_emissione")
     private LocalDate dataEmissione;
     @Column(name = "data_scadenza")

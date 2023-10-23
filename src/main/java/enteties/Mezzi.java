@@ -3,11 +3,10 @@ package enteties;
 import enums.StatoMezzo;
 import enums.TipoMezzo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 @Entity
 @Table(name = "transport")
@@ -23,6 +22,9 @@ public class Mezzi {
 
     @Column(name = "total_seats")
     private int postiTotali;
+
+    @OneToMany(mappedBy = "mezzi", cascade = CascadeType.REMOVE)
+    private Set<Tratta_Mezzo> tratteMezzo = new HashSet<>();
 
     public Mezzi() {
     }

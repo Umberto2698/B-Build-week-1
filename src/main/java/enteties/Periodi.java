@@ -3,10 +3,12 @@ package enteties;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Random;
 
 @Entity
+@Table(name = "periods")
 public class Periodi {
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);

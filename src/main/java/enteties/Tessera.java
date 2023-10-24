@@ -26,6 +26,18 @@ public class Tessera {
         this.user = user;
     }
 
+    public Tessera(LocalDate dataEmissione) {
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public LocalDate getDataEmissione() {
         return dataEmissione;
     }

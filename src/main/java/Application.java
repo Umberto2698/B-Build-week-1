@@ -1,9 +1,6 @@
 import com.github.javafaker.Faker;
 import dao.*;
-import enteties.Biglietti;
-import enteties.Mezzi;
-import enteties.Rivenditore;
-import enteties.User;
+import enteties.*;
 import enums.TipoMezzo;
 import utils.JpaUtils;
 
@@ -25,6 +22,9 @@ public class Application {
         Supplier<Biglietti> bigliettiSupplier = () -> new Biglietti(faker.date().between(Date.from(LocalDate.of(2010, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                         , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), rivenditoreSupplier.get());
+
+//        Supplier<Tessera> tesseraSupplier = () -> new Tessera (faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),userSupplier.get());
+
         Scanner input = new Scanner(System.in);
 
         MezziDAO md = new MezziDAO(em);
@@ -43,6 +43,12 @@ public class Application {
 //                User randomUser = userSupplier.get();
 //                uDAO.save(randomUser);
 //            }
+            for(int i =0; i<10;i ++){
+                LocalDate dataEmissione = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Tessera tesseraGenerata = new Tessera(dataEmissione);
+
+                tDAO.save(randomTessera);
+            }
 
 
         } catch (Exception e) {

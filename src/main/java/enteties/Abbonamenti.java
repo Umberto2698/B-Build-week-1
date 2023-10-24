@@ -32,16 +32,20 @@ public class Abbonamenti {
     public Abbonamenti() {
     }
 
-    public Abbonamenti(TipoAbbonamento tipoAbbonamento) {
+    public Abbonamenti(TipoAbbonamento tipoAbbonamento, User user, Venditore venditore) {
         this.tipoAbbonamento = tipoAbbonamento;
         switch (tipoAbbonamento) {
             case MENSILE -> {
                 this.costo = 139.90;
                 this.dataScadenza = LocalDate.now().plusMonths(1);
+                this.user = user;
+                this.venditore = venditore;
             }
             case SETTIMANALE -> {
                 this.costo = 39.90;
                 this.dataScadenza = LocalDate.now().plusDays(7);
+                this.user = user;
+                this.venditore = venditore;
             }
         }
     }

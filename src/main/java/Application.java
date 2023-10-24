@@ -1,6 +1,7 @@
 import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
+import enums.TipoAbbonamento;
 import enums.TipoMezzo;
 import utils.JpaUtils;
 
@@ -22,11 +23,11 @@ public class Application {
 
 
 //        Supplier<Tessera> tesseraSupplier = () -> new Tessera (faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),userSupplier.get());
-
+        List<Venditore> allSellers = vDAO.getAllSellers();
+        int size = allSellers.size();
 
         Supplier<Biglietti> bigliettiSupplier = () -> {
-            List<Venditore> allSellers = vDAO.getAllSellers();
-            int size = allSellers.size();
+
             int n = new Random().nextInt(1, size);
             return new Biglietti(faker.date().between(Date.from(LocalDate.of(2010, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                             , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
@@ -51,7 +52,7 @@ public class Application {
 
         int n;
         do {
-            System.out.println("0 per interrompere, 1 per registrati sul sito");
+            System.out.println("0 per interrompere, 1 per registrati sul sito, 3 compra un biglietto");
             n = Integer.parseInt(input.nextLine().trim());
             switch (n) {
                 case 0 -> {
@@ -80,6 +81,38 @@ public class Application {
                     }
                 }
 
+                case 3 -> {
+                    try {
+                        Biglietti buddy = bigliettiSupplier.get();
+                        System.out.println("questo è il tuo biglietto : ");
+                        bd.save(buddy);
+                        System.out.println("l'id del tuo biglietto è : " + buddy.getId());
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+
+                }
+
+                case 5 -> {
+                    System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
+                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                    if (piano == 1) {
+                        System.out.println("inserisci l'id del utente : ");
+                        long idUtente = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                        User utente = uDAO.getById(idUtente);
+                        int m = new Random().nextInt(1, size);
+                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, utente, allSellers.get(m));
+                    } else if (piano == 2) {
+                        System.out.println("inserisci l'id del utente : ");
+                        long idUtente = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                        User utente = uDAO.getById(idUtente);
+                        int m = new Random().nextInt(1, size);
+                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, utente, allSellers.get(m));
+                    } else {
+                        break;
+                    }
+
+                }
 
             }
 

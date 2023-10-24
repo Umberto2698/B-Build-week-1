@@ -98,10 +98,6 @@ public class MezziDAO {
             q.setParameter("finePeriodo", finePeriodo);
         }
         return q != null ? q.getSingleResult() : -1;
-
-
     }
-
-
 }
 

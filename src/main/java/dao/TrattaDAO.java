@@ -5,6 +5,8 @@ import enteties.Tratta;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TrattaDAO {
@@ -36,6 +38,11 @@ public class TrattaDAO {
         return em.find(Tratta.class, id);
     }
 
+    public List<Tratta> gettAllRoutes() {
+        TypedQuery<Tratta> getAllRoutes = em.createQuery("SELECT t FROM Tratta t", Tratta.class);
+        return getAllRoutes.getResultList();
+    }
+
     public void delete(long id) throws InterruptedException {
         Tratta tratta = em.find(Tratta.class, id);
         if (tratta != null) {
@@ -57,16 +64,16 @@ public class TrattaDAO {
         }
     }
 
-    public long getTimeTrattaPercorsa(String id) {
-        Query q = em.createQuery("SELECT COUNT(m) FROM Mezzo m WHERE m.tratta.id = :id");
-        q.setParameter("id", id);
-        return (Long) q.getSingleResult();
+    public List<Object[]> getTimeTrattaPercorsa(long trattaId) {
+        Query q = em.createQuery("SELECT m.tempoEffettivo, m.mezzo FROM Tratta_Mezzo m WHERE m.tratta.id = :trattaId");
+        q.setParameter("trattaId", trattaId);
+        return q.getResultList();
     }
 
-    public long getTimeTrattaPercorsaBySingleMezzo(String trattaId, String mezzoId) {
-        Query q = em.createQuery("SELECT COUNT(m) FROM Mezzo m WHERE m.tratta.id = :trattaId AND m.id = :mezzoId");
+    public List<Double> getTimeTrattaPercorsaBySingleMezzo(long trattaId, long mezzoId) {
+        TypedQuery<Double> q = em.createQuery("SELECT m.tempoEffettivo FROM Tratta_Mezzo m WHERE m.tratta.id = :trattaId AND m.mezzo.id = :mezzoId", Double.class);
         q.setParameter("trattaId", trattaId);
         q.setParameter("mezzoId", mezzoId);
-        return (Long) q.getSingleResult();
+        return q.getResultList();
     }
 }

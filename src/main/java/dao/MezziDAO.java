@@ -82,7 +82,7 @@ public class MezziDAO {
         if (inizioPeriodo.isBefore(finePeriodo)
         ) {
             q = em.createQuery(
-                    "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataVidimazione BETWEEN :inizioPeriodo AND :finePeriodo",
+                    "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataValidazione BETWEEN :inizioPeriodo AND :finePeriodo",
                     Long.class);
             q.setParameter("idMezzo", idMezzo);
             q.setParameter("inizioPeriodo", inizioPeriodo);
@@ -91,7 +91,7 @@ public class MezziDAO {
                 inizioPeriodo.isAfter(finePeriodo)
         ) {
             q = em.createQuery(
-                    "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataVidimazione BETWEEN :finePeriodo AND :inizioPeriodo",
+                    "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataValidazione BETWEEN :finePeriodo AND :inizioPeriodo",
                     Long.class);
             q.setParameter("idMezzo", idMezzo);
             q.setParameter("inizioPeriodo", inizioPeriodo);

@@ -42,6 +42,10 @@ public class BigliettiDAO {
         return em.find(Biglietti.class, id);
     }
 
+    public List<Biglietti> getAllTickets() {
+        TypedQuery<Biglietti> getAllTickets = em.createQuery("SELECT b FROM Biglietti b", Biglietti.class);
+        return getAllTickets.getResultList();
+    }
 
     public long getNumberOfTicketsInTimeIntervall(LocalDate date1, LocalDate date2) {
         TypedQuery<Long> getCount = null;
@@ -86,7 +90,7 @@ public class BigliettiDAO {
     public void validateTicket(MezziDAO md, Biglietti b) {
         List<Mezzi> mezziInServizio = md.getAllOnService().stream().toList();
         int size = mezziInServizio.size();
-        int n = new Random().nextInt(1, size + 1);
+        int n = new Random().nextInt(1, size);
         b.setMezzo(mezziInServizio.get(n));
         b.setDataValidazione(LocalDate.now());
         EntityTransaction transaction = em.getTransaction();

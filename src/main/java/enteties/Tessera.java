@@ -32,9 +32,9 @@ public class Tessera {
     }
 
     public Tessera(LocalDate dataEmissione, LocalDate dataScadenza, User user) {
-        this.dataEmissione= dataEmissione;
-        this.dataScadenza=dataScadenza;
-        this.user= user;
+        this.dataEmissione = dataEmissione;
+        this.dataScadenza = dataScadenza;
+        this.user = user;
     }
 
 
@@ -54,4 +54,12 @@ public class Tessera {
         return dataScadenza;
     }
 
+    @Override
+    public String toString() {
+        return "Tessera{" +
+                "id=" + id +
+                ", dataEmissione=" + dataEmissione +
+                ", dataScadenza=" + dataScadenza +
+                '}';
+    }
 }

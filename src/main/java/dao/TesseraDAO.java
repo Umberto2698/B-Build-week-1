@@ -9,7 +9,10 @@ import java.time.LocalDate;
 public class TesseraDAO {
     private final EntityManager em;
 
-    public TesseraDAO(EntityManager em) {this.em=em;}
+    public TesseraDAO(EntityManager em) {
+        this.em = em;
+    }
+
     public void save(Tessera p) {
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -30,7 +33,7 @@ public class TesseraDAO {
         return em.find(Tessera.class, id);
     }
 
-    public void deleteById(long id ) {
+    public void deleteById(long id) {
         Tessera u = em.find(Tessera.class, id);
         if (u != null) {
             EntityTransaction transaction = em.getTransaction();
@@ -49,20 +52,21 @@ public class TesseraDAO {
         }
     }
 
-    public void isTesseraScadutaById(long tesseraId){
+    public void isTesseraScadutaById(long tesseraId) {
         LocalDate currentDate = LocalDate.now();
-        Tessera tesseraDaVerificare = em.find(Tessera.class,tesseraId);
-        if(tesseraDaVerificare == null){
+        Tessera tesseraDaVerificare = em.find(Tessera.class, tesseraId);
+        if (tesseraDaVerificare == null) {
             System.out.println("tessera Non trovata");
         }
         LocalDate dataScadenza = tesseraDaVerificare.getDataScadenza();
 
         if (currentDate.isBefore(dataScadenza)) {
-            System.out.println("La tessera è ancora valida!");
+            System.out.println("La tessera è valida, scadra' il:" + tesseraDaVerificare.getDataScadenza());
 
         } else {
 
-            System.out.println("La tessera è Scaduta , Rinnovala!");;
+            System.out.println("La tessera è Scaduta , Rinnovala!");
+            ;
         }
     }
 }

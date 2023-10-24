@@ -18,6 +18,7 @@ public class Application {
 
         Faker faker = new Faker(Locale.ITALY);
         VenditoreDAO vDAO = new VenditoreDAO(em);
+        TesseraDAO tDAO = new TesseraDAO(em);
         Supplier<User> userSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         Supplier<Rivenditore> rivenditoreSupplier = () -> new Rivenditore(faker.address().fullAddress());
         Supplier<Tratta> trattaSupplier = () -> new Tratta(faker.address().cityName(), faker.address().cityName(), new Random().nextDouble(15, 45));
@@ -63,7 +64,8 @@ public class Application {
         int n;
 
         do {
-            System.out.println("0 per interrompere, 1 per registrati sul sito, 3 compra un biglietto");
+            System.out.println("0 per interrompere, 1 per registrati sul sito, 2 per creare una tessera, 3 compra un biglietto, 4 per verificare Scadenza Tessera");
+
             n = Integer.parseInt(input.nextLine().trim());
             switch (n) {
                 case 0 -> {
@@ -90,6 +92,31 @@ public class Application {
                         System.out.println("l'id del tuo biglietto è : " + buddy.getId());
                     } catch (Exception e) {
                         System.out.println(e);
+                    }
+
+                }
+                case 2 -> {
+                    System.out.println("Inserisci l'ID utente per creare una tessera:");
+                    long userId = Long.parseLong(input.nextLine().trim());
+                    User user = uDAO.getById(userId);
+                    if (user != null) {
+                        LocalDate dataEmissione = LocalDate.now();
+                        LocalDate dataScadenza = dataEmissione.plusYears(1);
+                        Tessera tesseraNuova = new Tessera(dataEmissione, dataScadenza, user);
+                        tDAO.save(tesseraNuova);
+                    } else {
+                        System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");
+                    }
+
+                }
+                case 4 -> {
+                    System.out.println("Inserisci l'ID della tessera da verificare:");
+                    long tesseraId = Long.parseLong(input.nextLine().trim());
+                    Tessera tessera = tDAO.getById(tesseraId);
+                    if (tessera != null) {
+                        tDAO.isTesseraScadutaById(tesseraId);
+                    } else {
+                        System.err.println("Tessera non trovata, assicurati di aver inserito l'id corretto!");
                     }
 
                 }

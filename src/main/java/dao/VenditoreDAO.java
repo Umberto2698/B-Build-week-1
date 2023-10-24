@@ -37,6 +37,11 @@ public class VenditoreDAO {
         return em.find(Venditore.class, id);
     }
 
+    public List<Venditore> getAllSellers() {
+        TypedQuery<Venditore> getAllSellers = em.createQuery("SELECT v FROM Venditore v", Venditore.class);
+        return getAllSellers.getResultList();
+    }
+
     public void delete(long id) throws InterruptedException {
         Venditore venditore = em.find(Venditore.class, id);
         if (venditore != null) {
@@ -57,10 +62,4 @@ public class VenditoreDAO {
             }
         }
     }
-
-    public List<Venditore> getAllSellers() {
-        TypedQuery<Venditore> getAllSellers = em.createQuery("SELECT v FROM Venditore v", Venditore.class);
-        return getAllSellers.getResultList();
-    }
-
 }

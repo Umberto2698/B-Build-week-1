@@ -20,4 +20,65 @@ public class Periodi {
     @Column(name = "end_date")
     private LocalDate dataFine;
     private StatoMezzo statoMezzo;
+
+    public Periodi() {
+    }
+
+    public Periodi(LocalDate dataInizio, LocalDate dataFine, Mezzi mezzo, StatoMezzo statoMezzo) {
+        this.dataInizio = dataInizio;
+        this.dataFine = dataFine;
+        this.statoMezzo = statoMezzo;
+        this.mezzo = mezzo;
+    }
+
+    public Mezzi getMezzo() {
+        return mezzo;
+    }
+
+    public void setMezzo(Mezzi mezzo) {
+        this.mezzo = mezzo;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDate getDataInizio() {
+        return dataInizio;
+    }
+
+    public void setDataInizio(LocalDate dataInizio) {
+        this.dataInizio = dataInizio;
+    }
+
+    public LocalDate getDataFine() {
+        return dataFine;
+    }
+
+    public void setDataFine(LocalDate dataFine) {
+        this.dataFine = dataFine;
+    }
+
+    public StatoMezzo getStatoMezzo() {
+        return statoMezzo;
+    }
+
+    public void setStatoMezzo(StatoMezzo statoMezzo) {
+        this.statoMezzo = statoMezzo;
+    }
+
+    @Override
+    public String toString() {
+        return "Periodi{" +
+                "mezzo=" + mezzo +
+                ", id=" + id +
+                ", dataInizio=" + dataInizio +
+                ", dataFine=" + dataFine +
+                ", statoMezzo=" + statoMezzo +
+                '}';
+    }
 }

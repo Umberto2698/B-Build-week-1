@@ -4,6 +4,7 @@ import enteties.Tratta_Mezzo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.concurrent.TimeUnit;
 
 public class Tratta_MezzoDAO {
@@ -33,5 +34,12 @@ public class Tratta_MezzoDAO {
 
     public Tratta_Mezzo getById(long id) {
         return em.find(Tratta_Mezzo.class, id);
+    }
+
+    public Long getNumVolteMezzoPercorsoTratta(long mezzoId, long trattaID) {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(tm) FROM Tratta_Mezzo tm WHERE tm.mezzo.id = :mezzoId AND tm.tratta.id = :trattaId", Long.class);
+        query.setParameter("mezzoId", mezzoId);
+        query.setParameter("trattaId", trattaID);
+        return query.getSingleResult();
     }
 }

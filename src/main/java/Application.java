@@ -1,8 +1,5 @@
 import com.github.javafaker.Faker;
-import dao.BigliettiDAO;
-import dao.MezziDAO;
-import dao.UserDAO;
-import dao.VenditoreDAO;
+import dao.*;
 import enteties.*;
 import enums.TipoMezzo;
 import utils.JpaUtils;
@@ -17,10 +14,16 @@ public class Application {
 
     public static void main(String[] args) {
         EntityManager em = JpaUtils.getEmf().createEntityManager();
+
         Faker faker = new Faker(Locale.ITALY);
         VenditoreDAO vDAO = new VenditoreDAO(em);
         Supplier<User> userSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         Supplier<Rivenditore> rivenditoreSupplier = () -> new Rivenditore(faker.address().fullAddress());
+
+
+//        Supplier<Tessera> tesseraSupplier = () -> new Tessera (faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),userSupplier.get());
+
+
         Supplier<Biglietti> bigliettiSupplier = () -> {
             List<Venditore> allSellers = vDAO.getAllSellers();
             int size = allSellers.size();
@@ -31,31 +34,19 @@ public class Application {
         };
         Supplier<Mezzi> mezziSupplierA = () -> new Mezzi(TipoMezzo.AUTOBUS);
         Supplier<Mezzi> mezziSupplierT = () -> new Mezzi(TipoMezzo.TRAM);
+
         Scanner input = new Scanner(System.in);
+
         BigliettiDAO bd = new BigliettiDAO(em);
         MezziDAO md = new MezziDAO(em);
+
+        PeriodiDAO pDAO = new PeriodiDAO(em);
+        TrattaDAO trDao = new TrattaDAO(em);
         UserDAO uDAO = new UserDAO(em);
+        Tratta_MezzoDAO tr_Mez_DAO = new Tratta_MezzoDAO(em);
 
-
-//            for (int i = 0; i < 5; i++) {
-//                Rivenditore randomRivenditore = rivenditoreSupplier.get();
-//                vDAO.save(randomRivenditore);
-//            }
-//            for (int i = 0; i < 10; i++) {
-//                User randomUser = userSupplier.get();
-//                uDAO.save(randomUser);
-//            }
-//            for (int i = 0; i < 5; i++) {
-//                md.save(mezziSupplierT.get());
-//                md.save(mezziSupplierA.get());
-//            }
-//            for (int i = 0; i < 100; i++) {
-//                Biglietti randomBiglietti = bigliettiSupplier.get();
-//                bd.save(randomBiglietti);
-//
-//            }
-//            List<Biglietti> allTickets = bd.getAllTickets();
-//            allTickets.forEach(ticket -> bd.validateTicket(md, ticket));
+        Supplier<Mezzi> autobusSupplier = () -> new Mezzi(TipoMezzo.AUTOBUS);
+        Supplier<Mezzi> tramSupplier = () -> new Mezzi(TipoMezzo.TRAM);
 
 
         int n;
@@ -93,8 +84,8 @@ public class Application {
             }
 
         } while (n != 0);
-        //System.out.println(md.getBigliettiVidimatiPerMezzoPerPeriodo(7159985542082L, LocalDate.now(), LocalDate.now().plusDays(3)));
-
 
     }
 }
+
+

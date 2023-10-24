@@ -1,6 +1,8 @@
 package enteties;
 
 
+import enums.StatoMezzo;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Random;
@@ -17,4 +19,5 @@ public class Periodi {
     private LocalDate dataInizio;
     @Column(name = "end_date")
     private LocalDate dataFine;
+    private StatoMezzo statoMezzo;
 }

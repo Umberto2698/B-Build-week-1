@@ -7,11 +7,8 @@ import enums.StatoMezzo;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-
 import java.time.LocalDate;
-
 import java.util.List;
-
 import java.util.concurrent.TimeUnit;
 
 public class MezziDAO {
@@ -72,6 +69,12 @@ public class MezziDAO {
         }
     }
 
+    public List<Periodi> getPeriodListForTransport(long mezzo_id) {
+        TypedQuery<Periodi> getPeriods = em.createQuery("SELECT p FROM Periodi p WHERE p.mezzo.id = :mezzo_id", Periodi.class);
+        getPeriods.setParameter("mezzo_id", mezzo_id);
+        return getPeriods.getResultList();
+    }
+
     public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {
         TypedQuery<Long> q = null;
         if (inizioPeriodo.isBefore(finePeriodo)
@@ -93,11 +96,5 @@ public class MezziDAO {
             q.setParameter("finePeriodo", finePeriodo);
         }
         return q != null ? q.getSingleResult() : -1;
-    }
-
-    public List<Periodi> getPeriodListForTransport(long mezzo_id) {
-        TypedQuery<Periodi> getPeriods = em.createQuery("SELECT p FROM Periodi p WHERE p.mezzo.id = :mezzo_id", Periodi.class);
-        getPeriods.setParameter("mezzo_id", mezzo_id);
-        return getPeriods.getResultList();
     }
 }

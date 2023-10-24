@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 @Entity
 public class Distributore extends Venditore {
     @Column(name = "state")
+    
     private StatoDistributore stato = StatoDistributore.ATTIVO;
 
     public Distributore() {

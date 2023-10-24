@@ -76,6 +76,7 @@ public class MezziDAO {
         return getPeriods.getResultList();
     }
 
+
     public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {
         TypedQuery<Long> q = null;
         if (inizioPeriodo.isBefore(finePeriodo)
@@ -97,5 +98,7 @@ public class MezziDAO {
             q.setParameter("finePeriodo", finePeriodo);
         }
         return q != null ? q.getSingleResult() : -1;
+
     }
+
 }

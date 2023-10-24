@@ -1,4 +1,5 @@
 import com.github.javafaker.Faker;
+import dao.BigliettiDAO;
 import dao.MezziDAO;
 import enteties.Mezzi;
 import enums.TipoMezzo;
@@ -16,6 +17,8 @@ public class Application {
         Scanner input = new Scanner(System.in);
 
         MezziDAO md = new MezziDAO(em);
+        BigliettiDAO bDAO = new BigliettiDAO(em);
+
         Mezzi m1 = new Mezzi(TipoMezzo.AUTOBUS);
         try {
         } catch (Exception e) {

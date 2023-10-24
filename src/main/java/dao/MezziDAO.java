@@ -1,6 +1,7 @@
 package dao;
 
 import enteties.Mezzi;
+import enteties.Periodi;
 import enums.StatoMezzo;
 
 import javax.persistence.EntityManager;
@@ -65,5 +66,11 @@ public class MezziDAO {
                 throw e;
             }
         }
+    }
+
+    public List<Periodi> getPeriodListForTransport(long mezzo_id) {
+        TypedQuery<Periodi> getPeriods = em.createQuery("SELECT p FROM Periodi p WHERE p.mezzo.id = :mezzo_id", Periodi.class);
+        getPeriods.setParameter("mezzo_id", mezzo_id);
+        return getPeriods.getResultList();
     }
 }

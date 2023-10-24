@@ -43,12 +43,27 @@ public class Application {
 //                User randomUser = userSupplier.get();
 //                uDAO.save(randomUser);
 //            }
-            for(int i =0; i<10;i ++){
-                LocalDate dataEmissione = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                Tessera tesseraGenerata = new Tessera(dataEmissione);
 
-                tDAO.save(randomTessera);
-            }
+//               
+
+//            LocalDate dataEmissione2 = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//            LocalDate dataScadenza = dataEmissione2.plusYears(1);
+//            User user2 = em.find (User.class,1078141130855L);
+//            Tessera tesseraGenerata2 = new Tessera(dataEmissione2,dataScadenza,user2);
+//            tesseraGenerata2.setUser(user2);
+//            tDAO.save(tesseraGenerata2);
+//
+//            User user3 = em.find(User.class,3961913075403L);
+//            Tessera tesseraGenerata3= new Tessera(user3);
+//            tesseraGenerata3.setUser(user3);
+//            tDAO.save(tesseraGenerata3);
+
+            tDAO.isTesseraScadutaById(453070569857L);
+            tDAO.isTesseraScadutaById(728465382503L);
+
+
+
+
 
 
         } catch (Exception e) {

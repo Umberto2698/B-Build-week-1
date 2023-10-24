@@ -4,6 +4,7 @@ import enteties.Biglietti;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BigliettiDAO {
@@ -33,6 +34,11 @@ public class BigliettiDAO {
 
     public Biglietti getById(long id) {
         return em.find(Biglietti.class, id);
+    }
+
+    public List<Biglietti> bigliettiValidatiSuUnMezzo(long id) {
+
+
     }
 
 }

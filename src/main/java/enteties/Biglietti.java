@@ -1,7 +1,10 @@
 package enteties;
 
+import dao.MezziDAO;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 
@@ -28,5 +31,30 @@ public class Biglietti {
     }
 
     public Biglietti() {
+    }
+
+    public Mezzi getMezzo() {
+        return mezzo;
+    }
+
+    public void setMezzo(Mezzi mezzo) {
+        this.mezzo = mezzo;
+    }
+
+
+    public LocalDate getDataValidazione() {
+        return dataValidazione;
+    }
+
+    public void setDataValidazione(LocalDate dataValidazione) {
+        this.dataValidazione = dataValidazione;
+    }
+
+    public void validateTicket(MezziDAO md) {
+        List<Mezzi> mezziInServizio = md.getAllOnService().stream().toList();
+        int size = mezziInServizio.size();
+        int n = new Random().nextInt(1, size);
+        this.setMezzo(mezziInServizio.get(n));
+        this.setDataValidazione(LocalDate.now());
     }
 }

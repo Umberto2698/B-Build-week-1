@@ -69,7 +69,7 @@ public class Biglietti {
 
     @Override
     public String toString() {
-        return "enteties.Biglietti{" +
+        return "Biglietto{" +
                 "id=" + id +
                 ", prezzo=" + prezzo +
                 ", dataEmissione=" + dataEmissione +

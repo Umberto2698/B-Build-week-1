@@ -2,6 +2,12 @@ import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
 import enums.TipoMezzo;
+import dao.BigliettiDAO;
+import dao.MezziDAO;
+import enteties.Biglietti;
+import enteties.Rivenditore;
+import enteties.User;
+
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
@@ -26,14 +32,9 @@ public class Application {
 //        Supplier<Tessera> tesseraSupplier = () -> new Tessera (faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),userSupplier.get());
 
         Scanner input = new Scanner(System.in);
-
+        BigliettiDAO bd = new BigliettiDAO(em);
         MezziDAO md = new MezziDAO(em);
-        BigliettiDAO bDAO = new BigliettiDAO(em);
-        UserDAO uDAO = new UserDAO(em);
-        TesseraDAO tDAO = new TesseraDAO(em);
-        VenditoreDAO vDAO = new VenditoreDAO(em);
 
-        Mezzi m1 = new Mezzi(TipoMezzo.AUTOBUS);
         try {
 //            for (int i = 0; i < 10; i++) {
 //                Rivenditore randomRivenditore = rivenditoreSupplier.get();
@@ -58,8 +59,8 @@ public class Application {
 //            tesseraGenerata3.setUser(user3);
 //            tDAO.save(tesseraGenerata3);
 
-            tDAO.isTesseraScadutaById(453070569857L);
-            tDAO.isTesseraScadutaById(728465382503L);
+//            tDAO.isTesseraScadutaById(453070569857L);
+//            tDAO.isTesseraScadutaById(728465382503L);
 
 
 

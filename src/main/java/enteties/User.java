@@ -31,6 +31,10 @@ public class User {
     public User() {
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -57,5 +61,16 @@ public class User {
 
     public void setTessera(Tessera tessera) {
         this.tessera = tessera;
+    }
+
+    @Override
+    public String toString() {
+        return "enteties.User{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
+                ", dataNascita=" + dataNascita +
+                ", tessera=" + tessera +
+                '}';
     }
 }

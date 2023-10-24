@@ -14,6 +14,7 @@ public class Mezzi {
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "transport_type")
+//    @Enumerated(EnumType.STRING)
     private TipoMezzo tipoMezzo;
     @Column(name = "transport_state")
     @Enumerated(EnumType.STRING)

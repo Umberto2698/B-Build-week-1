@@ -10,16 +10,12 @@ import java.util.Set;
 @Table(name = "seller")
 public abstract class Venditore {
     @Id
-
-    long id= (new Random().nextLong(1000000000000L, 10000000000000L));
-    @OneToMany(mappedBy = "IdPuntoVendita")
-    private Set<Biglietti> biglietti = new HashSet<>();
-
-
+    long id = (new Random().nextLong(1000000000000L, 10000000000000L));
     @OneToMany(mappedBy = "venditore")
     private Set<Abbonamenti> abbonamenti = new HashSet<>();
 
-
+    @OneToMany(mappedBy = "IdPuntoVendita")
+    private Set<Biglietti> biglietti = new HashSet<>();
     public Venditore() {
     }
 

@@ -7,6 +7,10 @@ import java.util.Random;
 
 @Entity
 public class Biglietti {
+
+    @ManyToOne
+    @JoinColumn(name = "mezzo_id", nullable = false)
+    Mezzi mezzo;
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "price")

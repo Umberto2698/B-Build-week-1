@@ -24,8 +24,9 @@ public class Distributore extends Venditore {
 
     @Override
     public String toString() {
-        return "Distributore{" +
-                "id=" + id +
+
+        return "enteties.Distributore{" +
+                "id=" + getId() +
                 "stato=" + stato +
                 '}';
     }

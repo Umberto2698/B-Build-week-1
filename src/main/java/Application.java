@@ -2,17 +2,8 @@ import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
 import enums.TipoMezzo;
-import dao.BigliettiDAO;
-import dao.MezziDAO;
-import enteties.Biglietti;
-import enteties.Rivenditore;
-import enteties.User;
-import dao.BigliettiDAO;
-import dao.MezziDAO;
-import dao.VenditoreDAO;
-import enteties.*;
-import enums.TipoMezzo;
 import utils.JpaUtils;
+
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -36,6 +27,9 @@ public class Application {
         BigliettiDAO bd = new BigliettiDAO(em);
         MezziDAO md = new MezziDAO(em);
         VenditoreDAO vDAO = new VenditoreDAO(em);
+        PeriodiDAO pDAO = new PeriodiDAO(em);
+        TrattaDAO trDao = new TrattaDAO(em);
+        Tratta_MezzoDAO tr_Mez_DAO = new Tratta_MezzoDAO(em);
 
 
         Supplier<Biglietti> bigliettiSupplier = () -> {
@@ -65,13 +59,35 @@ public class Application {
 //                User randomUser = userSupplier.get();
 //                uDAO.save(randomUser);
 //            }
-//            for (int i = 0; i < 10; i++) {
+//            for (int i = 0; i < 5; i++) {
 //                md.save(autobusSupplier.get());
 //                md.save(tramSupplier.get());
 //            }
+//            Mezzi mezzo = em.find(Mezzi.class, 1594772249836L);
+            Mezzi mezzo2 = em.find(Mezzi.class, 1641620105572L);
+//            Periodi periodo1 = new Periodi(LocalDate.of(2022, 1, 1), LocalDate.of(2023, 2, 28), mezzo, StatoMezzo.IN_SERVIZIO);
+//            Periodi periodo2 = new Periodi(LocalDate.of(2021, 1, 1), LocalDate.of(2022, 4, 18), mezzo, StatoMezzo.IN_MANUTENZIONE);
+//            pDAO.save(periodo2);
+//            pDAO.save(periodo1);
+
+//            Periodi periodo3= em.find(Periodi.class,1977984903376L);
+//            System.out.println(md.getPeriodListForTransport(1641620105572L));
+//            List<Periodi> periodiList = md.getPeriodListForTransport(1594772249836L);
+//            for (Periodi periodo : periodiList) {
+//                System.out.println(periodo);
+//
+//            }
+//            Tratta tratta2 = new Tratta("Roma", "Australia", 25.4);
+////            trDao.save(tratta2);
+
+            Tratta tratta2 = em.find(Tratta.class, 2142233632185L);
+
+            Tratta_Mezzo tratta_mezzo2 = new Tratta_Mezzo(23.3, mezzo2, tratta2);
+//            tr_Mez_DAO.save(tratta_mezzo2);
+            System.out.println(tr_Mez_DAO.getNumVolteMezzoPercorsoTratta(1641620105572L, 2142233632185L));
 
 
-//               
+//
 
 //            LocalDate dataEmissione2 = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 //            LocalDate dataScadenza = dataEmissione2.plusYears(1);
@@ -87,7 +103,6 @@ public class Application {
 
 //            tDAO.isTesseraScadutaById(453070569857L);
 //            tDAO.isTesseraScadutaById(728465382503L);
-
 
 
 //            Mezzi m1 = md.getById(4810079588026L);

@@ -62,25 +62,25 @@ public class BigliettiDAO {
     public long getNumberOfTicketsInTimeIntervallForSeller(LocalDate date1, LocalDate date2, Venditore seller) {
         TypedQuery<Long> getCount = null;
         if (date1.isBefore(date2)) {
-            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataEmissione >= :date1 AND b.dataEmissione <= :date2 AND b.venditore.id = :seller.id", Long.class);
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataEmissione >= :date1 AND b.dataEmissione <= :date2 AND b.venditore.id = :seller_id", Long.class);
             getCount.setParameter("date1", date1);
             getCount.setParameter("date2", date2);
-            getCount.setParameter("seller.id", seller.getId());
+            getCount.setParameter("seller_id", seller.getId());
         } else if (date1.isAfter(date2)) {
-            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataEmissione >= :date2 AND b.dataEmissione <= :date1", Long.class);
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataEmissione >= :date2 AND b.dataEmissione <= :date1 AND b.venditore.id = :seller_id", Long.class);
             getCount.setParameter("date2", date2);
             getCount.setParameter("date1", date1);
-            getCount.setParameter("seller.id", seller.getId());
+            getCount.setParameter("seller_id", seller.getId());
         } else {
             System.err.println("Inserisci due date diverse");
         }
         return getCount != null ? getCount.getSingleResult() : -1;
     }
 
-    public List<Biglietti> bigliettiValidatiSuUnMezzo(long id) {
-        TypedQuery<Biglietti> bigliettiValidatiSuUnMezzo = em.createQuery("SELECT b FROM Biglietti b JOIN b.mezzo m WHERE m.id = :id", Biglietti.class);
+    public long bigliettiValidatiSuUnMezzo(long id) {
+        TypedQuery<Long> bigliettiValidatiSuUnMezzo = em.createQuery("SELECT COUNT(b) FROM Biglietti b JOIN b.mezzo m WHERE m.id = :id", Long.class);
         bigliettiValidatiSuUnMezzo.setParameter("id", id);
-        return bigliettiValidatiSuUnMezzo.getResultList();
+        return bigliettiValidatiSuUnMezzo.getSingleResult();
     }
 
     public void validateTicket(MezziDAO md, Biglietti b) {
@@ -111,5 +111,5 @@ public class BigliettiDAO {
             throw e;
         }
     }
-    
+
 }

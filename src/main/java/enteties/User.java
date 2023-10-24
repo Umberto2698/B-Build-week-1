@@ -8,7 +8,7 @@ import java.util.Random;
 @Entity
 public class User {
     @Id
-    private long id = new Random().nextLong(1000000000000L, 100000000000L);
+    private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "name")
     private String nome;
     @Column(name = "surname")
@@ -26,6 +26,7 @@ public class User {
         this.cognome = cognome;
         this.dataNascita = dataNascita;
     }
+
 
     public User() {
     }
@@ -50,4 +51,11 @@ public class User {
         return dataNascita;
     }
 
+    public Tessera getTessera() {
+        return tessera;
+    }
+
+    public void setTessera(Tessera tessera) {
+        this.tessera = tessera;
+    }
 }

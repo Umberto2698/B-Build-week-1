@@ -30,6 +30,11 @@ public class Biglietti {
         this.venditore = venditore;
     }
 
+    public Biglietti(LocalDate dataEmissione, Venditore venditore) {
+        this.dataEmissione = dataEmissione;
+        this.venditore = venditore;
+    }
+
     public Biglietti() {
     }
 

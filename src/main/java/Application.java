@@ -1,10 +1,9 @@
 import com.github.javafaker.Faker;
-import dao.*;
+import dao.BigliettiDAO;
+import dao.MezziDAO;
 import enteties.Biglietti;
-import enteties.Mezzi;
 import enteties.Rivenditore;
 import enteties.User;
-import enums.TipoMezzo;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
@@ -26,14 +25,9 @@ public class Application {
                         , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), rivenditoreSupplier.get());
         Scanner input = new Scanner(System.in);
-
+        BigliettiDAO bd = new BigliettiDAO(em);
         MezziDAO md = new MezziDAO(em);
-        BigliettiDAO bDAO = new BigliettiDAO(em);
-        UserDAO uDAO = new UserDAO(em);
-        TesseraDAO tDAO = new TesseraDAO(em);
-        VenditoreDAO vDAO = new VenditoreDAO(em);
 
-        Mezzi m1 = new Mezzi(TipoMezzo.AUTOBUS);
         try {
 //            for (int i = 0; i < 10; i++) {
 //                Rivenditore randomRivenditore = rivenditoreSupplier.get();

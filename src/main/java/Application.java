@@ -24,6 +24,9 @@ public class Application {
         Supplier<Biglietti> bigliettiSupplier = () -> new Biglietti(faker.date().between(Date.from(LocalDate.of(2010, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                         , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), rivenditoreSupplier.get());
+
+//        Supplier<Tessera> tesseraSupplier = () -> new Tessera (faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),userSupplier.get());
+
         Scanner input = new Scanner(System.in);
         BigliettiDAO bd = new BigliettiDAO(em);
         MezziDAO md = new MezziDAO(em);
@@ -37,6 +40,23 @@ public class Application {
 //                User randomUser = userSupplier.get();
 //                uDAO.save(randomUser);
 //            }
+
+//               
+
+//            LocalDate dataEmissione2 = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//            LocalDate dataScadenza = dataEmissione2.plusYears(1);
+//            User user2 = em.find (User.class,1078141130855L);
+//            Tessera tesseraGenerata2 = new Tessera(dataEmissione2,dataScadenza,user2);
+//            tesseraGenerata2.setUser(user2);
+//            tDAO.save(tesseraGenerata2);
+//
+//            User user3 = em.find(User.class,3961913075403L);
+//            Tessera tesseraGenerata3= new Tessera(user3);
+//            tesseraGenerata3.setUser(user3);
+//            tDAO.save(tesseraGenerata3);
+
+//            tDAO.isTesseraScadutaById(453070569857L);
+//            tDAO.isTesseraScadutaById(728465382503L);
 
 
         } catch (Exception e) {

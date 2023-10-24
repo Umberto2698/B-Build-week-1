@@ -8,7 +8,7 @@ import java.util.Random;
 @Table(name = "cards")
 public class Tessera {
     @Id
-    private long id = new Random().nextLong(1000000000000L, 100000000000L);
+    private long id = new Random().nextLong(100000000000L, 1000000000000L);
     @Column(name = "emission_date")
     private LocalDate dataEmissione = LocalDate.now();
     @Column(name = "expiry_date")
@@ -20,9 +20,29 @@ public class Tessera {
     public Tessera() {
     }
 
-    public Tessera(LocalDate dataEmissione, User user) {
-        this.dataEmissione = dataEmissione;
-        this.dataScadenza = dataEmissione.plusYears(1);
+//    public Tessera(LocalDate dataEmissione, User user) {
+//        this.dataEmissione = dataEmissione;
+//        this.dataScadenza = dataEmissione.plusYears(1);
+//        this.user = user;
+//    }
+
+
+    public Tessera(User user) {
+        this.user = user;
+    }
+
+    public Tessera(LocalDate dataEmissione, LocalDate dataScadenza, User user) {
+        this.dataEmissione= dataEmissione;
+        this.dataScadenza=dataScadenza;
+        this.user= user;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
         this.user = user;
     }
 

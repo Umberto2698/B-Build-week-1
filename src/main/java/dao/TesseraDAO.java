@@ -57,7 +57,7 @@ public class TesseraDAO {
         }
         LocalDate dataScadenza = tesseraDaVerificare.getDataScadenza();
 
-        if (dataScadenza.isBefore(currentDate)) {
+        if (currentDate.isBefore(dataScadenza)) {
             System.out.println("La tessera è ancora valida!");
 
         } else {

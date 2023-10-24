@@ -4,6 +4,8 @@ import enteties.Mezzi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 public class MezziDAO {
@@ -54,5 +56,27 @@ public class MezziDAO {
                 throw e;
             }
         }
+    }
+    public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {
+        TypedQuery<Long> q = null;
+        if ( inizioPeriodo.isBefore(finePeriodo)
+        ) {
+        q = em.createQuery(
+                "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataVidimazione BETWEEN :inizioPeriodo AND :finePeriodo",
+                Long.class);
+        q.setParameter("idMezzo", idMezzo);
+        q.setParameter("inizioPeriodo", inizioPeriodo);
+        q.setParameter("finePeriodo", finePeriodo);
+        } else if (
+                inizioPeriodo.isAfter(finePeriodo)
+        ) {
+            q = em.createQuery(
+                    "SELECT COUNT(v) FROM Biglietti v WHERE v.mezzo.id = :idMezzo AND v.dataVidimazione BETWEEN :finePeriodo AND :inizioPeriodo",
+                    Long.class);
+            q.setParameter("idMezzo", idMezzo);
+            q.setParameter("inizioPeriodo", inizioPeriodo);
+            q.setParameter("finePeriodo", finePeriodo);
+        }
+        return q != null ? q.getSingleResult() : -1;
     }
 }

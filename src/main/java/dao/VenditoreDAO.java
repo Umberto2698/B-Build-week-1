@@ -4,6 +4,8 @@ import enteties.Venditore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class VenditoreDAO {
@@ -33,6 +35,11 @@ public class VenditoreDAO {
 
     public Venditore getById(long id) {
         return em.find(Venditore.class, id);
+    }
+
+    public List<Venditore> getAllSellers() {
+        TypedQuery<Venditore> getAllSellers = em.createQuery("SELECT v FROM Venditore v", Venditore.class);
+        return getAllSellers.getResultList();
     }
 
     public void delete(long id) throws InterruptedException {

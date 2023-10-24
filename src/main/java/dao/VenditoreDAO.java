@@ -62,10 +62,4 @@ public class VenditoreDAO {
             }
         }
     }
-
-    public List<Venditore> getAllSellers() {
-        TypedQuery<Venditore> getAllSellers = em.createQuery("SELECT v FROM Venditore v", Venditore.class);
-        return getAllSellers.getResultList();
-    }
-
 }

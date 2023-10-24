@@ -1,10 +1,10 @@
 package dao;
 
 import enteties.Tratta;
-import enteties.Venditore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.util.concurrent.TimeUnit;
 
 public class TrattaDAO {
@@ -55,5 +55,18 @@ public class TrattaDAO {
                 throw e;
             }
         }
+    }
+
+    public long getTimeTrattaPercorsa(String id) {
+        Query q = em.createQuery("SELECT COUNT(m) FROM Mezzo m WHERE m.tratta.id = :id");
+        q.setParameter("id", id);
+        return (Long) q.getSingleResult();
+    }
+
+    public long getTimeTrattaPercorsaBySingleMezzo(String trattaId, String mezzoId) {
+        Query q = em.createQuery("SELECT COUNT(m) FROM Mezzo m WHERE m.tratta.id = :trattaId AND m.id = :mezzoId");
+        q.setParameter("trattaId", trattaId);
+        q.setParameter("mezzoId", mezzoId);
+        return (Long) q.getSingleResult();
     }
 }

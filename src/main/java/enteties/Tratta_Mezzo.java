@@ -1,17 +1,18 @@
 package enteties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "trnsport_route")
-public class Tratta_Mezzo {
+@Table(name = "transport_route")
+public class Tratta_Mezzo implements Serializable {
     @Column(name = "actual_time")
     private double tempoEffettivo;
-
+    @Id
     @ManyToOne
     @JoinColumn(name = "transport_id")
     private Mezzi mezzo;
-
+    @Id
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Tratta tratta;

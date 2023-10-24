@@ -34,5 +34,25 @@ public class AbbonamentiDAO {
     public Abbonamenti getById(long id) {
         return em.find(Abbonamenti.class, id);
     }
-    
+
+    public void delete(long id) throws InterruptedException {
+        Abbonamenti abbonamento = em.find(Abbonamenti.class, id);
+        if (abbonamento != null) {
+            EntityTransaction transaction = em.getTransaction();
+            try {
+                transaction.begin();
+                em.remove(abbonamento);
+                transaction.commit();
+                System.err.println("Abbonamento eliminato correttamente");
+                TimeUnit.MILLISECONDS.sleep(1000);
+                System.out.println(abbonamento);
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                System.err.println("Errore durante l'eliminazione dell'abbonamento." + e);
+                throw e;
+            }
+        }
+    }
 }

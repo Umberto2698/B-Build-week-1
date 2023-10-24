@@ -14,7 +14,7 @@ public class Mezzi {
     @Id
     private long id = new Random().nextLong(1000000000000L, 10000000000000L);
     @Column(name = "transport_type")
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private TipoMezzo tipoMezzo;
     @Column(name = "transport_state")
     @Enumerated(EnumType.STRING)
@@ -36,6 +36,15 @@ public class Mezzi {
 
     public Mezzi(TipoMezzo tipoMezzo) {
         this.tipoMezzo = tipoMezzo;
+        switch (tipoMezzo) {
+            case TRAM -> this.postiTotali = 53;
+            case AUTOBUS -> this.postiTotali = 89;
+        }
+    }
+
+    public Mezzi(TipoMezzo tipoMezzo, StatoMezzo statoMezzo) {
+        this.tipoMezzo = tipoMezzo;
+        this.statoMezzo = statoMezzo;
         switch (tipoMezzo) {
             case TRAM -> this.postiTotali = 53;
             case AUTOBUS -> this.postiTotali = 89;

@@ -42,6 +42,12 @@ public class VenditoreDAO {
         return getAllSellers.getResultList();
     }
 
+//    public List<Venditore> getAllActiveSellers() {
+//        TypedQuery<Venditore> getAllActiveSellers = em.createQuery("SELECT v FROM Venditore v WHERE v.stato LIKE :state", Venditore.class);
+//        getAllActiveSellers.setParameter("state", StatoDistributore.ATTIVO);
+//        return getAllActiveSellers.getResultList();
+//    }
+
     public void delete(long id) throws InterruptedException {
         Venditore venditore = em.find(Venditore.class, id);
         if (venditore != null) {

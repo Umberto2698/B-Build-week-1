@@ -42,6 +42,11 @@ public class MezziDAO {
         return getElement.getSingleResult();
     }
 
+    public List<Mezzi> getAll() {
+        TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m", Mezzi.class);
+        return getElements.getResultList();
+    }
+
     public List<Mezzi> getAllOnService() {
         TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :IN_SERVIZIO", Mezzi.class);
         getElements.setParameter("IN_SERVIZIO", StatoMezzo.IN_SERVIZIO);
@@ -69,13 +74,11 @@ public class MezziDAO {
         }
     }
 
-
     public List<Periodi> getPeriodListForTransport(long mezzo_id) {
         TypedQuery<Periodi> getPeriods = em.createQuery("SELECT p FROM Periodi p WHERE p.mezzo.id = :mezzo_id", Periodi.class);
         getPeriods.setParameter("mezzo_id", mezzo_id);
         return getPeriods.getResultList();
     }
-
 
     public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {
         TypedQuery<Long> q = null;

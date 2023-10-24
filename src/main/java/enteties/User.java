@@ -18,15 +18,15 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Tessera tessera;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Biglietti> biglietti;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Abbonamenti> abbonamenti;
-
 
     public User(String nome, String cognome, LocalDate dataNascita) {
         this.nome = nome;
         this.cognome = cognome;
         this.dataNascita = dataNascita;
     }
-
 
     public User() {
     }
@@ -65,7 +65,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "enteties.User{" +
+        return "User {" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +

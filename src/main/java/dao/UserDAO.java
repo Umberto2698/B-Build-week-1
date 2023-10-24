@@ -4,6 +4,9 @@ import enteties.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class UserDAO {
@@ -33,6 +36,17 @@ public class UserDAO {
 
     public User getById(long id) {
         return em.find(User.class, id);
+    }
+
+    public List<User> getAllUsers() {
+        TypedQuery<User> getAllUsers = em.createQuery("SELECT u FROM User u", User.class);
+        return getAllUsers.getResultList();
+    }
+
+    public List<User> getAllUsersWithValidCard() {
+        TypedQuery<User> getAllUsersWithValidCards = em.createQuery("SELECT u FROM User u WHERE u.tessera IS NOT NULL AND u.tessera.dataScadenza < :now", User.class);
+        getAllUsersWithValidCards.setParameter("now", LocalDate.now());
+        return getAllUsersWithValidCards.getResultList();
     }
 
     public void deleteById(long id) {

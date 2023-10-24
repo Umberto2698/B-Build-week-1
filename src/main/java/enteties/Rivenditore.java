@@ -9,7 +9,6 @@ public class Rivenditore extends Venditore {
     @Column(name = "adress")
     private String adress;
 
-
     public Rivenditore() {
         super();
     }
@@ -30,9 +29,9 @@ public class Rivenditore extends Venditore {
     @Override
     public String toString() {
 
-        return "enteties.Rivenditore{" +
+        return "Rivenditore{" +
                 "id=" + getId() +
-                "adress" + adress +
+                ", adress" + adress +
                 '}';
     }
 }

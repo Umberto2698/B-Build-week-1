@@ -63,7 +63,7 @@ public class Tratta {
 
     @Override
     public String toString() {
-        return "enteties.Tratta{" +
+        return "Tratta{" +
                 "id=" + id +
                 ", zonaPartenza='" + zonaPartenza + '\'' +
                 ", capolinea='" + capolinea + '\'' +

@@ -20,23 +20,11 @@ public class Tessera {
     public Tessera() {
     }
 
-//    public Tessera(LocalDate dataEmissione, User user) {
-//        this.dataEmissione = dataEmissione;
-//        this.dataScadenza = dataEmissione.plusYears(1);
-//        this.user = user;
-//    }
-
-
-    public Tessera(User user) {
-        this.user = user;
-    }
-
-    public Tessera(LocalDate dataEmissione, LocalDate dataScadenza, User user) {
+    public Tessera(LocalDate dataEmissione, User user) {
         this.dataEmissione = dataEmissione;
-        this.dataScadenza = dataScadenza;
+        this.dataScadenza = dataEmissione.plusYears(1);
         this.user = user;
     }
-
 
     public User getUser() {
         return user;

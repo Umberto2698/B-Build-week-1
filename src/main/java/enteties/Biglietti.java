@@ -17,19 +17,24 @@ public class Biglietti {
     @Column(name = "validation_date")
     private LocalDate dataValidazione = null;
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
     private Venditore venditore;
     @ManyToOne
     @JoinColumn(name = "transport_id")
     private Mezzi mezzo;
 
-    public Biglietti(Venditore venditore) {
+    public Biglietti(User user, Venditore venditore) {
+        this.user = user;
         this.venditore = venditore;
     }
 
-    public Biglietti(LocalDate dataEmissione, Venditore venditore) {
+    public Biglietti(LocalDate dataEmissione, User user, Venditore venditore) {
         this.dataEmissione = dataEmissione;
         this.venditore = venditore;
+        this.user = user;
     }
 
     public Biglietti() {
@@ -55,6 +60,10 @@ public class Biglietti {
         this.dataValidazione = dataValidazione;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public Venditore getVenditore() {
         return venditore;
     }
@@ -74,6 +83,7 @@ public class Biglietti {
                 ", prezzo=" + prezzo +
                 ", dataEmissione=" + dataEmissione +
                 ", dataValidazione=" + dataValidazione +
+                ", user=" + user +
                 ", venditore=" + venditore +
                 ", mezzo=" + mezzo +
                 '}';

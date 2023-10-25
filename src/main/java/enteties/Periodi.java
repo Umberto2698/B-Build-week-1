@@ -19,6 +19,9 @@ public class Periodi {
     private LocalDate dataInizio;
     @Column(name = "end_date")
     private LocalDate dataFine;
+
+    @Column(name = "period_type")
+    @Enumerated(EnumType.STRING)
     private StatoMezzo statoMezzo;
 
     public Periodi() {

@@ -43,8 +43,13 @@ public class UserDAO {
         return getAllUsers.getResultList();
     }
 
+    public List<User> getAllUsersWithCard() {
+        TypedQuery<User> getAllUsersWithCard = em.createQuery("SELECT u FROM User u WHERE u.tessera IS NOT EMPTY", User.class);
+        return getAllUsersWithCard.getResultList();
+    }
+
     public List<User> getAllUsersWithValidCard() {
-        TypedQuery<User> getAllUsersWithValidCards = em.createQuery("SELECT u FROM User u WHERE u.tessera IS NOT NULL AND u.tessera.dataScadenza < :now", User.class);
+        TypedQuery<User> getAllUsersWithValidCards = em.createQuery("SELECT u FROM User u WHERE u.tessera IS NOT EMPTY AND u.tessera.dataScadenza < :now", User.class);
         getAllUsersWithValidCards.setParameter("now", LocalDate.now());
         return getAllUsersWithValidCards.getResultList();
     }

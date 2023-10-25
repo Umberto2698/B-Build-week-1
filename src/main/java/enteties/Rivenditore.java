@@ -31,7 +31,7 @@ public class Rivenditore extends Venditore {
 
         return "Rivenditore{" +
                 "id=" + getId() +
-                ", adress" + adress +
+                ", indirizzo=" + adress +
                 '}';
     }
 }

@@ -19,6 +19,7 @@ public class Abbonamenti {
     private LocalDate dataScadenza;
 
     @Column(name = "pass_type")
+    @Enumerated(EnumType.STRING)
     private TipoAbbonamento tipoAbbonamento;
 
     @ManyToOne
@@ -38,13 +39,13 @@ public class Abbonamenti {
         switch (tipoAbbonamento) {
             case MENSILE -> {
                 this.costo = 139.90;
-                this.dataScadenza = LocalDate.now().plusMonths(1);
+                this.dataScadenza = dataEmissione.plusMonths(1);
                 this.user = user;
                 this.venditore = venditore;
             }
             case SETTIMANALE -> {
                 this.costo = 39.90;
-                this.dataScadenza = LocalDate.now().plusDays(7);
+                this.dataScadenza = dataEmissione.plusDays(7);
                 this.user = user;
                 this.venditore = venditore;
             }
@@ -67,5 +68,46 @@ public class Abbonamenti {
                 this.venditore = venditore;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Abbonamenti{" +
+                "id=" + id +
+                ", costo=" + costo +
+                ", dataEmissione=" + dataEmissione +
+                ", dataScadenza=" + dataScadenza +
+                ", tipoAbbonamento=" + tipoAbbonamento +
+                ", user=" + user +
+                ", venditore=" + venditore +
+                '}';
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public double getCosto() {
+        return costo;
+    }
+
+    public LocalDate getDataEmissione() {
+        return dataEmissione;
+    }
+
+    public LocalDate getDataScadenza() {
+        return dataScadenza;
+    }
+
+    public TipoAbbonamento getTipoAbbonamento() {
+        return tipoAbbonamento;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Venditore getVenditore() {
+        return venditore;
     }
 }

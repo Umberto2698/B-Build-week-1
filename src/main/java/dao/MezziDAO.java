@@ -48,8 +48,14 @@ public class MezziDAO {
     }
 
     public List<Mezzi> getAllOnService() {
-        TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :IN_SERVIZIO", Mezzi.class);
-        getElements.setParameter("IN_SERVIZIO", StatoMezzo.IN_SERVIZIO);
+        TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :stato", Mezzi.class);
+        getElements.setParameter("stato", StatoMezzo.IN_SERVIZIO);
+        return getElements.getResultList();
+    }
+
+    public List<Mezzi> getAllUnderMaintenance() {
+        TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :stato", Mezzi.class);
+        getElements.setParameter("stato", StatoMezzo.IN_MANUTENZIONE);
         return getElements.getResultList();
     }
 

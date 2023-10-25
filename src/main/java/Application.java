@@ -43,7 +43,7 @@ public class Application {
         Tratta_MezzoDAO tr_m_DAO = new Tratta_MezzoDAO(em);
 
         Faker faker = new Faker(Locale.ITALY);
-        
+
         List<Venditore> allSellers = vDAO.getAllSellers();
         int allSellersSize = allSellers.size();
         List<User> allUsers = uDAO.getAllUsers();

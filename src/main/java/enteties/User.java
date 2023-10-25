@@ -1,5 +1,7 @@
 package enteties;
 
+import enums.TipoUser;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +17,9 @@ public class User {
     private String cognome;
     @Column(name = "birthday")
     private LocalDate dataNascita;
+    @Column(name = "user_type")
+    @Enumerated(EnumType.STRING)
+    private TipoUser tipoUser = TipoUser.CUSTOMER;
     @OneToOne(mappedBy = "user")
     private Tessera tessera;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -26,6 +31,13 @@ public class User {
         this.nome = nome;
         this.cognome = cognome;
         this.dataNascita = dataNascita;
+    }
+
+    public User(String nome, String cognome, LocalDate dataNascita, TipoUser tipoUser) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.dataNascita = dataNascita;
+        this.tipoUser = tipoUser;
     }
 
     public User() {
@@ -61,6 +73,18 @@ public class User {
 
     public void setTessera(Tessera tessera) {
         this.tessera = tessera;
+    }
+
+    public TipoUser getTipoUser() {
+        return tipoUser;
+    }
+
+    public List<Biglietti> getBiglietti() {
+        return biglietti;
+    }
+
+    public List<Abbonamenti> getAbbonamenti() {
+        return abbonamenti;
     }
 
     @Override

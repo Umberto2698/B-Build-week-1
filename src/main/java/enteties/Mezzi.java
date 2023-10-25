@@ -60,4 +60,32 @@ public class Mezzi {
                 ", postiTotali=" + postiTotali +
                 '}';
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public TipoMezzo getTipoMezzo() {
+        return tipoMezzo;
+    }
+
+    public StatoMezzo getStatoMezzo() {
+        return statoMezzo;
+    }
+
+    public int getPostiTotali() {
+        return postiTotali;
+    }
+
+    public Set<Tratta_Mezzo> getTratteMezzo() {
+        return tratteMezzo;
+    }
+
+    public Set<Biglietti> getBiglietti() {
+        return biglietti;
+    }
+
+    public Set<Periodi> getPeriodi() {
+        return periodi;
+    }
 }

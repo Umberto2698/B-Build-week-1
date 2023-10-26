@@ -87,9 +87,27 @@ public class BigliettiDAO {
         return bigliettiValidatiSuUnMezzo.getSingleResult();
     }
 
+
+    public Biglietti findNonValidatedTicketForUser(long userId) {
+        TypedQuery<Biglietti> query = em.createQuery(
+                "SELECT b FROM Biglietti b WHERE b.user.id = :userId AND b.dataValidazione IS NULL",
+                Biglietti.class
+        );
+        query.setParameter("userId", userId);
+
+        try {
+            return query.getSingleResult();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public void validateTicket(MezziDAO md, Biglietti b) {
         List<Mezzi> mezziInServizio = md.getAllOnService().stream().toList();
+        System.out.println(mezziInServizio);
         int size = mezziInServizio.size();
+        System.out.println(size);
         int n = new Random().nextInt(1, size);
         b.setMezzo(mezziInServizio.get(n));
         b.setDataValidazione(LocalDate.now());

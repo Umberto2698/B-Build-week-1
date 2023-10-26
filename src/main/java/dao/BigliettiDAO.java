@@ -116,4 +116,29 @@ public class BigliettiDAO {
         }
     }
 
+    public void validateTicketWithTransport(Mezzi mezzo, Biglietti b, LocalDate date) {
+        b.setMezzo(mezzo);
+        b.setDataValidazione(date);
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            getById(b.getId());
+            Query validaQuery = em.createQuery("UPDATE Biglietti b SET b.mezzo = :newMezzo WHERE b.id = :id");
+            validaQuery.setParameter("newMezzo", b.getMezzo());
+            validaQuery.setParameter("id", b.getId());
+            int numeroModificati = validaQuery.executeUpdate();
+            transaction.commit();
+            if (numeroModificati > 0) {
+                System.out.println("Biglietto validato");
+            } else {
+                System.out.println("Non ho trovato nessun biglietto: " + b);
+            }
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Errore durante la validazione del biglietto." + e);
+            throw e;
+        }
+    }
 }

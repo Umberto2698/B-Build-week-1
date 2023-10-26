@@ -68,4 +68,11 @@ public class VenditoreDAO {
             }
         }
     }
+
+    public List<Venditore> getVenditoriInZona(String adress) {
+        TypedQuery<Venditore> getVenditoriInZona = em.createQuery("SELECT v FROM Venditore v WHERE v.adress LIKE :adress", Venditore.class);
+        getVenditoriInZona.setParameter("adress", "%" + adress + "%");
+        return getVenditoriInZona.getResultList();
+
+    }
 }

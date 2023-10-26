@@ -109,8 +109,6 @@ public class Application {
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
                         do {
                             System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
-
-
                             n = Integer.parseInt(input.nextLine().trim());
                             switch (n) {
                                 case 0 -> {
@@ -300,6 +298,18 @@ public class Application {
                                     long numeroBigliettiValidatiByMezzo = bDAO.bigliettiValidatiSuUnMezzo(idMezzoLong);
                                     System.out.println("Numero biglietti Validati nel mezzo con ID " + idMezzoLong + " : " + numeroBigliettiValidatiByMezzo);
                                 }
+                                case 7 -> {
+                                    System.out.println("Inserisci l'id di un mezzo");
+                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Mezzi mezzo = mDAO.getById(mezzoid);
+                                    System.out.println("Inserisci l'id di una tratta");
+                                    long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Tratta tratta = trDAO.getById(trattaid);
+                                    Long numeroVolte = tr_m_DAO.getNumVolteMezzoPercorsoTratta(mezzoid, trattaid);
+                                    System.out.println("il mezzo : " + mezzo);
+                                    System.out.println("ha percorso la tratta : " + tratta);
+                                    System.out.println(numeroVolte + "  volte");
+                                }
                                 case 8 -> {
                                     try {
                                         System.out.println("Inserisci l'id di un mezzo");
@@ -329,6 +339,15 @@ public class Application {
                                         System.err.println(e.getMessage());
                                     }
                                 }
+                                case 9 -> {
+                                    System.out.println("Inserisci l'id di un mezzo");
+                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Mezzi mezzo = mDAO.getById(mezzoid);
+                                    List<Periodi> listaPeriodi = mDAO.getPeriodListForTransport(mezzoid);
+                                    System.out.println("lista periodi del mezzo : " + mezzo);
+                                    System.out.println("Lista periodi :");
+                                    listaPeriodi.forEach(System.out::println);
+                                }
                                 case 10 -> {
                                     System.out.println("Insersci id distributore");
                                     String idDistributore = input.nextLine();
@@ -348,27 +367,6 @@ public class Application {
                                             vDAO.updateStatoDistributore(idDistributoreLong, nuovoStato);
                                         }
                                     }
-                                }
-                                case 7 -> {
-                                    System.out.println("Inserisci l'id di un mezzo");
-                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                    Mezzi mezzo = mDAO.getById(mezzoid);
-                                    System.out.println("Inserisci l'id di una tratta");
-                                    long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                    Tratta tratta = trDAO.getById(trattaid);
-                                    Long numeroVolte = tr_m_DAO.getNumVolteMezzoPercorsoTratta(mezzoid, trattaid);
-                                    System.out.println("il mezzo : " + mezzo);
-                                    System.out.println("ha percorso la tratta : " + tratta);
-                                    System.out.println(numeroVolte + "  volte");
-                                }
-                                case 9 -> {
-                                    System.out.println("Inserisci l'id di un mezzo");
-                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                    Mezzi mezzo = mDAO.getById(mezzoid);
-                                    List<Periodi> listaPeriodi = mDAO.getPeriodListForTransport(mezzoid);
-                                    System.out.println("lista periodi del mezzo : " + mezzo);
-                                    System.out.println("Lista periodi :");
-                                    listaPeriodi.forEach(System.out::println);
                                 }
                             }
                         }

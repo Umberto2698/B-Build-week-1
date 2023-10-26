@@ -72,7 +72,6 @@ public class Application {
         int n2;
         User user = null;
 
-
         System.out.println("0 per interrompere, 1 per registrati sul sito, 2 per accedere ");
         n1 = Integer.parseInt(input.nextLine().trim());
         switch (n1) {
@@ -106,11 +105,14 @@ public class Application {
                 long userId = Long.parseLong(input.nextLine().trim());
                 user = uDAO.getById(userId);
                 if (user != null) {
+
                     currentUserId = user.getId();
+
+
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
                         do {
+                            System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
 
-                            System.out.println("menu , numeri case da inserire qui ");
 
                             n = Integer.parseInt(input.nextLine().trim());
                             switch (n) {
@@ -119,6 +121,7 @@ public class Application {
                                     em.close();
                                     JpaUtils.close();
                                 }
+
 
                                 case 3 -> {
                                     user = uDAO.getById(currentUserId);
@@ -151,6 +154,41 @@ public class Application {
                                         } else {
                                             System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
                                         }
+                                    }
+                                }
+                                case 1 -> {
+                                    try {
+                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                        Biglietti buddy = new Biglietti(LocalDate.now(), user, allSellers.get(nVenditoreRandom));
+                                        System.out.println("questo è il tuo biglietto : ");
+                                        bDAO.save(buddy);
+                                        System.out.println("l'id del tuo biglietto è : " + buddy.getId());
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+
+
+                                }
+
+                                case 2 -> {
+                                    System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
+                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                    if (piano == 1) {
+                                        try {
+                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
+                                            aDAO.save(buddy);
+                                        } catch (Exception e) {
+                                            System.err.println(e.getMessage());
+                                        }
+                                    } else if (piano == 2) {
+                                        try {
+                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
+                                            aDAO.save(buddy);
+                                        } catch (Exception e) {
+                                            System.err.println(e.getMessage());
+                                        }
                                     } else {
                                         System.err.println("Errore ID utente non trovato");
                                     }
@@ -165,6 +203,41 @@ public class Application {
                                         }
                                     }
                                 }
+
+                                case 7 -> {
+                                    System.out.println("inserisci una via per controllare quali Rivenditori ci sono : ");
+                                    String viaInput = input.nextLine();
+                                    List<Venditore> listaVenditoriInZOna = vDAO.getVenditoriInZona(viaInput);
+                                    listaVenditoriInZOna.forEach(System.out::println);
+                                }
+                                case 8 -> {
+                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea : ");
+                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                    if (piano == 1) {
+                                        try {
+                                            System.out.println("inserisci un id per vedere il tempo medio di quella tratta : ");
+                                            long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                            Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                            System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                        } catch (Exception e) {
+                                            System.err.println(e);
+                                        }
+                                    } else if (piano == 2) {
+                                        try {
+                                            System.out.println("inserisci zona partenza : ");
+                                            String partenzaInput = input.nextLine();
+                                            System.out.println("inserisci capolinea : ");
+                                            String capolineaInput = input.nextLine();
+                                            List<Tratta> buddy = trDAO.getTempoMedioByPartenzaCapolinea(partenzaInput, capolineaInput);
+                                            buddy.forEach(System.out::println);
+                                        } catch (Exception e) {
+                                            System.err.println(e.getMessage());
+                                        }
+                                    } else {
+                                        break;
+                                    }
+                                }
+
 
                             }
                         }

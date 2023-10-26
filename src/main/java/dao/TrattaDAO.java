@@ -76,4 +76,17 @@ public class TrattaDAO {
         q.setParameter("mezzoId", mezzoId);
         return q.getResultList();
     }
+
+    public Tratta getTempoMedioById(long id) {
+        TypedQuery<Tratta> getTempoMedioById = em.createQuery("SELECT t FROM Tratta t WHERE t.id = :id ", Tratta.class);
+        getTempoMedioById.setParameter("id", id);
+        return getTempoMedioById.getSingleResult();
+    }
+
+    public List<Tratta> getTempoMedioByPartenzaCapolinea(String partenza, String capolinea) {
+        TypedQuery<Tratta> getTempoMedioByPartenzaCapolinea = em.createQuery("SELECT t FROM Tratta t WHERE t.zonaPartenza LIKE :partenza AND t.capolinea LIKE :capolinea", Tratta.class);
+        getTempoMedioByPartenzaCapolinea.setParameter("partenza", "%" + partenza + "%");
+        getTempoMedioByPartenzaCapolinea.setParameter("capolinea", "%" + capolinea + "%");
+        return getTempoMedioByPartenzaCapolinea.getResultList();
+    }
 }

@@ -149,6 +149,7 @@ public class Application {
         while (n != 0);
 
         //MODIFICA LA TRATTA ASSOCIATA AL MEZZO
+
         //System.out.println(
           //      "Desideri modificare la tratta? (Sì/No)");
         //String modificaTratta = input.next();
@@ -171,6 +172,10 @@ public class Application {
           //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
       //  }
 
+        //CREA UN NUOVO MEZZO
 
+        System.out.println("Inserisci il tipo di mezzo: ");
+        String TipoMezzo = input.next();
+        System.out.println("Inserisci il numero di posti disponibili: ");
     }
 }

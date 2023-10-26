@@ -1,6 +1,7 @@
 package dao;
 
 import enteties.Venditore;
+import enums.StatoDistributore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -74,5 +75,17 @@ public class VenditoreDAO {
         getVenditoriInZona.setParameter("adress", "%" + adress + "%");
         return getVenditoriInZona.getResultList();
 
+    }
+
+    public List<Venditore> getAllDistributoriAttivi() {
+        TypedQuery<Venditore> getAllDistributoriInServizio = em.createQuery("SELECT v FROM Venditore v WHERE v.stato = :stato", Venditore.class);
+        getAllDistributoriInServizio.setParameter("stato", StatoDistributore.ATTIVO);
+        return getAllDistributoriInServizio.getResultList();
+    }
+
+    public List<Venditore> getAllDistributoriFuoriServizio() {
+        TypedQuery<Venditore> getAllDistributoriFuoriServizio = em.createQuery("SELECT v FROM Venditore v WHERE v.stato = :stato", Venditore.class);
+        getAllDistributoriFuoriServizio.setParameter("stato", StatoDistributore.FUORISERVIZIO);
+        return getAllDistributoriFuoriServizio.getResultList();
     }
 }

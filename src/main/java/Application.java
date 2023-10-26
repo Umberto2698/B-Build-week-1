@@ -6,7 +6,6 @@ import enums.TipoUser;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -122,39 +121,6 @@ public class Application {
                                     em.close();
                                     JpaUtils.close();
                                 }
-                                case 3 -> {
-                                    user = uDAO.getById(currentUserId);
-                                    if (user != null) {
-                                        LocalDate dataEmissione1 = LocalDate.now();
-                                        Tessera tesseraNuova = new Tessera(dataEmissione1, user);
-                                        tDAO.save(tesseraNuova);
-                                    } else {
-                                        System.err.println("ID utente non trovato!");
-                                    }
-
-                                }
-                                case 4 -> {
-
-                                    if (currentUserId != 0) {
-                                        Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
-                                        if (tesseraUtente != null) {
-                                            tDAO.isTesseraScadutaById(tesseraUtente.getId());
-                                        }
-                                    } else {
-                                        System.out.println("Non hai una tessera");
-                                    }
-                                }
-                                case 5 -> {
-                                    if (currentUserId != 0) {
-                                        Biglietti bigliettoNonValidato = bDAO.findNonValidatedTicketForUser(currentUserId);
-                                        System.out.println(bigliettoNonValidato);
-                                        if (bigliettoNonValidato != null) {
-                                            bDAO.validateTicket(mDAO, bigliettoNonValidato);
-                                        } else {
-                                            System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
-                                        }
-                                    }
-                                }
                                 case 1 -> {
                                     try {
                                         int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
@@ -165,10 +131,7 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-
-
                                 }
-
                                 case 2 -> {
                                     System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
                                     int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
@@ -192,6 +155,37 @@ public class Application {
                                         System.err.println("Errore ID utente non trovato");
                                     }
                                 }
+                                case 3 -> {
+                                    user = uDAO.getById(currentUserId);
+                                    if (user != null) {
+                                        LocalDate dataEmissione1 = LocalDate.now();
+                                        Tessera tesseraNuova = new Tessera(dataEmissione1, user);
+                                        tDAO.save(tesseraNuova);
+                                    } else {
+                                        System.err.println("ID utente non trovato!");
+                                    }
+                                }
+                                case 4 -> {
+                                    if (currentUserId != 0) {
+                                        Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
+                                        if (tesseraUtente != null) {
+                                            tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                        }
+                                    } else {
+                                        System.out.println("Non hai una tessera");
+                                    }
+                                }
+                                case 5 -> {
+                                    if (currentUserId != 0) {
+                                        List<Biglietti> bigliettoNonValidato = bDAO.findNonValidatedTicketForUser(currentUserId);
+                                        if (!bigliettoNonValidato.isEmpty()) {
+                                            bDAO.validateTicket(mDAO, bigliettoNonValidato.get(0));
+                                            System.out.println(bigliettoNonValidato.get(0));
+                                        } else {
+                                            System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
+                                        }
+                                    }
+                                }
                                 case 6 -> {
                                     if (currentUserId != 0) {
                                         Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
@@ -202,7 +196,6 @@ public class Application {
                                         }
                                     }
                                 }
-
                                 case 7 -> {
                                     System.out.println("inserisci una via per controllare quali Rivenditori ci sono : ");
                                     String viaInput = input.nextLine();
@@ -232,24 +225,16 @@ public class Application {
                                         } catch (Exception e) {
                                             System.err.println(e.getMessage());
                                         }
-                                    } else {
-                                        break;
                                     }
                                 }
-
-
                             }
                         }
                         while (n != 0);
-
-
                     } else {
                         //sei un admin.
                         do {
                             System.out.println("MENU ADMIN");
                             n2 = Integer.parseInt(input.nextLine().trim());
-
-
                             switch (n2) {
                                 case 1 -> {
                                     System.out.println("Inserisci la prima data (formato: yyyy-MM-dd): ");
@@ -277,27 +262,6 @@ public class Application {
                                     Venditore venditoreSelezionato = vDAO.getById(idVenditoreLong);
                                     long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date2, venditoreSelezionato);
                                     System.out.println(" Numero biglietti venduti dal Venditore con ID " + venditoreSelezionato.getId() + " : " + numberOfTickets);
-
-                                }
-                                case 5 -> {
-                                    System.out.println("Inserisci la prima data (formato: yyyy-MM-dd): ");
-                                    String inputDate1 = input.nextLine();
-                                    LocalDate date1 = LocalDate.parse(inputDate1);
-
-                                    System.out.println("Inserisci la seconda data (formato: yyyy-MM-dd): ");
-                                    String inputDate2 = input.nextLine();
-                                    LocalDate date2 = LocalDate.parse(inputDate2);
-
-                                    System.out.println("Inserisci ID venditore");
-                                    String idMezzo = input.nextLine();
-                                    long idMezzoLong = Long.parseLong(idMezzo);
-
-                                    long numberOfTicketsByIdMezzio = mDAO.getBigliettiVidimatiPerMezzoPerPeriodo(idMezzoLong, date1, date2);
-                                    System.out.println("Numero biglietti stampati nel periodo indicato nel mezzo con ID :" + idMezzoLong + " : " + numberOfTicketsByIdMezzio);
-
-                                }
-                                case 6 -> {
-                                    System.out.println("ciao");
                                 }
                                 case 3 -> {
                                     System.out.println("Lista dei mezzi in servizio: ");
@@ -315,47 +279,61 @@ public class Application {
                                     List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
                                     listaDistributoriFuoriServizio.forEach(System.out::println);
                                 }
+                                case 5 -> {
+                                    System.out.println("Inserisci la prima data (formato: yyyy-MM-dd): ");
+                                    String inputDate1 = input.nextLine();
+                                    LocalDate date1 = LocalDate.parse(inputDate1);
+
+                                    System.out.println("Inserisci la seconda data (formato: yyyy-MM-dd): ");
+                                    String inputDate2 = input.nextLine();
+                                    LocalDate date2 = LocalDate.parse(inputDate2);
+
+                                    System.out.println("Inserisci ID venditore");
+                                    String idMezzo = input.nextLine();
+                                    long idMezzoLong = Long.parseLong(idMezzo);
+
+                                    long numberOfTicketsByIdMezzio = mDAO.getBigliettiVidimatiPerMezzoPerPeriodo(idMezzoLong, date1, date2);
+                                    System.out.println("Numero biglietti stampati nel periodo indicato nel mezzo con ID :" + idMezzoLong + " : " + numberOfTicketsByIdMezzio);
+                                }
+                                case 6 -> {
+                                    System.out.println("ciao");
+                                }
                             }
                         } while (n2 != 0);
-
                     }
                 } else {
                     System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");
                 }
             }
-
-
         }
 
 
         //MODIFICA LA TRATTA ASSOCIATA AL MEZZO
 
         //System.out.println(
-          //      "Desideri modificare la tratta? (Sì/No)");
+        //      "Desideri modificare la tratta? (Sì/No)");
         //String modificaTratta = input.next();
-       // if (modificaTratta.equalsIgnoreCase("Si")) {
-         //   System.out.println(
-           //         "Inserisci la città di partenza per la tratta: ");
-           // String zonaPartenza = input.next();
-           // System.out.println(
-             //       "Inserisci la città di destinazione per la tratta: ");
-            // String capolinea = input.next();
-           // System.out.println(
-             //       "Inserisci la durata totale del viaggio: ");
-            // double durata = input.nextDouble();
+        // if (modificaTratta.equalsIgnoreCase("Si")) {
+        //   System.out.println(
+        //         "Inserisci la città di partenza per la tratta: ");
+        // String zonaPartenza = input.next();
+        // System.out.println(
+        //       "Inserisci la città di destinazione per la tratta: ");
+        // String capolinea = input.next();
+        // System.out.println(
+        //       "Inserisci la durata totale del viaggio: ");
+        // double durata = input.nextDouble();
 
-           // Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, durata);
-          //  trDAO.save(nuovaTratta);
-          //  System.out.println("Nuova tratta: ");
-          //  System.out.println(nuovaTratta);
+        // Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, durata);
+        //  trDAO.save(nuovaTratta);
+        //  System.out.println("Nuova tratta: ");
+        //  System.out.println(nuovaTratta);
 
-          //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
-      //  }
-
+        //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
+        //  }
         //CREA UN NUOVO MEZZO
-
-        System.out.println("Inserisci il tipo di mezzo: ");
-        String TipoMezzo = input.next();
-        System.out.println("Inserisci il numero di posti disponibili: ");
+//        System.out.println("Inserisci il tipo di mezzo: ");
+//        String TipoMezzo = input.next();
+//        System.out.println("Inserisci il numero di posti disponibili: ");
     }
 }

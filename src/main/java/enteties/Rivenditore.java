@@ -29,9 +29,8 @@ public class Rivenditore extends Venditore {
 
     @Override
     public String toString() {
-
         return "Rivenditore{" +
-                "id=" + getId() +
+                "id=" + id +
                 ", indirizzo=" + adress +
                 '}';
     }

@@ -67,6 +67,14 @@ public class FillDatabase {
                     .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
         };
 
+        try {
+            Distributore distributore = (Distributore) vDAO.getById(1202810176527L);
+            System.out.println(distributore);
+        } catch (ClassCastException e) {
+            System.out.println(e.getMessage());
+            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
+        }
+
 
         try {
 // ******************************************** PRIMO AVVIO *********************************************

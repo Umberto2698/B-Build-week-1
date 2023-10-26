@@ -76,12 +76,12 @@ public class Periodi {
 
     @Override
     public String toString() {
-        return "Periodi{" +
-                "mezzo=" + mezzo +
-                ", id=" + id +
+        return "Periodo{" +
+                "id=" + id +
                 ", dataInizio=" + dataInizio +
                 ", dataFine=" + dataFine +
                 ", statoMezzo=" + statoMezzo +
+                ", mezzo=" + mezzo +
                 '}';
     }
 }

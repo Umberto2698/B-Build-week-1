@@ -31,9 +31,8 @@ public class Distributore extends Venditore {
 
     @Override
     public String toString() {
-
         return "Distributore{" +
-                "id=" + getId() +
+                "id=" + id +
                 ", stato=" + stato +
                 '}';
     }

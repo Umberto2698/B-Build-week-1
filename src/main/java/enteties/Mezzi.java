@@ -53,7 +53,7 @@ public class Mezzi {
 
     @Override
     public String toString() {
-        return "Mezzi{" +
+        return "Mezzo{" +
                 "id=" + id +
                 ", tipoMezzo=" + tipoMezzo +
                 ", statoMezzo=" + statoMezzo +

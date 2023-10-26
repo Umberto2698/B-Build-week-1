@@ -28,8 +28,14 @@ public class FillDatabase {
 
         Faker faker = new Faker(Locale.ITALY);
 
-        Supplier<User> customerSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        Supplier<User> adminSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TipoUser.ADMIN);
+        Supplier<User> customerSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().between(Date.from(
+                                LocalDate.of(1940, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                        , Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        Supplier<User> adminSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().between(Date.from(
+                                LocalDate.of(1940, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                        , Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TipoUser.ADMIN);
         Supplier<Rivenditore> rivenditoreSupplier = () -> new Rivenditore(faker.address().streetAddress());
         Supplier<Distributore> distributoreFuoriServizioSupplier = () -> new Distributore(StatoDistributore.FUORISERVIZIO);
         Supplier<Distributore> distributoreAttivoSupplier = () -> new Distributore(StatoDistributore.ATTIVO);
@@ -37,13 +43,13 @@ public class FillDatabase {
         Supplier<Mezzi> autobusInManutenzioneSupplier = () -> new Mezzi(TipoMezzo.AUTOBUS, StatoMezzo.IN_MANUTENZIONE);
         Supplier<Mezzi> tramInServizioSupplier = () -> new Mezzi(TipoMezzo.TRAM);
         Supplier<Mezzi> tramInManutenzioneSupplier = () -> new Mezzi(TipoMezzo.TRAM, StatoMezzo.IN_MANUTENZIONE);
-        Supplier<Tratta> trattaSupplier = () -> new Tratta(faker.address().cityName(), faker.address().cityName(), Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0, 2)).replaceAll(",", ".")));
+        Supplier<Tratta> trattaSupplier = () -> new Tratta(faker.address().cityName(), faker.address().cityName(), Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")));
         Supplier<Tratta_Mezzo> tratta_mezzoSupplier = () -> {
             List<Mezzi> allTransport = mDAO.getAll();
             int n = new Random().nextInt(1, allTransport.size());
             List<Tratta> allRoutes = trDAO.gettAllRoutes();
             int n1 = new Random().nextInt(1, allRoutes.size());
-            return new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0, 2)).replaceAll(",", ".")), allTransport.get(n), allRoutes.get(n1));
+            return new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), allTransport.get(n), allRoutes.get(n1));
         };
 
         List<Venditore> allSellers = vDAO.getAllSellers();
@@ -56,28 +62,28 @@ public class FillDatabase {
         Supplier<Biglietti> bigliettiSupplier = () -> {
             int n = new Random().nextInt(1, allSellers.size());
             int m = new Random().nextInt(1, allUsersSize);
-            return new Biglietti(faker.date().between(Date.from(LocalDate.of(2010, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                            , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+            return new Biglietti(faker.date().between(Date.from(allUsers.get(m).getDataNascita().plusYears(5).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                            , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                     .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
         };
 
 
         try {
 // ******************************************** PRIMO AVVIO *********************************************
-            for (int i = 0; i < 50; i++) {
-                uDAO.save(customerSupplier.get());
-                vDAO.save(distributoreAttivoSupplier.get());
-                vDAO.save(rivenditoreSupplier.get());
-            }
-            for (int i = 0; i < 10; i++) {
-                uDAO.save(adminSupplier.get());
-                vDAO.save(distributoreFuoriServizioSupplier.get());
-                mDAO.save(tramInManutenzioneSupplier.get());
-                mDAO.save(tramInServizioSupplier.get());
-                mDAO.save(autobusInManutenzioneSupplier.get());
-                mDAO.save(autobusInServizioSupplier.get());
-                trDAO.save(trattaSupplier.get());
-            }
+//            for (int i = 0; i < 50; i++) {
+//                uDAO.save(customerSupplier.get());
+//                vDAO.save(distributoreAttivoSupplier.get());
+//                vDAO.save(rivenditoreSupplier.get());
+//                trDAO.save(trattaSupplier.get());
+//            }
+//            for (int i = 0; i < 10; i++) {
+//                uDAO.save(adminSupplier.get());
+//                vDAO.save(distributoreFuoriServizioSupplier.get());
+//                mDAO.save(tramInManutenzioneSupplier.get());
+//                mDAO.save(tramInServizioSupplier.get());
+//                mDAO.save(autobusInManutenzioneSupplier.get());
+//                mDAO.save(autobusInServizioSupplier.get());
+//            }
 // ******************************************** SECONDO AVVIO *********************************************
 //            for (int i = 0; i < 200; i++) {
 //                bDAO.save(bigliettiSupplier.get());
@@ -222,6 +228,20 @@ public class FillDatabase {
 //                    throw new RuntimeException(e);
 //                }
 //            });
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
 //            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
 //                try {
 //                    aDAO.save(abbonamento);
@@ -229,6 +249,49 @@ public class FillDatabase {
 //                    throw new RuntimeException(e);
 //                }
 //            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            validateTicket(bDAO, mDAO, faker);
         } catch (Exception e) {
             System.out.println(e);
         } finally {
@@ -272,9 +335,9 @@ public class FillDatabase {
             int n = new Random().nextInt(1, allSellers.size());
             int m = new Random().nextInt(1, allUsersWithCard.size());
             if (!allUsersWithCard.get(m).getAbbonamenti().isEmpty()) {
-                if (allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size()).getDataScadenza().isBefore(allUsersWithCard.get(m).getTessera().getDataScadenza().minusDays(7))) {
+                if (allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size() - 1).getDataScadenza().isBefore(allUsersWithCard.get(m).getTessera().getDataScadenza().minusDays(7))) {
                     Abbonamenti abbonamento = new Abbonamenti(TipoAbbonamento.SETTIMANALE, faker.date().between(Date.from(
-                                            allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size()).getDataScadenza().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                            allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size() - 1).getDataScadenza().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                                     , Date.from(allUsersWithCard.get(m).getTessera().getDataScadenza().minusDays(7).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                             .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsersWithCard.get(m), allSellers.get(n));
                     abbonamenti.add(abbonamento);
@@ -297,9 +360,9 @@ public class FillDatabase {
             int n = new Random().nextInt(1, allSellers.size());
             int m = new Random().nextInt(1, allUsersWithCard.size());
             if (!allUsersWithCard.get(m).getAbbonamenti().isEmpty()) {
-                if (allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size()).getDataScadenza().isBefore(allUsersWithCard.get(m).getTessera().getDataScadenza().minusMonths(1))) {
+                if (allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size() - 1).getDataScadenza().isBefore(allUsersWithCard.get(m).getTessera().getDataScadenza().minusMonths(1))) {
                     Abbonamenti abbonamento = new Abbonamenti(TipoAbbonamento.MENSILE, faker.date().between(Date.from(
-                                            allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size()).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                            allUsersWithCard.get(m).getAbbonamenti().get(allUsersWithCard.get(m).getAbbonamenti().size() - 1).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                                     , Date.from(allUsersWithCard.get(m).getTessera().getDataScadenza().minusMonths(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                             .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsersWithCard.get(m), allSellers.get(n));
                     abbonamenti.add(abbonamento);
@@ -312,5 +375,42 @@ public class FillDatabase {
             }
         }
         return abbonamenti;
+    }
+
+    public static void validateTicket(BigliettiDAO bDAO, MezziDAO mDAO, Faker faker) {
+        List<Biglietti> allTickets = bDAO.getAllTickets();
+        List<Mezzi> allTransports = mDAO.getAll();
+        for (int i = 0; i < allTickets.size(); i++) {
+            if (i < 150) {
+                for (int j = 0; j < allTransports.size(); j++) {
+                    int n = new Random().nextInt(0, allTransports.size());
+                    List<Periodi> validPeriods = mDAO.getPeriodListForTransport(allTransports.get(n).getId()).stream().filter(period -> period.getDataFine() != null).toList();
+                    int finalI = i;
+                    List<Periodi> allConflictedPeriods = new ArrayList<>();
+                    List<Periodi> conflictedPeriods1 = validPeriods.stream().filter(period -> period.getDataInizio().isBefore(allTickets.get(finalI).getDataEmissione())).toList()
+                            .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                    allConflictedPeriods.addAll(conflictedPeriods1);
+                    List<Periodi> conflictedPeriods2 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
+                            .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                    allConflictedPeriods.addAll(conflictedPeriods2);
+                    List<Periodi> conflictedPeriods3 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
+                            .stream().filter(period -> period.getDataFine().isAfter(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                    allConflictedPeriods.addAll(conflictedPeriods3);
+
+                    LocalDate randomDataValidazione = faker.date().between(Date.from(allTickets.get(i).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                    Date.from(LocalDate.of(allTickets.get(i).getDataEmissione().getYear(), 12, 30).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    if (allConflictedPeriods.isEmpty()) {
+                        bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
+                    } else {
+                        for (int k = 0; k < allConflictedPeriods.size(); k++) {
+                            if (!(randomDataValidazione.isAfter(allConflictedPeriods.get(k).getDataInizio()) && randomDataValidazione.isBefore(allConflictedPeriods.get(k).getDataFine()))) {
+                                bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

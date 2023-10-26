@@ -2,10 +2,13 @@ package dao;
 
 import enteties.Mezzi;
 import enteties.Periodi;
+import enteties.Tratta;
 import enums.StatoMezzo;
+import enums.TipoMezzo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,6 +60,25 @@ public class MezziDAO {
         TypedQuery<Mezzi> getElements = em.createQuery("SELECT m FROM Mezzi m WHERE m.statoMezzo = :stato", Mezzi.class);
         getElements.setParameter("stato", StatoMezzo.IN_MANUTENZIONE);
         return getElements.getResultList();
+    }
+
+    public int findByIdAndUpdate(long id, long capienza, StatoMezzo statoMezzo, TipoMezzo tipoMezzo, Tratta tratta) {
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        Query q = em.createQuery("UPDATE Mezzo m SET m.capienza=:capienza, m.stato=:stato, m.TipoMezzo=:tipoMezzo, m.Tratta=:tratta WHERE m.id=:id");
+        q.setParameter("capienza", capienza);
+        q.setParameter("id", id);
+        q.setParameter("stato", statoMezzo);
+        q.setParameter("tipoMezzo", tipoMezzo);
+        q.setParameter("tratta", tratta);
+        int num = q.executeUpdate();
+        t.commit();
+        if (num > 0) {
+            System.out.println("Mezzo modificato");
+        } else {
+            System.out.println("Non è stato modificato nulla");
+        }
+        return num;
     }
 
     public void delete(long id) throws InterruptedException {

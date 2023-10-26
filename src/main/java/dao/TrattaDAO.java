@@ -71,7 +71,7 @@ public class TrattaDAO {
     }
 
     public List<Double> getTimeTrattaPercorsaBySingleMezzo(long trattaId, long mezzoId) {
-        TypedQuery<Double> q = em.createQuery("SELECT m.tempoEffettivo FROM Tratta_Mezzo m WHERE m.tratta.id = :trattaId AND m.mezzo.id = :mezzoId", Double.class);
+        TypedQuery<Double> q = em.createQuery("SELECT tr.tempoEffettivo FROM Tratta_Mezzo tr WHERE tr.tratta.id = :trattaId AND tr.mezzo.id = :mezzoId", Double.class);
         q.setParameter("trattaId", trattaId);
         q.setParameter("mezzoId", mezzoId);
         return q.getResultList();

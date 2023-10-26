@@ -16,20 +16,19 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
         //            **************************** IMPORTANTE NON CANCELLARE ************************************
 
-//          try{
-//            List<Object[]> lista = trDao.getTimeTrattaPercorsa(7124696535489L);
-//            for (Object[] el : lista) {
-//                double tempo = (double) el[0];
-//                Mezzi mezzo = (Mezzi) el[1];
-//
-//                System.out.println("Tempo effettivo: " + tempo + " mezzo: " + mezzo);
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        } finally {
-//            em.close();
-//            JpaUtils.close();
-//        }
+//         try{
+//           List<Object[]> lista = trDao.getTimeTrattaPercorsa(7124696535489L);
+//           for (Object[] el : lista) {
+//               double tempo = (double) el[0];
+//               Mezzi mezzo = (Mezzi) el[1];
+//               System.out.println("Tempo effettivo: " + tempo + " mezzo: " + mezzo);
+//           }
+//       } catch (Exception e) {
+//           System.out.println(e);
+//       } finally {
+//           em.close();
+//           JpaUtils.close();
+//       }
         Scanner input = new Scanner(System.in);
         EntityManager em = JpaUtils.getEmf().createEntityManager();
 
@@ -297,6 +296,35 @@ public class Application {
                                 }
                                 case 6 -> {
                                     System.out.println("ciao");
+                                }
+                                case 8 -> {
+                                    try {
+                                        System.out.println("Inserisci l'id di un mezzo");
+                                        long mezzo_id = Long.parseLong(input.nextLine());
+                                        Mezzi mezzo = mDAO.getById(mezzo_id);
+                                        System.err.println("Ecco la lista delle tratte percorse dal mezzo:");
+                                        List<Long> trette_id = new ArrayList<>();
+                                        mezzo.getTratteMezzo().forEach(tratta_mezzo -> {
+                                            if (!trette_id.contains(tratta_mezzo.getTratta().getId())) {
+                                                trette_id.add(tratta_mezzo.getTratta().getId());
+                                                System.out.println(tratta_mezzo.getTratta());
+                                            }
+                                        });
+                                        System.out.println("Ora inserisci l'id di una tratta");
+                                        long tratta_id = Long.parseLong(input.nextLine());
+                                        if (trDAO.getById(tratta_id) != null) {
+                                            List<Double> listaTempi = trDAO.getTimeTrattaPercorsaBySingleMezzo(tratta_id, mezzo_id);
+                                            if (listaTempi.isEmpty()) {
+                                                System.err.println("Il mezzo non ha mai effettuato questa tratta.");
+                                            } else {
+                                                listaTempi.forEach(System.out::println);
+                                            }
+                                        } else {
+                                            throw new Exception("Nessuna tratta con questo id.");
+                                        }
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
                                 }
                             }
                         } while (n2 != 0);

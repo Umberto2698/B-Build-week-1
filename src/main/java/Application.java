@@ -349,6 +349,27 @@ public class Application {
                                         }
                                     }
                                 }
+                                case 7 -> {
+                                    System.out.println("Inserisci l'id di un mezzo");
+                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Mezzi mezzo = mDAO.getById(mezzoid);
+                                    System.out.println("Inserisci l'id di una tratta");
+                                    long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Tratta tratta = trDAO.getById(trattaid);
+                                    Long numeroVolte = tr_m_DAO.getNumVolteMezzoPercorsoTratta(mezzoid, trattaid);
+                                    System.out.println("il mezzo : " + mezzo);
+                                    System.out.println("ha percorso la tratta : " + tratta);
+                                    System.out.println(numeroVolte + "  volte");
+                                }
+                                case 9 -> {
+                                    System.out.println("Inserisci l'id di un mezzo");
+                                    long mezzoid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                    Mezzi mezzo = mDAO.getById(mezzoid);
+                                    List<Periodi> listaPeriodi = mDAO.getPeriodListForTransport(mezzoid);
+                                    System.out.println("lista periodi del mezzo : " + mezzo);
+                                    System.out.println("Lista periodi :");
+                                    listaPeriodi.forEach(System.out::println);
+                                }
                             }
                         }
                         while (n2 != 0);

@@ -121,8 +121,6 @@ public class Application {
                                     em.close();
                                     JpaUtils.close();
                                 }
-
-
                                 case 3 -> {
                                     user = uDAO.getById(currentUserId);
                                     if (user != null) {
@@ -260,15 +258,45 @@ public class Application {
                                     System.out.println("Inserisci la seconda data (formato: yyyy-MM-dd): ");
                                     String inputDate2 = input.nextLine();
                                     LocalDate date2 = LocalDate.parse(inputDate2);
+                                    long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
+                                    System.out.println("Numero di biglietti emessi nell'intervallo di date: " + numberOfTickets);
 
-                                    if (date1.isEqual(date2)) {
-                                        System.out.println("Le date sono uguali. Inserisci date diverse.");
-                                    } else {
-                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
-                                        System.out.println("Numero di biglietti emessi nell'intervallo di date: " + numberOfTickets);
-                                    }
                                 }
                                 case 2 -> {
+                                    System.out.println("Inserisci la prima data (formato: yyyy-MM-dd): ");
+                                    String inputDate1 = input.nextLine();
+                                    LocalDate date1 = LocalDate.parse(inputDate1);
+
+                                    System.out.println("Inserisci la seconda data (formato: yyyy-MM-dd): ");
+                                    String inputDate2 = input.nextLine();
+                                    LocalDate date2 = LocalDate.parse(inputDate2);
+
+                                    System.out.println("Inserisci ID venditore");
+                                    String idVenditore = input.nextLine();
+                                    long idVenditoreLong = Long.parseLong(idVenditore);
+                                    Venditore venditoreSelezionato = vDAO.getById(idVenditoreLong);
+                                    long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date2, venditoreSelezionato);
+                                    System.out.println(" Numero biglietti venduti dal Venditore con ID " + venditoreSelezionato.getId() + " : " + numberOfTickets);
+
+                                }
+                                case 5 -> {
+                                    System.out.println("Inserisci la prima data (formato: yyyy-MM-dd): ");
+                                    String inputDate1 = input.nextLine();
+                                    LocalDate date1 = LocalDate.parse(inputDate1);
+
+                                    System.out.println("Inserisci la seconda data (formato: yyyy-MM-dd): ");
+                                    String inputDate2 = input.nextLine();
+                                    LocalDate date2 = LocalDate.parse(inputDate2);
+
+                                    System.out.println("Inserisci ID venditore");
+                                    String idMezzo = input.nextLine();
+                                    long idMezzoLong = Long.parseLong(idMezzo);
+
+                                    long numberOfTicketsByIdMezzio = mDAO.getBigliettiVidimatiPerMezzoPerPeriodo(idMezzoLong, date1, date2);
+                                    System.out.println("Numero biglietti stampati nel periodo indicato nel mezzo con ID :" + idMezzoLong + " : " + numberOfTicketsByIdMezzio);
+
+                                }
+                                case 6 -> {
                                     System.out.println("ciao");
                                 }
 

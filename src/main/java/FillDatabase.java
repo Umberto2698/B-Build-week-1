@@ -68,15 +68,6 @@ public class FillDatabase {
         };
 
         try {
-            Distributore distributore = (Distributore) vDAO.getById(1202810176527L);
-            System.out.println(distributore);
-        } catch (ClassCastException e) {
-            System.out.println(e.getMessage());
-            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
-        }
-
-
-        try {
 // ******************************************** PRIMO AVVIO *********************************************
 //            for (int i = 0; i < 50; i++) {
 //                uDAO.save(customerSupplier.get());

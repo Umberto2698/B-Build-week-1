@@ -261,18 +261,28 @@ public class Application {
                                     String inputDate2 = input.nextLine();
                                     LocalDate date2 = LocalDate.parse(inputDate2);
 
-                                    if (date1.isEqual(date2)) {
-                                        System.out.println("Le date sono uguali. Inserisci date diverse.");
-                                    } else {
-                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
-                                        System.out.println("Numero di biglietti emessi nell'intervallo di date: " + numberOfTickets);
-                                    }
+                                    long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
+                                    System.out.println("Numero di biglietti emessi nell'intervallo di date: " + numberOfTickets);
                                 }
                                 case 2 -> {
                                     System.out.println("ciao");
                                 }
-
-
+                                case 3 -> {
+                                    System.out.println("Lista dei mezzi in servizio: ");
+                                    List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
+                                    listaMezziInServizio.forEach(System.out::println);
+                                    System.out.println("Lista dei mezzi in manutenzione: ");
+                                    List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
+                                    listaMezziInManutenzione.forEach(System.out::println);
+                                }
+                                case 4 -> {
+                                    System.out.println("Lista dei distributori in servizio: ");
+                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                    listaDistributoriInServizio.forEach(System.out::println);
+                                    System.out.println("Lista dei distributori in manutenzione: ");
+                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                }
                             }
                         } while (n2 != 0);
 

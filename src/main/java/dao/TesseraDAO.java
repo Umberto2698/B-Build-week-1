@@ -4,6 +4,7 @@ import enteties.Tessera;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 
 public class TesseraDAO {
@@ -67,6 +68,18 @@ public class TesseraDAO {
 
             System.out.println("La tessera è Scaduta , Rinnovala!");
             ;
+        }
+    }
+
+    public Tessera getTesseraByUserId(long userId) {
+        TypedQuery<Tessera> query = em.createQuery("SELECT t FROM Tessera t WHERE t.user.id = :userId", Tessera.class);
+        query.setParameter("userId", userId);
+
+        try {
+            return query.getSingleResult();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }

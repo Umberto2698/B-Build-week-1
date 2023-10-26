@@ -134,6 +134,7 @@ public class BigliettiDAO {
         }
     }
 
+
     public void validateTicketWithTransport(Mezzi mezzo, Biglietti b, LocalDate date) {
         b.setMezzo(mezzo);
         b.setDataValidazione(date);

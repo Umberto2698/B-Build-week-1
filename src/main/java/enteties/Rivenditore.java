@@ -22,6 +22,7 @@ public class Rivenditore extends Venditore {
         return adress;
     }
 
+
     public void setAdress(String adress) {
         this.adress = adress;
     }

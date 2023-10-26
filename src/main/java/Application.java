@@ -1,12 +1,12 @@
 import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
+import enums.StatoDistributore;
 import enums.TipoAbbonamento;
 import enums.TipoUser;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -106,10 +106,7 @@ public class Application {
                 long userId = Long.parseLong(input.nextLine().trim());
                 user = uDAO.getById(userId);
                 if (user != null) {
-
                     currentUserId = user.getId();
-
-
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
                         do {
                             System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
@@ -131,7 +128,6 @@ public class Application {
                                     } else {
                                         System.err.println("ID utente non trovato!");
                                     }
-
                                 }
                                 case 4 -> {
 
@@ -165,10 +161,7 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-
-
                                 }
-
                                 case 2 -> {
                                     System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
                                     int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
@@ -288,7 +281,7 @@ public class Application {
                                     String inputDate2 = input.nextLine();
                                     LocalDate date2 = LocalDate.parse(inputDate2);
 
-                                    System.out.println("Inserisci ID venditore");
+                                    System.out.println("Inserisci ID mezzo");
                                     String idMezzo = input.nextLine();
                                     long idMezzoLong = Long.parseLong(idMezzo);
 
@@ -296,9 +289,7 @@ public class Application {
                                     System.out.println("Numero biglietti stampati nel periodo indicato nel mezzo con ID :" + idMezzoLong + " : " + numberOfTicketsByIdMezzio);
 
                                 }
-                                case 6 -> {
-                                    System.out.println("ciao");
-                                }
+
                                 case 3 -> {
                                     System.out.println("Lista dei mezzi in servizio: ");
                                     List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
@@ -314,6 +305,34 @@ public class Application {
                                     System.out.println("Lista dei distributori in manutenzione: ");
                                     List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
                                     listaDistributoriFuoriServizio.forEach(System.out::println);
+                                }
+                                case 6 -> {
+                                    System.out.println("Inserisci id Mezzo");
+                                    String idMezzo = input.nextLine();
+                                    long idMezzoLong = Long.parseLong(idMezzo);
+                                    long numeroBigliettiValidatiByMezzo = bDAO.bigliettiValidatiSuUnMezzo(idMezzoLong);
+                                    System.out.println("Numero biglietti Validati nel mezzo con ID " + idMezzoLong + " : " + numeroBigliettiValidatiByMezzo);
+                                }
+                                case 10 -> {
+                                    System.out.println("Insersci id distributore");
+                                    String idDistributore = input.nextLine();
+                                    long idDistributoreLong = Long.parseLong(idDistributore);
+                                    Venditore distributoreSelezionato = vDAO.getById(idDistributoreLong);
+                                    System.out.println("Hai selezionato : " + distributoreSelezionato);
+                                    System.out.println("Inserisci 1 PER :  ATTIVO  ----    INSERISCI 2 : FUORISERVIZIO");
+                                    String numeroScelto = input.nextLine();
+                                    int numeroSceltoInt = Integer.parseInt(numeroScelto);
+                                    switch (numeroSceltoInt) {
+                                        case 1 -> {
+                                            StatoDistributore nuovoStato = StatoDistributore.ATTIVO;
+                                            vDAO.updateStatoDistributore(idDistributoreLong, nuovoStato);
+                                        }
+                                        case 2 -> {
+                                            StatoDistributore nuovoStato = StatoDistributore.FUORISERVIZIO;
+                                            vDAO.updateStatoDistributore(idDistributoreLong, nuovoStato);
+                                        }
+                                    }
+
                                 }
                             }
                         } while (n2 != 0);
@@ -331,26 +350,26 @@ public class Application {
         //MODIFICA LA TRATTA ASSOCIATA AL MEZZO
 
         //System.out.println(
-          //      "Desideri modificare la tratta? (Sì/No)");
+        //      "Desideri modificare la tratta? (Sì/No)");
         //String modificaTratta = input.next();
-       // if (modificaTratta.equalsIgnoreCase("Si")) {
-         //   System.out.println(
-           //         "Inserisci la città di partenza per la tratta: ");
-           // String zonaPartenza = input.next();
-           // System.out.println(
-             //       "Inserisci la città di destinazione per la tratta: ");
-            // String capolinea = input.next();
-           // System.out.println(
-             //       "Inserisci la durata totale del viaggio: ");
-            // double durata = input.nextDouble();
+        // if (modificaTratta.equalsIgnoreCase("Si")) {
+        //   System.out.println(
+        //         "Inserisci la città di partenza per la tratta: ");
+        // String zonaPartenza = input.next();
+        // System.out.println(
+        //       "Inserisci la città di destinazione per la tratta: ");
+        // String capolinea = input.next();
+        // System.out.println(
+        //       "Inserisci la durata totale del viaggio: ");
+        // double durata = input.nextDouble();
 
-           // Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, durata);
-          //  trDAO.save(nuovaTratta);
-          //  System.out.println("Nuova tratta: ");
-          //  System.out.println(nuovaTratta);
+        // Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, durata);
+        //  trDAO.save(nuovaTratta);
+        //  System.out.println("Nuova tratta: ");
+        //  System.out.println(nuovaTratta);
 
-          //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
-      //  }
+        //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
+        //  }
 
         //CREA UN NUOVO MEZZO
 

@@ -1,6 +1,7 @@
 import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
+import enums.StatoDistributore;
 import enums.TipoAbbonamento;
 import enums.TipoUser;
 import utils.JpaUtils;
@@ -104,10 +105,7 @@ public class Application {
                 long userId = Long.parseLong(input.nextLine().trim());
                 user = uDAO.getById(userId);
                 if (user != null) {
-
                     currentUserId = user.getId();
-
-
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
                         do {
                             System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
@@ -261,6 +259,7 @@ public class Application {
                                     Venditore venditoreSelezionato = vDAO.getById(idVenditoreLong);
                                     long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date2, venditoreSelezionato);
                                     System.out.println(" Numero biglietti venduti dal Venditore con ID " + venditoreSelezionato.getId() + " : " + numberOfTickets);
+
                                 }
                                 case 3 -> {
                                     System.out.println("Lista dei mezzi in servizio: ");
@@ -295,7 +294,11 @@ public class Application {
                                     System.out.println("Numero biglietti stampati nel periodo indicato nel mezzo con ID :" + idMezzoLong + " : " + numberOfTicketsByIdMezzio);
                                 }
                                 case 6 -> {
-                                    System.out.println("ciao");
+                                    System.out.println("Inserisci id Mezzo");
+                                    String idMezzo = input.nextLine();
+                                    long idMezzoLong = Long.parseLong(idMezzo);
+                                    long numeroBigliettiValidatiByMezzo = bDAO.bigliettiValidatiSuUnMezzo(idMezzoLong);
+                                    System.out.println("Numero biglietti Validati nel mezzo con ID " + idMezzoLong + " : " + numeroBigliettiValidatiByMezzo);
                                 }
                                 case 8 -> {
                                     try {
@@ -326,8 +329,29 @@ public class Application {
                                         System.err.println(e.getMessage());
                                     }
                                 }
+                                case 10 -> {
+                                    System.out.println("Insersci id distributore");
+                                    String idDistributore = input.nextLine();
+                                    long idDistributoreLong = Long.parseLong(idDistributore);
+                                    Venditore distributoreSelezionato = vDAO.getById(idDistributoreLong);
+                                    System.out.println("Hai selezionato : " + distributoreSelezionato);
+                                    System.out.println("Inserisci 1 PER :  ATTIVO  ----    INSERISCI 2 : FUORISERVIZIO");
+                                    String numeroScelto = input.nextLine();
+                                    int numeroSceltoInt = Integer.parseInt(numeroScelto);
+                                    switch (numeroSceltoInt) {
+                                        case 1 -> {
+                                            StatoDistributore nuovoStato = StatoDistributore.ATTIVO;
+                                            vDAO.updateStatoDistributore(idDistributoreLong, nuovoStato);
+                                        }
+                                        case 2 -> {
+                                            StatoDistributore nuovoStato = StatoDistributore.FUORISERVIZIO;
+                                            vDAO.updateStatoDistributore(idDistributoreLong, nuovoStato);
+                                        }
+                                    }
+                                }
                             }
-                        } while (n2 != 0);
+                        }
+                        while (n2 != 0);
                     }
                 } else {
                     System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");
@@ -356,7 +380,6 @@ public class Application {
         //  trDAO.save(nuovaTratta);
         //  System.out.println("Nuova tratta: ");
         //  System.out.println(nuovaTratta);
-
         //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
         //  }
         //CREA UN NUOVO MEZZO

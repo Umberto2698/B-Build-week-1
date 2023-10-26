@@ -5,6 +5,7 @@ import enums.StatoDistributore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -88,4 +89,32 @@ public class VenditoreDAO {
         getAllDistributoriFuoriServizio.setParameter("stato", StatoDistributore.FUORISERVIZIO);
         return getAllDistributoriFuoriServizio.getResultList();
     }
+
+    public void updateStatoDistributore(long distributorId, StatoDistributore nuovoStato) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+
+            Query updateDistributoreQuery = em.createQuery("UPDATE Distributore d SET d.stato = :nuovoStato WHERE d.id = :distributorId");
+            updateDistributoreQuery.setParameter("nuovoStato", nuovoStato);
+            updateDistributoreQuery.setParameter("distributorId", distributorId);
+
+            int updatedCount = updateDistributoreQuery.executeUpdate();
+            transaction.commit();
+
+            if (updatedCount > 0) {
+                System.out.println("Stato del distributore cambiato con successo");
+            } else {
+                System.out.println("Nessun distributore trovato con l'ID : " + distributorId);
+            }
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Errore durante il cambiamento dello stato del distributore: " + e.getMessage());
+
+        }
+    }
+
+
 }

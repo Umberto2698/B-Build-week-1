@@ -5,6 +5,7 @@ import enums.TipoAbbonamento;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 
 public class Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         //            **************************** IMPORTANTE NON CANCELLARE ************************************
 
 //          try{
@@ -146,6 +147,30 @@ public class Application {
             }
         }
         while (n != 0);
+
+        //MODIFICA LA TRATTA ASSOCIATA AL MEZZO
+        //System.out.println(
+          //      "Desideri modificare la tratta? (Sì/No)");
+        //String modificaTratta = input.next();
+       // if (modificaTratta.equalsIgnoreCase("Si")) {
+         //   System.out.println(
+           //         "Inserisci la città di partenza per la tratta: ");
+           // String zonaPartenza = input.next();
+           // System.out.println(
+             //       "Inserisci la città di destinazione per la tratta: ");
+            // String capolinea = input.next();
+           // System.out.println(
+             //       "Inserisci la durata totale del viaggio: ");
+            // double durata = input.nextDouble();
+
+           // Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, durata);
+          //  trDAO.save(nuovaTratta);
+          //  System.out.println("Nuova tratta: ");
+          //  System.out.println(nuovaTratta);
+
+          //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
+      //  }
+
 
     }
 }

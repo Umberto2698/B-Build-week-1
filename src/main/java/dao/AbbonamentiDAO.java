@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AbbonamentiDAO {
@@ -58,7 +59,7 @@ public class AbbonamentiDAO {
         }
     }
 
-    public Abbonamenti getAbbonamentoByUserId(long userId) {
+    public List<Abbonamenti> getAbbonamentoByUserId(long userId) {
         TypedQuery<Abbonamenti> query = em.createQuery(
                 "SELECT a FROM Abbonamenti a WHERE a.user.id = :userId",
                 Abbonamenti.class
@@ -66,7 +67,7 @@ public class AbbonamentiDAO {
         query.setParameter("userId", userId);
 
         try {
-            return query.getSingleResult();
+            return query.getResultList();
         } catch (Exception e) {
             System.out.println("Nessun abbonamento Trovato");
             return null;
@@ -79,10 +80,10 @@ public class AbbonamentiDAO {
 
         if (currentDate.isBefore(dataScadenza)) {
 
-            System.out.println("abbonamento valido! scadra' il  " + abbonamento.getDataScadenza());
+            System.out.println("Abbonamento valido! scadra' il  " + abbonamento.getDataScadenza());
         } else {
 
-            System.out.println("Abbonamento scaduto! Rinnovalo al piu presto");
+            System.out.println("Abbonamento scaduto!");
         }
     }
 }

@@ -130,35 +130,40 @@ public class Application {
                             }
                             case 2 -> {
                                 int piano = 0;
-                                while (piano != 1 && piano != 2) {
-                                    System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
-                                    try {
-                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                        if (piano != 1 && piano != 2) {
-                                            System.err.println("Inserisci un valore valido tra 1 o 2");
-                                        }
-                                    } catch (NumberFormatException e) {
-                                        System.err.println("Inserisci un valore numerico valido tra 1 o 2");
-                                    }
-                                }
-                                if (piano == 1) {
-                                    try {
-                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user1, allSellers.get(nVenditoreRandom));
-                                        aDAO.save(buddy);
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
-                                } else if (piano == 2) {
-                                    try {
-                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user1, allSellers.get(nVenditoreRandom));
-                                        aDAO.save(buddy);
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
+                                List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user.getId());
+                                if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
+                                    System.out.println("Hai già un abbonamento valido");
                                 } else {
-                                    System.err.println("Errore ID utente non trovato");
+                                    while (piano != 1 && piano != 2) {
+                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                        try {
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2) {
+                                                System.err.println("Inserisci un valore valido tra 1 o 2");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                        }
+                                        if (piano == 1) {
+                                            try {
+                                                int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
+                                                aDAO.save(buddy);
+                                            } catch (Exception e) {
+                                                System.err.println(e.getMessage());
+                                            }
+                                        } else if (piano == 2) {
+                                            try {
+                                                int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
+                                                aDAO.save(buddy);
+                                            } catch (Exception e) {
+                                                System.err.println(e.getMessage());
+                                            }
+                                        } else {
+                                            System.err.println("Errore ID utente non trovato");
+                                        }
+                                    }
                                 }
                             }
                             case 3 -> {
@@ -194,9 +199,10 @@ public class Application {
                             }
                             case 6 -> {
                                 if (currentUserId != 0) {
-                                    Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
+                                    List<Abbonamenti> abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                     if (abbonamentoUtente != null) {
-                                        aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                        int num = 0;
+                                        abbonamentoUtente.forEach(abbonamento -> aDAO.isAbbonamentoScaduto(abbonamento));
                                     } else {
                                         System.out.println("Non hai un abbonamento, vai a farlo");
                                     }
@@ -320,35 +326,40 @@ public class Application {
                                 }
                                 case 2 -> {
                                     int piano = 0;
-                                    while (piano != 1 && piano != 2) {
-                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
-                                        try {
-                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                            if (piano != 1 && piano != 2) {
-                                                System.err.println("Inserisci un valore valido tra 1 o 2");
-                                            }
-                                        } catch (NumberFormatException e) {
-                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
-                                        }
-                                    }
-                                    if (piano == 1) {
-                                        try {
-                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
-                                            aDAO.save(buddy);
-                                        } catch (Exception e) {
-                                            System.err.println(e.getMessage());
-                                        }
-                                    } else if (piano == 2) {
-                                        try {
-                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
-                                            aDAO.save(buddy);
-                                        } catch (Exception e) {
-                                            System.err.println(e.getMessage());
-                                        }
+                                    List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user.getId());
+                                    if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
+                                        System.out.println("Hai già un abbonamento valido");
                                     } else {
-                                        System.err.println("Errore ID utente non trovato");
+                                        while (piano != 1 && piano != 2) {
+                                            System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                            try {
+                                                piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                                if (piano != 1 && piano != 2) {
+                                                    System.err.println("Inserisci un valore valido tra 1 o 2");
+                                                }
+                                            } catch (NumberFormatException e) {
+                                                System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                            }
+                                            if (piano == 1) {
+                                                try {
+                                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                    Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
+                                                    aDAO.save(buddy);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            } else if (piano == 2) {
+                                                try {
+                                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                    Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
+                                                    aDAO.save(buddy);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            } else {
+                                                System.err.println("Errore ID utente non trovato");
+                                            }
+                                        }
                                     }
                                 }
                                 case 3 -> {
@@ -384,9 +395,10 @@ public class Application {
                                 }
                                 case 6 -> {
                                     if (currentUserId != 0) {
-                                        Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
+                                        List<Abbonamenti> abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                         if (abbonamentoUtente != null) {
-                                            aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                            int num = 0;
+                                            abbonamentoUtente.forEach(abbonamento -> aDAO.isAbbonamentoScaduto(abbonamento));
                                         } else {
                                             System.out.println("Non hai un abbonamento, vai a farlo");
                                         }

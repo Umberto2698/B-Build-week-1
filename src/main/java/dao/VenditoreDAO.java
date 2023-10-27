@@ -71,11 +71,16 @@ public class VenditoreDAO {
         }
     }
 
-    public List<Venditore> getVenditoriInZona(String adress) {
-        TypedQuery<Venditore> getVenditoriInZona = em.createQuery("SELECT v FROM Venditore v WHERE v.adress LIKE :adress", Venditore.class);
-        getVenditoriInZona.setParameter("adress", "%" + adress + "%");
+    public List<Venditore> getVenditoriInZona(String address) {
+        TypedQuery<Venditore> getVenditoriInZona = em.createQuery("SELECT v FROM Venditore v WHERE v.adress LIKE :address", Venditore.class);
+        getVenditoriInZona.setParameter("address", "%" + address + "%");
         return getVenditoriInZona.getResultList();
 
+    }
+
+    public List<Venditore> getAllRivenditori() {
+        TypedQuery<Venditore> getAllRivenditori = em.createQuery("SELECT v FROM Venditore v WHERE v.adress IS NOT NULL", Venditore.class);
+        return getAllRivenditori.getResultList();
     }
 
     public List<Venditore> getAllDistributoriAttivi() {
@@ -88,6 +93,11 @@ public class VenditoreDAO {
         TypedQuery<Venditore> getAllDistributoriFuoriServizio = em.createQuery("SELECT v FROM Venditore v WHERE v.stato = :stato", Venditore.class);
         getAllDistributoriFuoriServizio.setParameter("stato", StatoDistributore.FUORISERVIZIO);
         return getAllDistributoriFuoriServizio.getResultList();
+    }
+
+    public List<Object[]> getRivenditoriEBigliettiVenduti() {
+        Query getResults = em.createQuery("SELECT v, v.biglietti FROM Venditore v");
+        return getResults.getResultList();
     }
 
     public void updateStatoDistributore(long distributorId, StatoDistributore nuovoStato) {

@@ -63,6 +63,7 @@ public class Application {
         int n1;
         int n2 = 0;
         User user = null;
+        User user1 = null;
 
         System.out.println("0 per interrompere, 1 per registrati sul sito, 2 per accedere ");
         n1 = Integer.parseInt(input.nextLine().trim());
@@ -74,20 +75,214 @@ public class Application {
             }
             case 1 -> {
                 try {
-                    System.out.println("inserisci il tuo nome");
-                    String nome = input.nextLine().trim();
-                    System.out.println("inserisci il tuo cognome");
-                    String cognome = input.nextLine().trim();
-                    System.out.println("inserisci anno di nascita");
-                    int anno = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    System.out.println("inserisci mese di nascita");
-                    int mese = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    System.out.println("inserisci giorno di nascita");
-                    int giorno = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    User buddy = new User(nome, cognome, LocalDate.of(anno, mese, giorno));
-                    uDAO.save(buddy);
-                    System.out.println("il tuo id è :" + buddy.getId());
-                    currentUserId = buddy.getId();
+                    try {
+                        String nome;
+                        do {
+                            System.out.println("Inserisci il tuo nome:");
+                            nome = input.nextLine().trim();
+                            if (nome.length() < 3) {
+                                System.err.println("Il nome deve contenere almeno 3 lettere. Riprova.");
+                            }
+                        } while (nome.length() < 3);
+
+                        String cognome;
+                        do {
+                            System.out.println("Inserisci il tuo cognome:");
+                            cognome = input.nextLine().trim();
+                            if (cognome.length() < 3) {
+                                System.err.println("Il cognome deve contenere almeno 3 lettere. Riprova.");
+                            }
+                        } while (cognome.length() < 3);
+
+                        LocalDate dataNascita = ottieniData(input);
+                        user1 = new User(nome, cognome, dataNascita);
+                        System.out.println("Dati utente registrati con successo.");
+                    } catch (NumberFormatException e) {
+                        System.err.println("Errore: Inserisci i dati di registrazione correttamente.");
+                    }
+
+                    uDAO.save(user1);
+                    System.out.println("il tuo id è :" + user1.getId());
+                    currentUserId = user1.getId();
+                    System.out.println("---------------------------------------------------------------------------------MENU CUSTOMER---------------------------------------------------------------------------------");
+                    System.out.println("                                                          Benvenuto " + user1.getNome() + " " + user1.getCognome() + ", scegli una aziona da fare");
+                    do {
+                        System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                        System.out.println("- 1 compra un biglietto; - 2 compra un abbonamento; - 3 compra una tessera; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
+                        System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
+                        n = Integer.parseInt(input.nextLine().trim());
+                        switch (n) {
+                            case 0 -> {
+                                input.close();
+                                em.close();
+                                JpaUtils.close();
+                            }
+                            case 1 -> {
+                                try {
+                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                    Biglietti buddy = new Biglietti(LocalDate.now(), user1, allSellers.get(nVenditoreRandom));
+                                    System.out.println("questo è il tuo biglietto : ");
+                                    bDAO.save(buddy);
+                                    System.out.println("l'id del tuo biglietto è : " + buddy.getId());
+                                } catch (Exception e) {
+                                    System.err.println(e.getMessage());
+                                }
+                            }
+                            case 2 -> {
+                                int piano = 0;
+                                while (piano != 1 && piano != 2) {
+                                    System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                    try {
+                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                        if (piano != 1 && piano != 2) {
+                                            System.err.println("Inserisci un valore valido tra 1 o 2");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                    }
+                                }
+                                if (piano == 1) {
+                                    try {
+                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user1, allSellers.get(nVenditoreRandom));
+                                        aDAO.save(buddy);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else if (piano == 2) {
+                                    try {
+                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user1, allSellers.get(nVenditoreRandom));
+                                        aDAO.save(buddy);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else {
+                                    System.err.println("Errore ID utente non trovato");
+                                }
+                            }
+                            case 3 -> {
+                                user1 = uDAO.getById(currentUserId);
+                                if (user1 != null) {
+                                    LocalDate dataEmissione1 = LocalDate.now();
+                                    Tessera tesseraNuova = new Tessera(dataEmissione1, user1);
+                                    tDAO.save(tesseraNuova);
+                                } else {
+                                    System.err.println("ID utente non trovato!");
+                                }
+                            }
+                            case 4 -> {
+                                if (currentUserId != 0) {
+                                    Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
+                                    if (tesseraUtente != null) {
+                                        tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                    }
+                                } else {
+                                    System.out.println("Non hai una tessera");
+                                }
+                            }
+                            case 5 -> {
+                                if (currentUserId != 0) {
+                                    List<Biglietti> bigliettoNonValidato = bDAO.findNonValidatedTicketForUser(currentUserId);
+                                    if (!bigliettoNonValidato.isEmpty()) {
+                                        bDAO.validateTicket(mDAO, bigliettoNonValidato.get(0));
+                                        System.out.println(bigliettoNonValidato.get(0));
+                                    } else {
+                                        System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
+                                    }
+                                }
+                            }
+                            case 6 -> {
+                                if (currentUserId != 0) {
+                                    Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
+                                    if (abbonamentoUtente != null) {
+                                        aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                    } else {
+                                        System.out.println("Non hai un abbonamento, vai a farlo");
+                                    }
+                                }
+                            }
+                            case 7 -> {
+                                System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
+                                String viaInput = input.nextLine().trim();
+                                //////////////CONTROLLO SE LA VIA è vuota////////////////////
+                                if (viaInput.isEmpty()) {
+                                    System.err.println("inserisci una via valida.");
+                                } else {
+                                    List<Venditore> listaVenditoriInZona = vDAO.getVenditoriInZona(viaInput);
+                                    if (listaVenditoriInZona.isEmpty()) {
+                                        System.err.println("Nessun Rivenditore trovato in questa zona o la via non è valida.");
+                                    } else {
+                                        listaVenditoriInZona.forEach(System.out::println);
+                                    }
+                                }
+                            }
+                            case 8 -> {
+                                int piano = -1;
+                                while (piano != 1 && piano != 2 && piano != 0) {
+                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea | 0 per tornare indietro : ");
+                                    try {
+                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                        if (piano != 1 && piano != 2 && piano != 0) {
+                                            System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                    }
+                                }
+                                if (piano == 1) {
+                                    long trattaid = 0;
+                                    while (true) {
+                                        try {
+                                            System.out.println("inserisci l'id della tratta per vedere il tempo medio : ");
+                                            trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (trattaid > 0) {
+                                                Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                                System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                                break;
+                                            } else {
+                                                System.err.println("Nessuna tratta trovata");
+
+                                            }
+                                        } catch (Exception e) {
+                                            System.err.println("Nessuna tratta trovata");
+
+                                        }
+                                    }
+                                } else if (piano == 2) {
+                                    try {
+                                        System.out.println("inserisci zona partenza : ");
+                                        String partenzaInput = input.nextLine();
+                                        System.out.println("inserisci capolinea : ");
+                                        String capolineaInput = input.nextLine();
+                                        List<Tratta> buddy = trDAO.getTempoMedioByPartenzaCapolinea(partenzaInput, capolineaInput);
+                                        buddy.forEach(System.out::println);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else if (piano == 0) {
+                                    System.out.println("Torno indietro");
+
+                                }
+                            }
+                            case 9 -> {
+                                try {
+
+                                    Tessera tesseraUser = tDAO.getTesseraByUserId(user1.getId());
+                                    if (tesseraUser != null) {
+                                        System.out.println("La tua tessera : " + tesseraUser);
+                                        tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                    } else {
+                                        System.err.println("Non hai una tessera , vai a farla");
+                                    }
+                                } catch (NullPointerException nullE) {
+                                    System.err.println(nullE.getMessage());
+                                }
+                            }
+                        }
+                    }
+                    while (n != 0);
+
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -99,8 +294,12 @@ public class Application {
                 if (user != null) {
                     currentUserId = user.getId();
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
+                        System.out.println("---------------------------------------------------------------------------------MENU CUSTOMER---------------------------------------------------------------------------------");
+                        System.out.println("                                                          Bentornato " + user.getNome() + " " + user.getCognome() + ", scegli una aziona da fare");
                         do {
-                            System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
+                            System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                            System.out.println("- 1 compra un biglietto; - 2 compra un abbonamento; - 3 compra una tessera; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
+                            System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
                             n = Integer.parseInt(input.nextLine().trim());
                             switch (n) {
                                 case 0 -> {
@@ -120,8 +319,18 @@ public class Application {
                                     }
                                 }
                                 case 2 -> {
-                                    System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                    int piano = 0;
+                                    while (piano != 1 && piano != 2) {
+                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                        try {
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2) {
+                                                System.err.println("Inserisci un valore valido tra 1 o 2");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                        }
+                                    }
                                     if (piano == 1) {
                                         try {
                                             int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
@@ -184,22 +393,51 @@ public class Application {
                                     }
                                 }
                                 case 7 -> {
-                                    System.out.println("inserisci una via per controllare quali Rivenditori ci sono : ");
-                                    String viaInput = input.nextLine();
-                                    List<Venditore> listaVenditoriInZOna = vDAO.getVenditoriInZona(viaInput);
-                                    listaVenditoriInZOna.forEach(System.out::println);
+                                    System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
+                                    String viaInput = input.nextLine().trim();
+                                    //////////////CONTROLLO SE LA VIA è vuota////////////////////
+                                    if (viaInput.isEmpty()) {
+                                        System.err.println("inserisci una via valida.");
+                                    } else {
+                                        List<Venditore> listaVenditoriInZona = vDAO.getVenditoriInZona(viaInput);
+                                        if (listaVenditoriInZona.isEmpty()) {
+                                            System.err.println("Nessun Rivenditore trovato in questa zona o la via non è valida.");
+                                        } else {
+                                            listaVenditoriInZona.forEach(System.out::println);
+                                        }
+                                    }
                                 }
                                 case 8 -> {
-                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                    if (piano == 1) {
+                                    int piano = -1;
+                                    while (piano != 1 && piano != 2 && piano != 0) {
+                                        System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea | 0 per tornare indietro : ");
                                         try {
-                                            System.out.println("inserisci un id per vedere il tempo medio di quella tratta : ");
-                                            long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                            Tratta buddy = trDAO.getTempoMedioById(trattaid);
-                                            System.out.println("Tempo stimato : " + buddy.getTempoMedio());
-                                        } catch (Exception e) {
-                                            System.err.println(e);
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2 && piano != 0) {
+                                                System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                        }
+                                    }
+                                    if (piano == 1) {
+                                        long trattaid = 0;
+                                        while (true) {
+                                            try {
+                                                System.out.println("inserisci l'id della tratta per vedere il tempo medio : ");
+                                                trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                if (trattaid > 0) {
+                                                    Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                                    System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                                    break;
+                                                } else {
+                                                    System.err.println("Nessuna tratta trovata");
+
+                                                }
+                                            } catch (Exception e) {
+                                                System.err.println("Nessuna tratta trovata");
+
+                                            }
                                         }
                                     } else if (piano == 2) {
                                         try {
@@ -212,15 +450,31 @@ public class Application {
                                         } catch (Exception e) {
                                             System.err.println(e.getMessage());
                                         }
+                                    } else if (piano == 0) {
+                                        System.out.println("Torno indietro");
+                                    }
+                                }
+                                case 9 -> {
+                                    try {
+                                        Tessera tesseraUser = tDAO.getTesseraByUserId(user.getId());
+                                        if (tesseraUser != null) {
+                                            System.out.println("La tua tessera : " + tesseraUser);
+                                            tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                        } else {
+                                            System.err.println("Non hai una tessera , vai a farla");
+                                        }
+                                    } catch (NullPointerException nullE) {
+                                        System.err.println(nullE.getMessage());
                                     }
                                 }
                             }
                         }
                         while (n != 0);
                     } else {
-                        System.err.println("MENU ADMIN");
-                        System.out.println("Benvenuto " + user.getNome() + user.getCognome() + ".");
+                        System.out.println("---------------------------------------------------------------------------------MENU ADMIN---------------------------------------------------------------------------------");
+                        System.out.println("                                                        Bentornato " + user.getNome() + " " + user.getCognome() + ", scegli una aziona da fare");
                         do {
+                            System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
                             System.out.println("Scegli un'azione da svolgere:");
                             System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Gestisci tratte; 4 - Ottieni informazioni sullo stato della compagnia; 0 - Chiudi il terminale.");
                             try {

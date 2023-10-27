@@ -64,7 +64,7 @@ public class MezziDAO {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            Query q = em.createQuery("UPDATE Mezzo m SET m.statoMezzo = :statoMezzo WHERE m.id=:id");
+            Query q = em.createQuery("UPDATE Mezzi m SET m.statoMezzo = :statoMezzo WHERE m.id=:id");
             q.setParameter("id", id);
             q.setParameter("statoMezzo", statoMezzo);
             int num = q.executeUpdate();
@@ -110,11 +110,27 @@ public class MezziDAO {
         return getPeriods.getResultList();
     }
 
-    public Periodi getLastPeriodForTransportAndUpdate(long mezzo_id) {
-        TypedQuery<Periodi> updatePeriod = em.createQuery("UPDATE Periodi p SET p.dataFine = :now WHERE p.mezzo.id = :mezzo_id AND p.dataFine IS NULL", Periodi.class);
-        updatePeriod.setParameter("now", LocalDate.now());
-        updatePeriod.setParameter("mezzo_id", mezzo_id);
-        return updatePeriod.getSingleResult();
+    public void getLastPeriodForTransportAndUpdate(long mezzo_id) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Query updatePeriod = em.createQuery("UPDATE Periodi p SET p.dataFine = :now WHERE p.mezzo.id = :mezzo_id AND p.dataFine IS NULL");
+            updatePeriod.setParameter("now", LocalDate.now());
+            updatePeriod.setParameter("mezzo_id", mezzo_id);
+            int num = updatePeriod.executeUpdate();
+            transaction.commit();
+            if (num > 0) {
+                System.out.println("Mezzo modificato");
+            } else {
+                System.out.println("Non è stato modificato nulla");
+            }
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Errore durante la validazione del biglietto." + e);
+            throw e;
+        }
     }
 
     public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {

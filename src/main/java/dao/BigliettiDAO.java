@@ -58,7 +58,7 @@ public class BigliettiDAO {
     }
 
     public long getAllSelledTicketsForSeller(long seller_id) {
-        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.venditore = :seller_id", Long.class);
+        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.venditore.id = :seller_id", Long.class);
         getAllTickets.setParameter("seller_id", seller_id);
         return getAllTickets.getSingleResult();
     }
@@ -69,7 +69,7 @@ public class BigliettiDAO {
     }
 
     public long getAllSelledAbbonamentiForSeller(long seller_id) {
-        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Abbonamenti b WHERE b.venditore = :seller_id", Long.class);
+        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Abbonamenti b WHERE b.venditore.id = :seller_id", Long.class);
         getAllTickets.setParameter("seller_id", seller_id);
         return getAllTickets.getSingleResult();
     }

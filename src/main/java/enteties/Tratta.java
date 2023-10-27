@@ -9,7 +9,7 @@ import java.util.Set;
 @Table(name = "route")
 public class Tratta {
     @Id
-    private long id;
+    private long id = new Random().nextLong(1000000000000L, 10000000000000L);
 
     @Column(name = "starting_place")
     private String zonaPartenza;
@@ -27,7 +27,6 @@ public class Tratta {
     }
 
     public Tratta(String zonaPartenza, String capolinea, double tempoMedio) {
-        this.id = new Random().nextLong(1000000000000L, 10000000000000L);
         this.zonaPartenza = zonaPartenza;
         this.capolinea = capolinea;
         this.tempoMedio = tempoMedio;

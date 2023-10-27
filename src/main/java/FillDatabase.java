@@ -84,213 +84,213 @@ public class FillDatabase {
 //                mDAO.save(autobusInServizioSupplier.get());
 //            }
 // ******************************************** SECONDO AVVIO *********************************************
-//            for (int i = 0; i < 200; i++) {
-//                bDAO.save(bigliettiSupplier.get());
-//                tr_m_DAO.save(tratta_mezzoSupplier.get());
-//            }
-//            for (int i = 0; i < allUsersSize; i++) {
-//                Tessera tessera = null;
-//                if (i < 20) {
-//                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-//                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-//                } else if (i >= 20 && i < 30) {
-//                    tessera = new Tessera(faker.date().between(Date.from(LocalDate.now().minusMonths(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-//                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-//                } else if (i >= 30 && i < 40) {
-//                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-//                                    , Date.from(LocalDate.now().minusYears(2).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-//                }
-//                if (tessera != null) {
-//                    tDAO.save(tessera);
-//                }
-//            }
-//            periodiPerAnno(mDAO, faker, 2010).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2011).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2012).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2013).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2014).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2015).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2016).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2017).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2018).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2019).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2020).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2021).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2022).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2023).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerMezziAttualmenteInManutenzione(mDAO, faker).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
+            for (int i = 0; i < 200; i++) {
+                bDAO.save(bigliettiSupplier.get());
+                tr_m_DAO.save(tratta_mezzoSupplier.get());
+            }
+            for (int i = 0; i < allUsersSize; i++) {
+                Tessera tessera = null;
+                if (i < 20) {
+                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+                } else if (i >= 20 && i < 30) {
+                    tessera = new Tessera(faker.date().between(Date.from(LocalDate.now().minusMonths(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+                } else if (i >= 30 && i < 40) {
+                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    , Date.from(LocalDate.now().minusYears(2).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+                }
+                if (tessera != null) {
+                    tDAO.save(tessera);
+                }
+            }
+            periodiPerAnno(mDAO, faker, 2010).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2011).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2012).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2013).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2014).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2015).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2016).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2017).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2018).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2019).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2020).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2021).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2022).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerAnno(mDAO, faker, 2023).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            periodiPerMezziAttualmenteInManutenzione(mDAO, faker).forEach(period -> {
+                try {
+                    pDAO.save(period);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 // ******************************************** TERZO AVVIO *********************************************
-            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-                try {
-                    aDAO.save(abbonamento);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            validateTicket(bDAO, mDAO, faker);
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+//                try {
+//                    aDAO.save(abbonamento);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            validateTicket(bDAO, mDAO, faker);
         } catch (Exception e) {
             System.out.println(e);
         } finally {

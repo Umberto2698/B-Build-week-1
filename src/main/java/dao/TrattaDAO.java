@@ -35,7 +35,9 @@ public class TrattaDAO {
     }
 
     public Tratta getById(long id) {
-        return em.find(Tratta.class, id);
+        TypedQuery<Tratta> tratta = em.createQuery("SELECT t FROM Tratta t WHERE t.id = :id", Tratta.class);
+        tratta.setParameter("id", id);
+        return tratta.getSingleResult();
     }
 
     public List<Tratta> gettAllRoutes() {

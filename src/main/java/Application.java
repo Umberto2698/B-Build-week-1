@@ -196,7 +196,12 @@ public class Application {
                                 if (currentUserId != 0) {
                                     Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                     if (abbonamentoUtente != null) {
-                                        aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                        boolean isScaduto = aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                        if (isScaduto) {
+                                            System.out.println("Non hai un abbonamento o è scaduto, vai a farlo o rinnova.");
+                                        } else {
+                                            System.out.println("Il tuo abbonamento è valido.");
+                                        }
                                     } else {
                                         System.out.println("Non hai un abbonamento, vai a farlo");
                                     }
@@ -386,7 +391,12 @@ public class Application {
                                     if (currentUserId != 0) {
                                         Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                         if (abbonamentoUtente != null) {
-                                            aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                            boolean isScaduto = aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                            if (isScaduto) {
+                                                System.out.println("Non hai un abbonamento o è scaduto, vai a farlo o rinnova.");
+                                            } else {
+                                                System.out.println("Il tuo abbonamento è valido.");
+                                            }
                                         } else {
                                             System.out.println("Non hai un abbonamento, vai a farlo");
                                         }
@@ -540,7 +550,7 @@ public class Application {
                                                             System.out.println("...");
                                                         }
                                                     }
-                                                } while (k < 0 || k > 4);
+                                                } while (k != 0);
                                             }
                                             case 2 -> {
                                                 try {
@@ -625,7 +635,7 @@ public class Application {
                                                 System.out.println("...");
                                             }
                                         }
-                                    } while (m < 0 || m > 4);
+                                    } while (m != 0);
                                 }
                                 case 2 -> {
                                     int m = 0;
@@ -789,7 +799,7 @@ public class Application {
                                                 System.out.println("...");
                                             }
                                         }
-                                    } while (m < 0 || m > 6);
+                                    } while (m != 0);
                                 }
                                 case 3 -> {
                                     int m = 0;
@@ -916,7 +926,7 @@ public class Application {
                                                 System.out.println("...");
                                             }
                                         }
-                                    } while (m < 0 || m > 4);
+                                    } while (m != 0);
                                     try {
                                         LocalDate date1 = ottieniData(input);
                                         LocalDate date2 = ottieniData(input);
@@ -1009,68 +1019,69 @@ public class Application {
                                                                             } catch (Exception ex) {
                                                                                 System.err.println("Problema generico");
                                                                             }
-                                                                        } while (j < 0 || j > 3);
-                                                                        switch (j) {
-                                                                            case 1 -> {
-                                                                                try {
-                                                                                    System.err.println("Lista dei distributori in servizio:");
-                                                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
-                                                                                    listaDistributoriInServizio.forEach(System.out::println);
-                                                                                    System.err.println("Lista dei distributori in manutenzione:");
-                                                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
-                                                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
-                                                                                    long venditore_id = 0;
-                                                                                    do {
-                                                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra.");
-                                                                                        try {
-                                                                                            venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                                                            if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
-                                                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+
+                                                                            switch (j) {
+                                                                                case 1 -> {
+                                                                                    try {
+                                                                                        System.err.println("Lista dei distributori in servizio:");
+                                                                                        List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                                                        listaDistributoriInServizio.forEach(System.out::println);
+                                                                                        System.err.println("Lista dei distributori in manutenzione:");
+                                                                                        List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                                                        listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                                                        long venditore_id = 0;
+                                                                                        do {
+                                                                                            System.err.println("Scegli l'id di un distributore dalle liste sopra.");
+                                                                                            try {
+                                                                                                venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                                                if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
+                                                                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                                                }
+                                                                                            } catch (
+                                                                                                    NumberFormatException ex) {
+                                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                                            } catch (Exception ex) {
+                                                                                                System.err.println("Problema generico");
                                                                                             }
-                                                                                        } catch (
-                                                                                                NumberFormatException ex) {
-                                                                                            System.err.println("Il valore inserito non è un numero.");
-                                                                                        } catch (Exception ex) {
-                                                                                            System.err.println("Problema generico");
-                                                                                        }
-                                                                                    } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
-                                                                                    if (vDAO.getById(venditore_id) != null) {
-                                                                                        Venditore venditore = vDAO.getById(venditore_id);
-                                                                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date1, venditore);
-                                                                                        if (date1.isBefore(date2)) {
-                                                                                            System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                        } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
+                                                                                        if (vDAO.getById(venditore_id) != null) {
+                                                                                            Venditore venditore = vDAO.getById(venditore_id);
+                                                                                            long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date1, venditore);
+                                                                                            if (date1.isBefore(date2)) {
+                                                                                                System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                            } else {
+                                                                                                System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                            }
                                                                                         } else {
-                                                                                            System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                            throw new Exception("Nessuna corrispondenza tra id inserito e venditori nel nostro database.");
                                                                                         }
-                                                                                    } else {
-                                                                                        throw new Exception("Nessuna corrispondenza tra id inserito e venditori nel nostro database.");
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
                                                                                     }
-                                                                                } catch (Exception e) {
-                                                                                    System.err.println(e.getMessage());
+                                                                                }
+                                                                                case 2 -> {
+                                                                                    try {
+                                                                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
+                                                                                        if (date1.isBefore(date2)) {
+                                                                                            System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati emessi " + numberOfTickets + "biglietti.");
+                                                                                        } else {
+                                                                                            System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati emessi " + numberOfTickets + "biglietti.");
+                                                                                        }
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 0 -> {
+                                                                                    System.out.println("Torno indietro");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println(".");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("..");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("...");
                                                                                 }
                                                                             }
-                                                                            case 2 -> {
-                                                                                try {
-                                                                                    long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
-                                                                                    if (date1.isBefore(date2)) {
-                                                                                        System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati emessi " + numberOfTickets + "biglietti.");
-                                                                                    } else {
-                                                                                        System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati emessi " + numberOfTickets + "biglietti.");
-                                                                                    }
-                                                                                } catch (Exception e) {
-                                                                                    System.err.println(e.getMessage());
-                                                                                }
-                                                                            }
-                                                                            case 0 -> {
-                                                                                System.out.println("Torno indietro");
-                                                                                TimeUnit.MILLISECONDS.sleep(500);
-                                                                                System.out.println(".");
-                                                                                TimeUnit.MILLISECONDS.sleep(500);
-                                                                                System.out.println("..");
-                                                                                TimeUnit.MILLISECONDS.sleep(500);
-                                                                                System.out.println("...");
-                                                                            }
-                                                                        }
+                                                                        } while (j != 0);
                                                                     }
                                                                     case 2 -> {
                                                                         int j = 0;
@@ -1136,7 +1147,7 @@ public class Application {
                                                                                     System.out.println("...");
                                                                                 }
                                                                             }
-                                                                        } while (j < 0 || j > 3);
+                                                                        } while (j != 0);
                                                                     }
                                                                     case 0 -> {
                                                                         System.out.println("Torno indietro");
@@ -1148,7 +1159,7 @@ public class Application {
                                                                         System.out.println("...");
                                                                     }
                                                                 }
-                                                            } while (l < 0 || l > 3);
+                                                            } while (l != 0);
                                                         }
                                                         case 2 -> {
                                                             int l = 0;
@@ -1238,7 +1249,7 @@ public class Application {
                                                                                     System.out.println("...");
                                                                                 }
                                                                             }
-                                                                        } while (j < 0 || j > 3);
+                                                                        } while (j != 0);
                                                                     }
                                                                     case 2 -> {
                                                                         int j = 0;
@@ -1304,17 +1315,17 @@ public class Application {
                                                                                     System.out.println("...");
                                                                                 }
                                                                             }
-                                                                        } while (j < 0 || j > 3);
+                                                                        } while (j != 0);
                                                                     }
                                                                 }
-                                                            } while (l < 0 || l > 3);
+                                                            } while (l != 0);
                                                         }
                                                     }
-                                                } while (k < 0 || k > 4);
+                                                } while (k != 0);
                                             }
                                         }
                                     }
-                                    while (m < 0 || m > 3);
+                                    while (m != 0);
                                 }
                                 case 7 -> {
                                     try {
@@ -1462,7 +1473,7 @@ public class Application {
 
                             }
                         }
-                        while (n2 < 0 || n2 > 5);
+                        while (n2 != 0);
                     }
                 } else {
                     System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");

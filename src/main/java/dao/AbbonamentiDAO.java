@@ -73,16 +73,16 @@ public class AbbonamentiDAO {
         }
     }
 
-    public void isAbbonamentoScaduto(Abbonamenti abbonamento) {
+    public boolean isAbbonamentoScaduto(Abbonamenti abbonamento) {
         LocalDate currentDate = LocalDate.now();
         LocalDate dataScadenza = abbonamento.getDataScadenza();
 
         if (currentDate.isBefore(dataScadenza)) {
-
-            System.out.println("abbonamento valido! scadra' il  " + abbonamento.getDataScadenza());
+            System.out.println("Abbonamento valido! Scadrà il " + abbonamento.getDataScadenza());
+            return false;
         } else {
-
-            System.out.println("Abbonamento scaduto! Rinnovalo al piu presto");
+            System.out.println("Abbonamento scaduto! Rinnova al più presto");
+            return true;
         }
     }
 }

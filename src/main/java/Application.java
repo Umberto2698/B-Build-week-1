@@ -5,6 +5,7 @@ import enums.*;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -62,6 +63,7 @@ public class Application {
         int n1;
         int n2 = 0;
         User user = null;
+        User user1 = null;
 
         System.out.println("0 per interrompere, 1 per registrati sul sito, 2 per accedere ");
         n1 = Integer.parseInt(input.nextLine().trim());
@@ -73,20 +75,214 @@ public class Application {
             }
             case 1 -> {
                 try {
-                    System.out.println("inserisci il tuo nome");
-                    String nome = input.nextLine().trim();
-                    System.out.println("inserisci il tuo cognome");
-                    String cognome = input.nextLine().trim();
-                    System.out.println("inserisci anno di nascita");
-                    int anno = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    System.out.println("inserisci mese di nascita");
-                    int mese = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    System.out.println("inserisci giorno di nascita");
-                    int giorno = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                    User buddy = new User(nome, cognome, LocalDate.of(anno, mese, giorno));
-                    uDAO.save(buddy);
-                    System.out.println("il tuo id è :" + buddy.getId());
-                    currentUserId = buddy.getId();
+                    try {
+                        String nome;
+                        do {
+                            System.out.println("Inserisci il tuo nome:");
+                            nome = input.nextLine().trim();
+                            if (nome.length() < 3) {
+                                System.err.println("Il nome deve contenere almeno 3 lettere. Riprova.");
+                            }
+                        } while (nome.length() < 3);
+
+                        String cognome;
+                        do {
+                            System.out.println("Inserisci il tuo cognome:");
+                            cognome = input.nextLine().trim();
+                            if (cognome.length() < 3) {
+                                System.err.println("Il cognome deve contenere almeno 3 lettere. Riprova.");
+                            }
+                        } while (cognome.length() < 3);
+
+                        LocalDate dataNascita = ottieniData(input);
+                        user1 = new User(nome, cognome, dataNascita);
+                        System.out.println("Dati utente registrati con successo.");
+                    } catch (NumberFormatException e) {
+                        System.err.println("Errore: Inserisci i dati di registrazione correttamente.");
+                    }
+
+                    uDAO.save(user1);
+                    System.out.println("il tuo id è :" + user1.getId());
+                    currentUserId = user1.getId();
+                    System.out.println("---------------------------------------------------------------------------------MENU CUSTOMER---------------------------------------------------------------------------------");
+                    System.out.println("                                                          Benvenuto " + user1.getNome() + " " + user1.getCognome() + ", scegli una aziona da fare");
+                    do {
+                        System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                        System.out.println("- 1 compra un biglietto; - 2 compra un abbonamento; - 3 compra una tessera; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
+                        System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
+                        n = Integer.parseInt(input.nextLine().trim());
+                        switch (n) {
+                            case 0 -> {
+                                input.close();
+                                em.close();
+                                JpaUtils.close();
+                            }
+                            case 1 -> {
+                                try {
+                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                    Biglietti buddy = new Biglietti(LocalDate.now(), user1, allSellers.get(nVenditoreRandom));
+                                    System.out.println("questo è il tuo biglietto : ");
+                                    bDAO.save(buddy);
+                                    System.out.println("l'id del tuo biglietto è : " + buddy.getId());
+                                } catch (Exception e) {
+                                    System.err.println(e.getMessage());
+                                }
+                            }
+                            case 2 -> {
+                                int piano = 0;
+                                while (piano != 1 && piano != 2) {
+                                    System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                    try {
+                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                        if (piano != 1 && piano != 2) {
+                                            System.err.println("Inserisci un valore valido tra 1 o 2");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                    }
+                                }
+                                if (piano == 1) {
+                                    try {
+                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user1, allSellers.get(nVenditoreRandom));
+                                        aDAO.save(buddy);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else if (piano == 2) {
+                                    try {
+                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user1, allSellers.get(nVenditoreRandom));
+                                        aDAO.save(buddy);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else {
+                                    System.err.println("Errore ID utente non trovato");
+                                }
+                            }
+                            case 3 -> {
+                                user1 = uDAO.getById(currentUserId);
+                                if (user1 != null) {
+                                    LocalDate dataEmissione1 = LocalDate.now();
+                                    Tessera tesseraNuova = new Tessera(dataEmissione1, user1);
+                                    tDAO.save(tesseraNuova);
+                                } else {
+                                    System.err.println("ID utente non trovato!");
+                                }
+                            }
+                            case 4 -> {
+                                if (currentUserId != 0) {
+                                    Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
+                                    if (tesseraUtente != null) {
+                                        tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                    }
+                                } else {
+                                    System.out.println("Non hai una tessera");
+                                }
+                            }
+                            case 5 -> {
+                                if (currentUserId != 0) {
+                                    List<Biglietti> bigliettoNonValidato = bDAO.findNonValidatedTicketForUser(currentUserId);
+                                    if (!bigliettoNonValidato.isEmpty()) {
+                                        bDAO.validateTicket(mDAO, bigliettoNonValidato.get(0));
+                                        System.out.println(bigliettoNonValidato.get(0));
+                                    } else {
+                                        System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
+                                    }
+                                }
+                            }
+                            case 6 -> {
+                                if (currentUserId != 0) {
+                                    Abbonamenti abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
+                                    if (abbonamentoUtente != null) {
+                                        aDAO.isAbbonamentoScaduto(abbonamentoUtente);
+                                    } else {
+                                        System.out.println("Non hai un abbonamento, vai a farlo");
+                                    }
+                                }
+                            }
+                            case 7 -> {
+                                System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
+                                String viaInput = input.nextLine().trim();
+                                //////////////CONTROLLO SE LA VIA è vuota////////////////////
+                                if (viaInput.isEmpty()) {
+                                    System.err.println("inserisci una via valida.");
+                                } else {
+                                    List<Venditore> listaVenditoriInZona = vDAO.getVenditoriInZona(viaInput);
+                                    if (listaVenditoriInZona.isEmpty()) {
+                                        System.err.println("Nessun Rivenditore trovato in questa zona o la via non è valida.");
+                                    } else {
+                                        listaVenditoriInZona.forEach(System.out::println);
+                                    }
+                                }
+                            }
+                            case 8 -> {
+                                int piano = -1;
+                                while (piano != 1 && piano != 2 && piano != 0) {
+                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea | 0 per tornare indietro : ");
+                                    try {
+                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                        if (piano != 1 && piano != 2 && piano != 0) {
+                                            System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                    }
+                                }
+                                if (piano == 1) {
+                                    long trattaid = 0;
+                                    while (true) {
+                                        try {
+                                            System.out.println("inserisci l'id della tratta per vedere il tempo medio : ");
+                                            trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (trattaid > 0) {
+                                                Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                                System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                                break;
+                                            } else {
+                                                System.err.println("Nessuna tratta trovata");
+
+                                            }
+                                        } catch (Exception e) {
+                                            System.err.println("Nessuna tratta trovata");
+
+                                        }
+                                    }
+                                } else if (piano == 2) {
+                                    try {
+                                        System.out.println("inserisci zona partenza : ");
+                                        String partenzaInput = input.nextLine();
+                                        System.out.println("inserisci capolinea : ");
+                                        String capolineaInput = input.nextLine();
+                                        List<Tratta> buddy = trDAO.getTempoMedioByPartenzaCapolinea(partenzaInput, capolineaInput);
+                                        buddy.forEach(System.out::println);
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                } else if (piano == 0) {
+                                    System.out.println("Torno indietro");
+
+                                }
+                            }
+                            case 9 -> {
+                                try {
+
+                                    Tessera tesseraUser = tDAO.getTesseraByUserId(user1.getId());
+                                    if (tesseraUser != null) {
+                                        System.out.println("La tua tessera : " + tesseraUser);
+                                        tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                    } else {
+                                        System.err.println("Non hai una tessera , vai a farla");
+                                    }
+                                } catch (NullPointerException nullE) {
+                                    System.err.println(nullE.getMessage());
+                                }
+                            }
+                        }
+                    }
+                    while (n != 0);
+
                 } catch (Exception e) {
                     System.out.println(e);
                 }
@@ -123,8 +319,18 @@ public class Application {
                                     }
                                 }
                                 case 2 -> {
-                                    System.out.println("- 1 per compra piano mensile; - 2 compra piano settimanale : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                    int piano = 0;
+                                    while (piano != 1 && piano != 2) {
+                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                        try {
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2) {
+                                                System.err.println("Inserisci un valore valido tra 1 o 2");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                        }
+                                    }
                                     if (piano == 1) {
                                         try {
                                             int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
@@ -187,22 +393,51 @@ public class Application {
                                     }
                                 }
                                 case 7 -> {
-                                    System.out.println("inserisci una via per controllare quali Rivenditori ci sono : ");
-                                    String viaInput = input.nextLine();
-                                    List<Venditore> listaVenditoriInZOna = vDAO.getVenditoriInZona(viaInput);
-                                    listaVenditoriInZOna.forEach(System.out::println);
+                                    System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
+                                    String viaInput = input.nextLine().trim();
+                                    //////////////CONTROLLO SE LA VIA è vuota////////////////////
+                                    if (viaInput.isEmpty()) {
+                                        System.err.println("inserisci una via valida.");
+                                    } else {
+                                        List<Venditore> listaVenditoriInZona = vDAO.getVenditoriInZona(viaInput);
+                                        if (listaVenditoriInZona.isEmpty()) {
+                                            System.err.println("Nessun Rivenditore trovato in questa zona o la via non è valida.");
+                                        } else {
+                                            listaVenditoriInZona.forEach(System.out::println);
+                                        }
+                                    }
                                 }
                                 case 8 -> {
-                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                    if (piano == 1) {
+                                    int piano = -1;
+                                    while (piano != 1 && piano != 2 && piano != 0) {
+                                        System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea | 0 per tornare indietro : ");
                                         try {
-                                            System.out.println("inserisci un id per vedere il tempo medio di quella tratta : ");
-                                            long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                            Tratta buddy = trDAO.getTempoMedioById(trattaid);
-                                            System.out.println("Tempo stimato : " + buddy.getTempoMedio());
-                                        } catch (Exception e) {
-                                            System.err.println(e);
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2 && piano != 0) {
+                                                System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido 1 o 2 | 0 per tornare indietro");
+                                        }
+                                    }
+                                    if (piano == 1) {
+                                        long trattaid = 0;
+                                        while (true) {
+                                            try {
+                                                System.out.println("inserisci l'id della tratta per vedere il tempo medio : ");
+                                                trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                if (trattaid > 0) {
+                                                    Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                                    System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                                    break;
+                                                } else {
+                                                    System.err.println("Nessuna tratta trovata");
+
+                                                }
+                                            } catch (Exception e) {
+                                                System.err.println("Nessuna tratta trovata");
+
+                                            }
                                         }
                                     } else if (piano == 2) {
                                         try {
@@ -215,14 +450,19 @@ public class Application {
                                         } catch (Exception e) {
                                             System.err.println(e.getMessage());
                                         }
+                                    } else if (piano == 0) {
+                                        System.out.println("Torno indietro");
                                     }
                                 }
                                 case 9 -> {
                                     try {
-
                                         Tessera tesseraUser = tDAO.getTesseraByUserId(user.getId());
-                                        System.out.println("La tua tessera : " + tesseraUser);
-                                        tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                        if (tesseraUser != null) {
+                                            System.out.println("La tua tessera : " + tesseraUser);
+                                            tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                        } else {
+                                            System.err.println("Non hai una tessera , vai a farla");
+                                        }
                                     } catch (NullPointerException nullE) {
                                         System.err.println(nullE.getMessage());
                                     }
@@ -235,12 +475,11 @@ public class Application {
                         System.out.println("                                                        Bentornato " + user.getNome() + " " + user.getCognome() + ", scegli una aziona da fare");
                         do {
                             System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-                            System.out.println("- 1 Gestisci il reparto mezzi; - 2 Gestisci il reparto vendite; - 3 Ottieni informazioni sull'andamento della compagnia; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
-                            System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
-                            // System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Ottieni informazioni sull'andamento della compagnia; 0 - Chiudi il terminale.");
+                            System.out.println("Scegli un'azione da svolgere:");
+                            System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Gestisci tratte; 4 - Ottieni informazioni sullo stato della compagnia; 0 - Chiudi il terminale.");
                             try {
                                 n2 = Integer.parseInt(input.nextLine().trim());
-                                if (n2 < 0 || n2 > 4) System.err.println("Inserisci un valore consentito.");
+                                if (n2 < 0 || n2 > 5) System.err.println("Inserisci un valore consentito.");
                             } catch (NumberFormatException ex) {
                                 System.err.println("Il valore inserito non è un numero.");
                             } catch (Exception ex) {
@@ -354,7 +593,7 @@ public class Application {
                                                     listaMezziInManutenzione.forEach(System.out::println);
                                                     long mezzo_id = 0;
                                                     do {
-                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per cambiare il suo stato.");
+                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per venderlo.");
                                                         try {
                                                             mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
                                                             if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
@@ -376,64 +615,308 @@ public class Application {
                                                     System.err.println(e.getMessage());
                                                 }
                                             }
+                                            case 0 -> {
+                                                System.out.println("Torno indietro");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println(".");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("..");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("...");
+                                            }
                                         }
                                     } while (m < 0 || m > 4);
-                                    try {
-                                        LocalDate date1 = ottieniData(input);
-                                        LocalDate date2 = ottieniData(input);
-                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
-                                        if (date1.isBefore(date2)) {
-                                            System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati emessi " + numberOfTickets + "biglietti");
-                                        } else {
-                                            System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati emessi " + numberOfTickets + "biglietti");
-                                        }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
                                 }
                                 case 2 -> {
-                                    try {
-                                        LocalDate date1 = ottieniData(input);
-                                        LocalDate date2 = ottieniData(input);
-                                        System.out.println("Inserisci ID venditore");
-                                        long venditore_id = 0;
-                                        do {
-                                            System.out.println("Inserisci l'id di un mezzo");
-                                            try {
-                                                venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
-                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
-                                                }
-                                            } catch (NumberFormatException ex) {
-                                                System.err.println("Il valore inserito non è un numero.");
-                                            } catch (Exception ex) {
-                                                System.err.println("Problema generico");
-                                            }
-                                        } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
-                                        if (vDAO.getById(venditore_id) != null) {
-                                            Venditore venditore = vDAO.getById(venditore_id);
-                                            long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date2, venditore);
-                                            if (date1.isBefore(date2)) {
-                                                System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
-                                            } else {
-                                                System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
-                                            }
-                                        } else {
-                                            throw new Exception("Nessuna corrispondenza tra id inserito e venditori nel nostro database.");
+                                    int m = 0;
+                                    do {
+                                        System.out.println("Scegli un'azione da svolgere:");
+                                        System.out.println("1 - Acquista un nuovo distributore; 2 - Gestisci lo stato di un distributore; 3 - Vendi un distributore; 4 - Abilita un nuovo rivenditore; 5 - Disabilita un rivenditore; 0 - Torna indietro.");
+                                        try {
+                                            m = Integer.parseInt(input.nextLine().trim());
+                                            if (m < 0 || m > 6) System.err.println("Inserisci un valore consentito.");
+                                        } catch (NumberFormatException ex) {
+                                            System.err.println("Il valore inserito non è un numero.");
+                                        } catch (Exception ex) {
+                                            System.err.println("Problema generico");
                                         }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
+                                        switch (m) {
+                                            case 1 -> {
+                                                try {
+                                                    vDAO.save(new Distributore());
+                                                    System.err.println("Distributore acquistato correttamente.");
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 2 -> {
+                                                try {
+                                                    System.err.println("Lista dei distributori in servizio:");
+                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                    listaDistributoriInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei distributori in manutenzione:");
+                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                    long distributore_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per cambiare il suo stato.");
+                                                        try {
+                                                            distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
+                                                    if (vDAO.getById(distributore_id) != null) {
+                                                        try {
+                                                            Distributore distributore = (Distributore) vDAO.getById(distributore_id);
+                                                            System.out.println("Hai selezionato:\n" + distributore);
+                                                            vDAO.delete(distributore_id);
+                                                            System.err.println("Distributore venduto con successo.");
+                                                        } catch (ClassCastException e) {
+                                                            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 3 -> {
+                                                try {
+                                                    System.err.println("Lista dei distributori in servizio:");
+                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                    listaDistributoriInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei distributori in manutenzione:");
+                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                    long distributore_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per venderlo.");
+                                                        try {
+                                                            distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
+                                                    if (vDAO.getById(distributore_id) != null) {
+                                                        try {
+                                                            Distributore distributore = (Distributore) vDAO.getById(distributore_id);
+                                                            System.out.println("Hai selezionato:\n" + distributore);
+                                                            if (distributore.getStato() == StatoDistributore.ATTIVO) {
+                                                                vDAO.updateStatoDistributore(distributore_id, StatoDistributore.FUORISERVIZIO);
+                                                            } else {
+                                                                vDAO.updateStatoDistributore(distributore_id, StatoDistributore.ATTIVO);
+                                                            }
+                                                            System.err.println("Risultato operazione");
+                                                            System.out.println(distributore);
+                                                        } catch (ClassCastException e) {
+                                                            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 4 -> {
+                                                try {
+                                                    System.out.println("Inserisci l'indirizzo del rivenditore che si desidera abilitare.");
+                                                    String address = input.nextLine();
+                                                    Rivenditore rivenditore = new Rivenditore(address);
+                                                    vDAO.save(rivenditore);
+                                                    System.out.println("Hai abilitato il seguente rivenditore " + rivenditore);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 5 -> {
+                                                try {
+                                                    System.err.println("Lista rivenditori abilitati - biglietti venduti.");
+                                                    List<Object[]> list = vDAO.getRivenditoriEBigliettiVenduti();
+                                                    for (Object[] el : list) {
+                                                        Venditore venditore = (Venditore) el[0];
+                                                        long biglietti = (Long) el[1];
+                                                        System.out.println(venditore + " - " + biglietti);
+                                                    }
+                                                    long venditore_id = 0;
+                                                    do {
+                                                        System.out.println("Inserisci l'id del rivenditore che si desidera disabilitare.");
+                                                        try {
+                                                            venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                        if (vDAO.getById(venditore_id) != null) {
+                                                            try {
+                                                                Rivenditore venditore = (Rivenditore) vDAO.getById(venditore_id);
+                                                                vDAO.delete(venditore_id);
+                                                                System.err.println("Rivenditore disabilitato con successo.");
+                                                            } catch (ClassCastException e) {
+                                                                System.err.println("Hai inserito l'id di un distributore. Inserisci quello di un rivenditore.");
+                                                            }
+                                                        } else {
+                                                            throw new Exception("Nessuna corrispondenza tra id inserito e rivenditori nel nostro database.");
+                                                        }
+                                                    } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 0 -> {
+                                                System.out.println("Torno indietro");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println(".");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("..");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("...");
+                                            }
+                                        }
+                                    } while (m < 0 || m > 6);
                                 }
-                                case 4 -> {
-                                    System.err.println("Lista dei distributori in servizio:");
-                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
-                                    listaDistributoriInServizio.forEach(System.out::println);
-                                    System.err.println("Lista dei distributori in manutenzione:");
-                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
-                                    listaDistributoriFuoriServizio.forEach(System.out::println);
-                                }
-                                case 5 -> {
+                                case 3 -> {
+                                    int m = 0;
+                                    do {
+                                        System.out.println("Scegli un'azione da svolgere:");
+                                        System.out.println("1 - Aggiungi una tratta; 2 - Elimina una tratta; 3 - Assegna tratta ad un mezzo; 0 - Torna indietro.");
+                                        try {
+                                            m = Integer.parseInt(input.nextLine().trim());
+                                            if (m < 0 || m > 4) System.err.println("Inserisci un valore consentito.");
+                                        } catch (NumberFormatException ex) {
+                                            System.err.println("Il valore inserito non è un numero.");
+                                        } catch (Exception ex) {
+                                            System.err.println("Problema generico");
+                                        }
+                                        switch (m) {
+                                            case 1 -> {
+                                                try {
+                                                    System.out.println("Inserisci città di partenza:");
+                                                    String partenza = input.nextLine().trim();
+                                                    System.out.println("Inserisci il capolinea:");
+                                                    String capolinea = input.nextLine().trim();
+                                                    Tratta tratta = new Tratta(partenza, capolinea, Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")));
+                                                    trDAO.save(tratta);
+                                                    System.out.println(tratta);
+                                                    System.err.println("Tratta salvata con successo.");
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 2 -> {
+                                                try {
+                                                    System.err.println("Lista tratte:");
+                                                    trDAO.gettAllRoutes().forEach(System.out::println);
+                                                    long tratta_id = 0;
+                                                    do {
+                                                        System.out.println("Scegli l'id della tratta che vuoi eliminare.");
+                                                        try {
+                                                            tratta_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (tratta_id < 1000000000000L || tratta_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (tratta_id < 1000000000000L || tratta_id >= 10000000000000L);
+                                                    if (trDAO.getById(tratta_id) != null) {
+                                                        trDAO.delete(tratta_id);
+                                                        System.err.println("Tratta eliminata con successo.");
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e tratte nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 3 -> {
+                                                try {
+                                                    System.err.println("Lista tratte:");
+                                                    trDAO.gettAllRoutes().forEach(System.out::println);
+                                                    long tratta_id = 0;
+                                                    do {
+                                                        System.out.println("Scegli l'id dalla lista di tratte sopra per assegnarla ad un mezzo.");
+                                                        try {
+                                                            tratta_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (tratta_id < 1000000000000L || tratta_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (tratta_id < 1000000000000L || tratta_id >= 10000000000000L);
+                                                    if (trDAO.getById(tratta_id) != null) {
+                                                        Tratta tratta = trDAO.getById(tratta_id);
+                                                        try {
+                                                            System.err.println("Lista dei mezzi in servizio:");
+                                                            mDAO.getAllOnService().forEach(System.out::println);
+                                                            long mezzo_id = 0;
+                                                            do {
+                                                                System.out.println("Scegli l'id di un mezzo dalla lista sopra.");
+                                                                try {
+                                                                    mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                    if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
+                                                                        System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                    }
+                                                                } catch (NumberFormatException ex) {
+                                                                    System.err.println("Il valore inserito non è un numero.");
+                                                                } catch (Exception ex) {
+                                                                    System.err.println("Problema generico");
+                                                                }
+                                                            } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
+                                                            if (mDAO.getById(mezzo_id) != null) {
+                                                                try {
+                                                                    Mezzi mezzo = mDAO.getById(mezzo_id);
+                                                                    Tratta_Mezzo trattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mezzo, tratta);
+                                                                    tr_m_DAO.save(trattaMezzo);
+                                                                    System.err.println("Tratta assegnata correttamente.");
+                                                                } catch (Exception e) {
+                                                                    System.err.println(e.getMessage());
+                                                                }
+                                                            } else {
+                                                                throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
+                                                            }
+                                                        } catch (Exception e) {
+                                                            System.err.println(e.getMessage());
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e tratte nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 0 -> {
+                                                System.out.println("Torno indietro");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println(".");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("..");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("...");
+                                            }
+                                        }
+                                    } while (m < 0 || m > 4);
                                     try {
                                         LocalDate date1 = ottieniData(input);
                                         LocalDate date2 = ottieniData(input);
@@ -466,33 +949,372 @@ public class Application {
                                         System.err.println(e.getMessage());
                                     }
                                 }
-                                case 6 -> {
-                                    try {
-                                        long mezzo_id = 0;
-                                        do {
-                                            System.out.println("Inserisci l'id di un mezzo");
-                                            try {
-                                                mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
-                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
-                                                }
-                                            } catch (NumberFormatException ex) {
-                                                System.err.println("Il valore inserito non è un numero.");
-                                            } catch (Exception ex) {
-                                                System.err.println("Problema generico");
-                                            }
-                                        } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
-                                        if (mDAO.getById(mezzo_id) != null) {
-                                            Mezzi mezzo = mDAO.getById(mezzo_id);
-                                            long numeroBigliettiValidati = bDAO.bigliettiValidatiSuUnMezzo(mezzo_id);
-                                            System.out.println("In totale sono stati vidimati " + numeroBigliettiValidati + " biglietti nel mezzo \n" + mezzo);
-                                        } else {
-                                            throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
-
+                                case 4 -> {
+                                    int m = 0;
+                                    do {
+                                        System.out.println("Scegli una categoria:");
+                                        System.out.println("1 - Info biglietti e abbonamenti; 2 - Info andamento corse; 0 - Torna indietro.");
+                                        try {
+                                            m = Integer.parseInt(input.nextLine().trim());
+                                            if (m < 0 || m > 3) System.err.println("Inserisci un valore consentito.");
+                                        } catch (NumberFormatException ex) {
+                                            System.err.println("Il valore inserito non è un numero.");
+                                        } catch (Exception ex) {
+                                            System.err.println("Problema generico");
                                         }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
+                                        switch (m) {
+                                            case 1 -> {
+                                                int k = 0;
+                                                do {
+                                                    System.out.println("Scegli un'informazione:");
+                                                    System.out.println("1 - Biglietti emessi; 2 - Biglietti vidimati; 3 - Abbonamenti emessi; 0 - Torna indietro.");
+                                                    try {
+                                                        k = Integer.parseInt(input.nextLine().trim());
+                                                        if (k < 0 || k > 4)
+                                                            System.err.println("Inserisci un valore consentito.");
+                                                    } catch (NumberFormatException ex) {
+                                                        System.err.println("Il valore inserito non è un numero.");
+                                                    } catch (Exception ex) {
+                                                        System.err.println("Problema generico");
+                                                    }
+                                                    switch (k) {
+                                                        case 1 -> {
+                                                            int l = 0;
+                                                            do {
+                                                                System.out.println("Vuoi selezionare un periodo?");
+                                                                System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                try {
+                                                                    l = Integer.parseInt(input.nextLine().trim());
+                                                                    if (l < 0 || l > 3)
+                                                                        System.err.println("Inserisci un valore consentito.");
+                                                                } catch (NumberFormatException ex) {
+                                                                    System.err.println("Il valore inserito non è un numero.");
+                                                                } catch (Exception ex) {
+                                                                    System.err.println("Problema generico");
+                                                                }
+                                                                switch (l) {
+                                                                    case 1 -> {
+                                                                        LocalDate date1 = ottieniData(input);
+                                                                        LocalDate date2 = ottieniData(input);
+                                                                        int j = 0;
+                                                                        do {
+                                                                            System.out.println("Vuoi selezionare un venditore?");
+                                                                            System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                            try {
+                                                                                j = Integer.parseInt(input.nextLine().trim());
+                                                                                if (j < 0 || j > 3)
+                                                                                    System.err.println("Inserisci un valore consentito.");
+                                                                            } catch (NumberFormatException ex) {
+                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                            } catch (Exception ex) {
+                                                                                System.err.println("Problema generico");
+                                                                            }
+                                                                        } while (j < 0 || j > 3);
+                                                                        switch (j) {
+                                                                            case 1 -> {
+                                                                                try {
+                                                                                    System.err.println("Lista dei distributori in servizio:");
+                                                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                                                    listaDistributoriInServizio.forEach(System.out::println);
+                                                                                    System.err.println("Lista dei distributori in manutenzione:");
+                                                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                                                    long venditore_id = 0;
+                                                                                    do {
+                                                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra.");
+                                                                                        try {
+                                                                                            venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                                            if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
+                                                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                                            }
+                                                                                        } catch (
+                                                                                                NumberFormatException ex) {
+                                                                                            System.err.println("Il valore inserito non è un numero.");
+                                                                                        } catch (Exception ex) {
+                                                                                            System.err.println("Problema generico");
+                                                                                        }
+                                                                                    } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
+                                                                                    if (vDAO.getById(venditore_id) != null) {
+                                                                                        Venditore venditore = vDAO.getById(venditore_id);
+                                                                                        long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervallForSeller(date1, date1, venditore);
+                                                                                        if (date1.isBefore(date2)) {
+                                                                                            System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                        } else {
+                                                                                            System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                        }
+                                                                                    } else {
+                                                                                        throw new Exception("Nessuna corrispondenza tra id inserito e venditori nel nostro database.");
+                                                                                    }
+                                                                                } catch (Exception e) {
+                                                                                    System.err.println(e.getMessage());
+                                                                                }
+                                                                            }
+                                                                            case 2 -> {
+                                                                                try {
+                                                                                    long numberOfTickets = bDAO.getNumberOfTicketsInTimeIntervall(date1, date2);
+                                                                                    if (date1.isBefore(date2)) {
+                                                                                        System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati emessi " + numberOfTickets + "biglietti.");
+                                                                                    } else {
+                                                                                        System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati emessi " + numberOfTickets + "biglietti.");
+                                                                                    }
+                                                                                } catch (Exception e) {
+                                                                                    System.err.println(e.getMessage());
+                                                                                }
+                                                                            }
+                                                                            case 0 -> {
+                                                                                System.out.println("Torno indietro");
+                                                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                                                System.out.println(".");
+                                                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                                                System.out.println("..");
+                                                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                                                System.out.println("...");
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    case 2 -> {
+                                                                        int j = 0;
+                                                                        do {
+                                                                            System.out.println("Vuoi selezionare un venditore?");
+                                                                            System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                            try {
+                                                                                j = Integer.parseInt(input.nextLine().trim());
+                                                                                if (j < 0 || j > 3)
+                                                                                    System.err.println("Inserisci un valore consentito.");
+                                                                            } catch (NumberFormatException ex) {
+                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                            } catch (Exception ex) {
+                                                                                System.err.println("Problema generico");
+                                                                            }
+                                                                            switch (j) {
+                                                                                case 1 -> {
+                                                                                    try {
+                                                                                        System.err.println("Lista dei venditori:");
+                                                                                        List<Venditore> listaVenditori = vDAO.getAllSellers();
+                                                                                        listaVenditori.forEach(System.out::println);
+                                                                                        long venditore_id = 0;
+                                                                                        do {
+                                                                                            System.err.println("Scegli l'id di un venditore dalle liste sopra.");
+                                                                                            try {
+                                                                                                venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                                                if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
+                                                                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                                                }
+                                                                                            } catch (
+                                                                                                    NumberFormatException ex) {
+                                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                                            } catch (Exception ex) {
+                                                                                                System.err.println("Problema generico");
+                                                                                            }
+                                                                                        } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
+                                                                                        if (vDAO.getById(venditore_id) != null) {
+                                                                                            Venditore venditore = vDAO.getById(venditore_id);
+                                                                                            long numberOfTickets = bDAO.getAllSelledTicketsForSeller(venditore_id);
+                                                                                            System.out.println("In totale sono stati venduti " + numberOfTickets + " biglietti dal \n" + venditore);
+                                                                                        } else {
+                                                                                            throw new Exception("Nessuna corrispondenza tra id inserito e venditori nel nostro database.");
+                                                                                        }
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 2 -> {
+                                                                                    try {
+                                                                                        long numberOfTickets = bDAO.getAllSelledTickets();
+                                                                                        System.out.println("In totale sono stati emessi " + numberOfTickets + " biglietti.");
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 0 -> {
+                                                                                    System.out.println("Torno indietro");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println(".");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("..");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("...");
+                                                                                }
+                                                                            }
+                                                                        } while (j < 0 || j > 3);
+                                                                    }
+                                                                    case 0 -> {
+                                                                        System.out.println("Torno indietro");
+                                                                        TimeUnit.MILLISECONDS.sleep(500);
+                                                                        System.out.println(".");
+                                                                        TimeUnit.MILLISECONDS.sleep(500);
+                                                                        System.out.println("..");
+                                                                        TimeUnit.MILLISECONDS.sleep(500);
+                                                                        System.out.println("...");
+                                                                    }
+                                                                }
+                                                            } while (l < 0 || l > 3);
+                                                        }
+                                                        case 2 -> {
+                                                            int l = 0;
+                                                            do {
+                                                                System.out.println("Vuoi selezionare un periodo?");
+                                                                System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                try {
+                                                                    l = Integer.parseInt(input.nextLine().trim());
+                                                                    if (l < 0 || l > 3)
+                                                                        System.err.println("Inserisci un valore consentito.");
+                                                                } catch (NumberFormatException ex) {
+                                                                    System.err.println("Il valore inserito non è un numero.");
+                                                                } catch (Exception ex) {
+                                                                    System.err.println("Problema generico");
+                                                                }
+                                                                switch (l) {
+                                                                    case 1 -> {
+                                                                        LocalDate date1 = ottieniData(input);
+                                                                        LocalDate date2 = ottieniData(input);
+                                                                        int j = 0;
+                                                                        do {
+                                                                            System.out.println("Vuoi selezionare un mezzo?");
+                                                                            System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                            try {
+                                                                                j = Integer.parseInt(input.nextLine().trim());
+                                                                                if (j < 0 || j > 3)
+                                                                                    System.err.println("Inserisci un valore consentito.");
+                                                                            } catch (NumberFormatException ex) {
+                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                            } catch (Exception ex) {
+                                                                                System.err.println("Problema generico");
+                                                                            }
+                                                                            switch (j) {
+                                                                                case 1 -> {
+                                                                                    try {
+                                                                                        System.err.println("Lista mezzi della compagnia:");
+                                                                                        mDAO.getAll().forEach(System.out::println);
+                                                                                        long mezzo_id = 0;
+                                                                                        do {
+                                                                                            System.out.println("Inserisci l'id di un mezzo dalla lista sopra.");
+                                                                                            try {
+                                                                                                mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                                                if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
+                                                                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                                                }
+                                                                                            } catch (
+                                                                                                    NumberFormatException ex) {
+                                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                                            } catch (Exception ex) {
+                                                                                                System.err.println("Problema generico");
+                                                                                            }
+                                                                                        } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
+                                                                                        if (mDAO.getById(mezzo_id) != null) {
+                                                                                            Mezzi mezzo = mDAO.getById(mezzo_id);
+                                                                                            long numberOfTickets = bDAO.bigliettiValidatiSuUnMezzoPerIntervallo(date1, date2, mezzo_id);
+                                                                                            if (date1.isBefore(date2)) {
+                                                                                                System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati vidimati " + numberOfTickets + " biglietti nel mezzo \n" + mezzo);
+                                                                                            } else {
+                                                                                                System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti nel mezzo \n" + mezzo);
+                                                                                            }
+                                                                                        } else {
+                                                                                            throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
+                                                                                        }
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 2 -> {
+                                                                                    try {
+                                                                                        long numberOfTickets = bDAO.bigliettiValidatiSuUnMezzoPerIntervallo(date1, date2);
+                                                                                        if (date1.isBefore(date2)) {
+                                                                                            System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati vidimati " + numberOfTickets + " biglietti in totale.");
+                                                                                        } else {
+                                                                                            System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati rilasciati " + numberOfTickets + " biglietti in totale.");
+                                                                                        }
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 0 -> {
+                                                                                    System.out.println("Torno indietro");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println(".");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("..");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("...");
+                                                                                }
+                                                                            }
+                                                                        } while (j < 0 || j > 3);
+                                                                    }
+                                                                    case 2 -> {
+                                                                        int j = 0;
+                                                                        do {
+                                                                            System.out.println("Vuoi selezionare un mezzo?");
+                                                                            System.out.println("1 - Sì; 2 - No; 0 - Torna indietro.");
+                                                                            try {
+                                                                                j = Integer.parseInt(input.nextLine().trim());
+                                                                                if (j < 0 || j > 3)
+                                                                                    System.err.println("Inserisci un valore consentito.");
+                                                                            } catch (NumberFormatException ex) {
+                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                            } catch (Exception ex) {
+                                                                                System.err.println("Problema generico");
+                                                                            }
+                                                                            switch (j) {
+                                                                                case 1 -> {
+                                                                                    try {
+                                                                                        System.err.println("Lista mezzi della compagnia:");
+                                                                                        mDAO.getAll().forEach(System.out::println);
+                                                                                        long mezzo_id = 0;
+                                                                                        do {
+                                                                                            System.out.println("Inserisci l'id di un mezzo dalla lista sopra.");
+                                                                                            try {
+                                                                                                mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                                                                if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
+                                                                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                                                                }
+                                                                                            } catch (
+                                                                                                    NumberFormatException ex) {
+                                                                                                System.err.println("Il valore inserito non è un numero.");
+                                                                                            } catch (Exception ex) {
+                                                                                                System.err.println("Problema generico");
+                                                                                            }
+                                                                                        } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
+                                                                                        if (mDAO.getById(mezzo_id) != null) {
+                                                                                            Mezzi mezzo = mDAO.getById(mezzo_id);
+                                                                                            long numberOfTickets = bDAO.bigliettiValidatiSuUnMezzo(mezzo_id);
+                                                                                            System.out.println("In totale sono stati vidimati " + numberOfTickets + " biglietti nel mezzo \n" + mezzo);
+
+                                                                                        } else {
+                                                                                            throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
+                                                                                        }
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 2 -> {
+                                                                                    try {
+                                                                                        long numberOfTickets = bDAO.getAllValidatedTickets();
+                                                                                        System.out.println("In totale sono stati vidimati " + numberOfTickets + " biglietti.");
+                                                                                    } catch (Exception e) {
+                                                                                        System.err.println(e.getMessage());
+                                                                                    }
+                                                                                }
+                                                                                case 0 -> {
+                                                                                    System.out.println("Torno indietro");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println(".");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("..");
+                                                                                    TimeUnit.MILLISECONDS.sleep(500);
+                                                                                    System.out.println("...");
+                                                                                }
+                                                                            }
+                                                                        } while (j < 0 || j > 3);
+                                                                    }
+                                                                }
+                                                            } while (l < 0 || l > 3);
+                                                        }
+                                                    }
+                                                } while (k < 0 || k > 4);
+                                            }
+                                        }
                                     }
+                                    while (m < 0 || m > 3);
                                 }
                                 case 7 -> {
                                     try {
@@ -626,46 +1448,21 @@ public class Application {
                                         System.err.println(e.getMessage());
                                     }
                                 }
-                                case 10 -> {
-                                    try {
-                                        long distributore_id = 0;
-                                        do {
-                                            System.out.println("Insersci id distributore");
-                                            try {
-                                                distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
-                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
-                                                }
-                                            } catch (NumberFormatException ex) {
-                                                System.err.println("Il valore inserito non è un numero.");
-                                            } catch (Exception ex) {
-                                                System.err.println("Problema generico");
-                                            }
-                                        } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
-                                        if (vDAO.getById(distributore_id) != null) {
-                                            try {
-                                                Distributore distributore = (Distributore) vDAO.getById(distributore_id);
-                                                System.out.println("Hai selezionato:\n" + distributore);
-                                                if (distributore.getStato() == StatoDistributore.ATTIVO) {
-                                                    vDAO.updateStatoDistributore(distributore_id, StatoDistributore.FUORISERVIZIO);
-                                                } else {
-                                                    vDAO.updateStatoDistributore(distributore_id, StatoDistributore.ATTIVO);
-                                                }
-                                                System.err.println("Risultato operazione");
-                                                System.out.println(distributore);
-                                            } catch (ClassCastException e) {
-                                                System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
-                                            }
-                                        } else {
-                                            throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
-                                        }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
+                                case 0 -> {
+                                    System.out.println("Spegnimento");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println(".");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println("..");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println("...");
+                                    System.err.println("Spento.");
+                                    input.close();
                                 }
+
                             }
                         }
-                        while (n2 < 0 || n2 > 4);
+                        while (n2 < 0 || n2 > 5);
                     }
                 } else {
                     System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");

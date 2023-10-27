@@ -69,9 +69,7 @@ public class MezziDAO {
             q.setParameter("statoMezzo", statoMezzo);
             int num = q.executeUpdate();
             transaction.commit();
-            if (num > 0) {
-                System.out.println("Mezzo modificato");
-            } else {
+            if (num <= 0) {
                 System.out.println("Non è stato modificato nulla");
             }
         } catch (Exception e) {
@@ -91,7 +89,7 @@ public class MezziDAO {
                 transaction.begin();
                 em.remove(mezzo);
                 transaction.commit();
-                System.err.println("Mezzo eliminato correttamente");
+                System.err.println("Mezzo venduto correttamente");
                 TimeUnit.MILLISECONDS.sleep(1000);
                 System.out.println(mezzo);
             } catch (Exception e) {
@@ -119,9 +117,7 @@ public class MezziDAO {
             updatePeriod.setParameter("mezzo_id", mezzo_id);
             int num = updatePeriod.executeUpdate();
             transaction.commit();
-            if (num > 0) {
-                System.out.println("Mezzo modificato");
-            } else {
+            if (num <= 0) {
                 System.out.println("Non è stato modificato nulla");
             }
         } catch (Exception e) {

@@ -80,10 +80,10 @@ public class AbbonamentiDAO {
 
         if (currentDate.isBefore(dataScadenza)) {
 
-            System.out.println("Abbonamento valido! scadra' il  " + abbonamento.getDataScadenza());
+            System.out.println("Abbonamento valido! scadra' il " + abbonamento.getDataScadenza());
         } else {
 
-            System.out.println("Abbonamento scaduto!");
+            System.out.println("Abbonamento scaduto il " + abbonamento.getDataScadenza());
         }
     }
 }

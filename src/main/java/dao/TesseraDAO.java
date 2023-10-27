@@ -72,7 +72,6 @@ public class TesseraDAO {
             validaQuery.setParameter("id", tesseraId);
             System.out.println("La tessera è Scaduta , Rinnovata!");
             System.out.println(tesseraDaVerificare);
-            ;
         }
     }
 

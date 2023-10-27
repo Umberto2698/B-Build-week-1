@@ -23,7 +23,7 @@ public class VenditoreDAO {
             transaction.begin();
             em.persist(venditore);
             transaction.commit();
-            System.err.println("Venditore salvato correttamente");
+            System.err.println("Venditore abilitato correttamente");
             TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(venditore);
         } catch (Exception e) {
@@ -72,10 +72,9 @@ public class VenditoreDAO {
     }
 
     public List<Venditore> getVenditoriInZona(String address) {
-        TypedQuery<Venditore> getVenditoriInZona = em.createQuery("SELECT v FROM Venditore v WHERE v.adress LIKE :address", Venditore.class);
-        getVenditoriInZona.setParameter("address", "%" + address + "%");
+        TypedQuery<Venditore> getVenditoriInZona = em.createQuery("SELECT v FROM Venditore v WHERE LOWER(v.adress) LIKE :address", Venditore.class);
+        getVenditoriInZona.setParameter("address", "%" + address.toLowerCase() + "%");
         return getVenditoriInZona.getResultList();
-
     }
 
     public List<Venditore> getAllRivenditori() {
@@ -96,7 +95,7 @@ public class VenditoreDAO {
     }
 
     public List<Object[]> getRivenditoriEBigliettiVenduti() {
-        Query getResults = em.createQuery("SELECT v, v.biglietti FROM Venditore v");
+        Query getResults = em.createQuery("SELECT v, COUNT(v.biglietti) FROM Venditore v");
         return getResults.getResultList();
     }
 

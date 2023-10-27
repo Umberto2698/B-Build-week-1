@@ -20,7 +20,7 @@ public class Tratta_MezzoDAO {
             transaction.begin();
             em.persist(trattaMezzo);
             transaction.commit();
-            System.err.println("Corsa salvata correttamente");
+            System.err.println("Tratta assegnata correttamente");
             TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(trattaMezzo);
         } catch (Exception e) {

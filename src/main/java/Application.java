@@ -54,6 +54,14 @@ public class Application {
         n1 = Integer.parseInt(input.nextLine().trim());
         switch (n1) {
             case 0 -> {
+                System.out.println("Spegnimento");
+                TimeUnit.MILLISECONDS.sleep(500);
+                System.out.println(".");
+                TimeUnit.MILLISECONDS.sleep(500);
+                System.out.println("..");
+                TimeUnit.MILLISECONDS.sleep(500);
+                System.out.println("...");
+                System.err.println("Spento.");
                 input.close();
                 em.close();
                 JpaUtils.close();
@@ -98,6 +106,14 @@ public class Application {
                         n = Integer.parseInt(input.nextLine().trim());
                         switch (n) {
                             case 0 -> {
+                                System.out.println("Spegnimento");
+                                TimeUnit.MILLISECONDS.sleep(500);
+                                System.out.println(".");
+                                TimeUnit.MILLISECONDS.sleep(500);
+                                System.out.println("..");
+                                TimeUnit.MILLISECONDS.sleep(500);
+                                System.out.println("...");
+                                System.err.println("Spento.");
                                 input.close();
                                 em.close();
                                 JpaUtils.close();
@@ -114,41 +130,50 @@ public class Application {
                                 }
                             }
                             case 2 -> {
-                                int piano = 0;
-                                List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user.getId());
-                                if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
-                                    System.out.println("Hai già un abbonamento valido");
-                                } else {
-                                    while (piano != 1 && piano != 2) {
-                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
-                                        try {
-                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                            if (piano != 1 && piano != 2) {
-                                                System.err.println("Inserisci un valore valido tra 1 o 2");
-                                            }
-                                        } catch (NumberFormatException e) {
-                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
-                                        }
-                                        if (piano == 1) {
-                                            try {
-                                                int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                                Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
-                                                aDAO.save(buddy);
-                                            } catch (Exception e) {
-                                                System.err.println(e.getMessage());
-                                            }
-                                        } else if (piano == 2) {
-                                            try {
-                                                int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                                Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
-                                                aDAO.save(buddy);
-                                            } catch (Exception e) {
-                                                System.err.println(e.getMessage());
-                                            }
+                                if (tDAO.getTesseraByUserId(currentUserId) != null) {
+                                    if (tDAO.getTesseraByUserId(currentUserId).getDataScadenza().isAfter(LocalDate.now())) {
+
+                                        int piano = 0;
+                                        List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user1.getId());
+                                        if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
+                                            System.out.println("Hai già un abbonamento valido");
                                         } else {
-                                            System.err.println("Errore ID utente non trovato");
+                                            while (piano != 1 && piano != 2) {
+                                                System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                                try {
+                                                    piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                                    if (piano != 1 && piano != 2) {
+                                                        System.err.println("Inserisci un valore valido tra 1 o 2");
+                                                    }
+                                                } catch (NumberFormatException e) {
+                                                    System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                                }
+                                                if (piano == 1) {
+                                                    try {
+                                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user1, allSellers.get(nVenditoreRandom));
+                                                        aDAO.save(buddy);
+                                                    } catch (Exception e) {
+                                                        System.err.println(e.getMessage());
+                                                    }
+                                                } else if (piano == 2) {
+                                                    try {
+                                                        int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                        Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user1, allSellers.get(nVenditoreRandom));
+                                                        aDAO.save(buddy);
+                                                    } catch (Exception e) {
+                                                        System.err.println(e.getMessage());
+                                                    }
+                                                } else {
+                                                    System.err.println("Errore ID utente non trovato");
+                                                }
+                                            }
                                         }
+                                    } else {
+                                        System.err.println("Hai una tessera scaduta. Rinnovala.");
                                     }
+                                } else {
+                                    System.err.println("Non posssiedi una tessera");
                                 }
                             }
                             case 3 -> {
@@ -163,9 +188,13 @@ public class Application {
                             }
                             case 4 -> {
                                 if (currentUserId != 0) {
-                                    Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
-                                    if (tesseraUtente != null) {
-                                        tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                    try {
+                                        Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
+                                        if (tesseraUtente != null) {
+                                            tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                        }
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
                                     }
                                 } else {
                                     System.out.println("Non hai una tessera");
@@ -178,7 +207,7 @@ public class Application {
                                         bDAO.validateTicket(mDAO, bigliettoNonValidato.get(0));
                                         System.out.println(bigliettoNonValidato.get(0));
                                     } else {
-                                        System.out.println("Nessun biglietto non validato trovato , comprane uno nuovo");
+                                        System.out.println("Tutti i sono validati o non possiedi biglietti , comprane uno nuovo");
                                     }
                                 }
                             }
@@ -187,7 +216,7 @@ public class Application {
                                     List<Abbonamenti> abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                     if (abbonamentoUtente != null) {
                                         int num = 0;
-                                        abbonamentoUtente.forEach(abbonamento -> aDAO.isAbbonamentoScaduto(abbonamento));
+                                        abbonamentoUtente.forEach(aDAO::isAbbonamentoScaduto);
                                     } else {
                                         System.out.println("Non hai un abbonamento, vai a farlo");
                                     }
@@ -196,7 +225,6 @@ public class Application {
                             case 7 -> {
                                 System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
                                 String viaInput = input.nextLine().trim();
-                                //////////////CONTROLLO SE LA VIA è vuota////////////////////
                                 if (viaInput.isEmpty()) {
                                     System.err.println("inserisci una via valida.");
                                 } else {
@@ -211,7 +239,7 @@ public class Application {
                             case 8 -> {
                                 int piano = -1;
                                 while (piano != 1 && piano != 2 && piano != 0) {
-                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea | 0 per tornare indietro : ");
+                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendo punto di partenza e capolinea | 0 per tornare indietro : ");
                                     try {
                                         piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
                                         if (piano != 1 && piano != 2 && piano != 0) {
@@ -258,7 +286,6 @@ public class Application {
                             }
                             case 9 -> {
                                 try {
-
                                     Tessera tesseraUser = tDAO.getTesseraByUserId(user1.getId());
                                     if (tesseraUser != null) {
                                         System.out.println("La tua tessera : " + tesseraUser);
@@ -294,6 +321,14 @@ public class Application {
                             n = Integer.parseInt(input.nextLine().trim());
                             switch (n) {
                                 case 0 -> {
+                                    System.out.println("Spegnimento");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println(".");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println("..");
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                    System.out.println("...");
+                                    System.err.println("Spento.");
                                     input.close();
                                     em.close();
                                     JpaUtils.close();
@@ -310,41 +345,50 @@ public class Application {
                                     }
                                 }
                                 case 2 -> {
-                                    int piano = 0;
-                                    List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user.getId());
-                                    if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
-                                        System.out.println("Hai già un abbonamento valido");
-                                    } else {
-                                        while (piano != 1 && piano != 2) {
-                                            System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
-                                            try {
-                                                piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (piano != 1 && piano != 2) {
-                                                    System.err.println("Inserisci un valore valido tra 1 o 2");
-                                                }
-                                            } catch (NumberFormatException e) {
-                                                System.err.println("Inserisci un valore numerico valido tra 1 o 2");
-                                            }
-                                            if (piano == 1) {
-                                                try {
-                                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                                    Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
-                                                    aDAO.save(buddy);
-                                                } catch (Exception e) {
-                                                    System.err.println(e.getMessage());
-                                                }
-                                            } else if (piano == 2) {
-                                                try {
-                                                    int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
-                                                    Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
-                                                    aDAO.save(buddy);
-                                                } catch (Exception e) {
-                                                    System.err.println(e.getMessage());
-                                                }
+                                    if (tDAO.getTesseraByUserId(currentUserId) != null) {
+                                        if (tDAO.getTesseraByUserId(currentUserId).getDataScadenza().isAfter(LocalDate.now())) {
+
+                                            int piano = 0;
+                                            List<Abbonamenti> userAbb = aDAO.getAbbonamentoByUserId(user.getId());
+                                            if (userAbb.stream().anyMatch(abbonamento -> abbonamento.getDataScadenza().isAfter(LocalDate.now()))) {
+                                                System.out.println("Hai già un abbonamento valido");
                                             } else {
-                                                System.err.println("Errore ID utente non trovato");
+                                                while (piano != 1 && piano != 2) {
+                                                    System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                                    try {
+                                                        piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                                        if (piano != 1 && piano != 2) {
+                                                            System.err.println("Inserisci un valore valido tra 1 o 2");
+                                                        }
+                                                    } catch (NumberFormatException e) {
+                                                        System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                                    }
+                                                    if (piano == 1) {
+                                                        try {
+                                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.MENSILE, user, allSellers.get(nVenditoreRandom));
+                                                            aDAO.save(buddy);
+                                                        } catch (Exception e) {
+                                                            System.err.println(e.getMessage());
+                                                        }
+                                                    } else if (piano == 2) {
+                                                        try {
+                                                            int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
+                                                            Abbonamenti buddy = new Abbonamenti(TipoAbbonamento.SETTIMANALE, user, allSellers.get(nVenditoreRandom));
+                                                            aDAO.save(buddy);
+                                                        } catch (Exception e) {
+                                                            System.err.println(e.getMessage());
+                                                        }
+                                                    } else {
+                                                        System.err.println("Errore ID utente non trovato");
+                                                    }
+                                                }
                                             }
+                                        } else {
+                                            System.err.println("Hai una tessera scaduta. Rinnovala.");
                                         }
+                                    } else {
+                                        System.err.println("Non posssiedi una tessera");
                                     }
                                 }
                                 case 3 -> {
@@ -358,13 +402,16 @@ public class Application {
                                     }
                                 }
                                 case 4 -> {
-                                    if (currentUserId != 0) {
-                                        Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
-                                        if (tesseraUtente != null) {
-                                            tDAO.isTesseraScadutaById(tesseraUtente.getId());
+                                    try {
+                                        if (tDAO.getTesseraByUserId(currentUserId) != null) {
+                                            Tessera tesseraUtente = tDAO.getTesseraByUserId(currentUserId);
+                                            System.err.println("Tessera trovata");
+                                            System.out.println(tesseraUtente);
+                                        } else {
+                                            System.err.println("Non possiedi alcuna tessera.");
                                         }
-                                    } else {
-                                        System.out.println("Non hai una tessera");
+                                    } catch (Exception e) {
+                                        System.err.println(e.getMessage());
                                     }
                                 }
                                 case 5 -> {
@@ -382,8 +429,7 @@ public class Application {
                                     if (currentUserId != 0) {
                                         List<Abbonamenti> abbonamentoUtente = aDAO.getAbbonamentoByUserId(currentUserId);
                                         if (abbonamentoUtente != null) {
-                                            int num = 0;
-                                            abbonamentoUtente.forEach(abbonamento -> aDAO.isAbbonamentoScaduto(abbonamento));
+                                            abbonamentoUtente.forEach(aDAO::isAbbonamentoScaduto);
                                         } else {
                                             System.out.println("Non hai un abbonamento, vai a farlo");
                                         }
@@ -392,7 +438,6 @@ public class Application {
                                 case 7 -> {
                                     System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
                                     String viaInput = input.nextLine().trim();
-                                    //////////////CONTROLLO SE LA VIA è vuota////////////////////
                                     if (viaInput.isEmpty()) {
                                         System.err.println("inserisci una via valida.");
                                     } else {
@@ -546,11 +591,13 @@ public class Application {
                                                     System.err.println("Lista dei mezzi in servizio:");
                                                     List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
                                                     listaMezziInServizio.forEach(System.out::println);
+                                                    TimeUnit.MILLISECONDS.sleep(1000);
                                                     System.err.println("Lista dei mezzi in manutenzione:");
                                                     List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
                                                     listaMezziInManutenzione.forEach(System.out::println);
                                                     long mezzo_id = 0;
                                                     do {
+                                                        TimeUnit.MILLISECONDS.sleep(1000);
                                                         System.err.println("Scegli l'id di un mezzo dalle liste sopra per cambiare il suo stato.");
                                                         try {
                                                             mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
@@ -567,13 +614,13 @@ public class Application {
                                                         Mezzi mezzo = mDAO.getById(mezzo_id);
                                                         if (mezzo.getStatoMezzo() == StatoMezzo.IN_SERVIZIO) {
                                                             mDAO.findByIdAndUpdateState(mezzo_id, StatoMezzo.IN_MANUTENZIONE);
-                                                            Periodi period = new Periodi(LocalDate.now(), null, mezzo);
+                                                            Periodi period = new Periodi(LocalDate.now(), null, mDAO.getById(mezzo_id));
                                                             pDAO.save(period);
-                                                            System.out.println("Il mezzo \n" + mezzo + " ora è in manutenzione.");
+                                                            System.out.println("Il mezzo \n" + mDAO.getById(mezzo_id) + " ora è in manutenzione.");
                                                         } else {
                                                             mDAO.findByIdAndUpdateState(mezzo_id, StatoMezzo.IN_SERVIZIO);
                                                             mDAO.getLastPeriodForTransportAndUpdate(mezzo_id);
-                                                            System.out.println("Il mezzo \n" + mezzo + " ora è in servizio.");
+                                                            System.out.println("Il mezzo \n" + mDAO.getById(mezzo_id) + " ora è in servizio.");
                                                         }
                                                     } else {
                                                         throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
@@ -587,11 +634,13 @@ public class Application {
                                                     System.err.println("Lista dei mezzi in servizio:");
                                                     List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
                                                     listaMezziInServizio.forEach(System.out::println);
+                                                    TimeUnit.MILLISECONDS.sleep(1000);
                                                     System.err.println("Lista dei mezzi in manutenzione:");
                                                     List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
                                                     listaMezziInManutenzione.forEach(System.out::println);
                                                     long mezzo_id = 0;
                                                     do {
+                                                        TimeUnit.MILLISECONDS.sleep(1000);
                                                         System.err.println("Scegli l'id di un mezzo dalle liste sopra per venderlo.");
                                                         try {
                                                             mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
@@ -606,7 +655,6 @@ public class Application {
                                                     } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
                                                     if (mDAO.getById(mezzo_id) != null) {
                                                         mDAO.delete(mezzo_id);
-                                                        System.err.println("Mezzo venduto correttamente.");
                                                     } else {
                                                         throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
                                                     }
@@ -630,7 +678,7 @@ public class Application {
                                     int m = 0;
                                     do {
                                         System.out.println("Scegli un'azione da svolgere:");
-                                        System.out.println("1 - Acquista un nuovo distributore; 2 - Gestisci lo stato di un distributore; 4 - Abilita un nuovo rivenditore; 5 - Disabilita un rivenditore; 0 - Torna indietro.");
+                                        System.out.println("1 - Acquista un nuovo distributore; 2 - Gestisci lo stato di un distributore; 3 - Abilita un nuovo rivenditore; 4 - Disabilita un rivenditore; 0 - Torna indietro.");
                                         try {
                                             m = Integer.parseInt(input.nextLine().trim());
                                             if (m < 0 || m > 6) System.err.println("Inserisci un valore consentito.");
@@ -653,12 +701,14 @@ public class Application {
                                                     System.err.println("Lista dei distributori in servizio:");
                                                     List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
                                                     listaDistributoriInServizio.forEach(System.out::println);
+                                                    TimeUnit.MILLISECONDS.sleep(1000);
                                                     System.err.println("Lista dei distributori in manutenzione:");
                                                     List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
                                                     listaDistributoriFuoriServizio.forEach(System.out::println);
                                                     long distributore_id = 0;
                                                     do {
-                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per venderlo.");
+                                                        TimeUnit.MILLISECONDS.sleep(500);
+                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per gestirne lo stato.");
                                                         try {
                                                             distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
                                                             if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
@@ -679,6 +729,7 @@ public class Application {
                                                             } else {
                                                                 vDAO.updateStatoDistributore(distributore_id, StatoDistributore.ATTIVO);
                                                             }
+                                                            TimeUnit.MILLISECONDS.sleep(500);
                                                             System.err.println("Risultato operazione");
                                                             System.out.println(vDAO.getById(distributore_id));
                                                         } catch (ClassCastException e) {
@@ -697,7 +748,6 @@ public class Application {
                                                     String address = input.nextLine();
                                                     Rivenditore rivenditore = new Rivenditore(address);
                                                     vDAO.save(rivenditore);
-                                                    System.out.println("Hai abilitato il seguente rivenditore " + rivenditore);
                                                 } catch (Exception e) {
                                                     System.err.println(e.getMessage());
                                                 }
@@ -850,7 +900,6 @@ public class Application {
                                                                     Mezzi mezzo = mDAO.getById(mezzo_id);
                                                                     Tratta_Mezzo trattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mezzo, tratta);
                                                                     tr_m_DAO.save(trattaMezzo);
-                                                                    System.err.println("Tratta assegnata correttamente.");
                                                                 } catch (Exception e) {
                                                                     System.err.println(e.getMessage());
                                                                 }
@@ -878,37 +927,6 @@ public class Application {
                                             }
                                         }
                                     } while (m != 0);
-                                    try {
-                                        LocalDate date1 = ottieniData(input);
-                                        LocalDate date2 = ottieniData(input);
-                                        long mezzo_id = 0;
-                                        do {
-                                            System.out.println("Inserisci l'id di un mezzo");
-                                            try {
-                                                mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
-                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
-                                                }
-                                            } catch (NumberFormatException ex) {
-                                                System.err.println("Il valore inserito non è un numero.");
-                                            } catch (Exception ex) {
-                                                System.err.println("Problema generico");
-                                            }
-                                        } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
-                                        if (mDAO.getById(mezzo_id) != null) {
-                                            Mezzi mezzo = mDAO.getById(mezzo_id);
-                                            long numeroBigliettiValidati = mDAO.getBigliettiVidimatiPerMezzoPerPeriodo(mezzo_id, date1, date2);
-                                            if (date1.isBefore(date2)) {
-                                                System.out.println("Tra il " + date1 + " e il " + date2 + " sono stati vidimati " + numeroBigliettiValidati + " biglietti nel mezzo \n" + mezzo);
-                                            } else {
-                                                System.out.println("Tra il " + date2 + " e il " + date1 + " sono stati vidimati " + numeroBigliettiValidati + " biglietti nel mezzo \n" + mezzo);
-                                            }
-                                        } else {
-                                            throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
-                                        }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
                                 }
                                 case 4 -> {
                                     int m = 0;

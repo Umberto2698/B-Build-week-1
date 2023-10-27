@@ -15,21 +15,6 @@ import java.util.function.Supplier;
 public class Application {
 
     public static void main(String[] args) throws InterruptedException {
-        //            **************************** IMPORTANTE NON CANCELLARE ************************************
-
-//         try{
-//           List<Object[]> lista = trDao.getTimeTrattaPercorsa(7124696535489L);
-//           for (Object[] el : lista) {
-//               double tempo = (double) el[0];
-//               Mezzi mezzo = (Mezzi) el[1];
-//               System.out.println("Tempo effettivo: " + tempo + " mezzo: " + mezzo);
-//           }
-//       } catch (Exception e) {
-//           System.out.println(e);
-//       } finally {
-//           em.close();
-//           JpaUtils.close();
-//       }
         Scanner input = new Scanner(System.in);
         EntityManager em = JpaUtils.getEmf().createEntityManager();
 

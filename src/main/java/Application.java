@@ -540,7 +540,7 @@ public class Application {
                                                             System.out.println("...");
                                                         }
                                                     }
-                                                } while (k < 0 || k > 4);
+                                                } while (0 < k || k > 4);
                                             }
                                             case 2 -> {
                                                 try {

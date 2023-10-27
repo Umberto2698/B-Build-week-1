@@ -2,9 +2,7 @@ package dao;
 
 import enteties.Mezzi;
 import enteties.Periodi;
-import enteties.Tratta;
 import enums.StatoMezzo;
-import enums.TipoMezzo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -62,23 +60,27 @@ public class MezziDAO {
         return getElements.getResultList();
     }
 
-    public int findByIdAndUpdate(long id, long capienza, StatoMezzo statoMezzo, TipoMezzo tipoMezzo, Tratta tratta) {
-        EntityTransaction t = em.getTransaction();
-        t.begin();
-        Query q = em.createQuery("UPDATE Mezzo m SET m.capienza=:capienza, m.stato=:stato, m.TipoMezzo=:tipoMezzo, m.Tratta=:tratta WHERE m.id=:id");
-        q.setParameter("capienza", capienza);
-        q.setParameter("id", id);
-        q.setParameter("stato", statoMezzo);
-        q.setParameter("tipoMezzo", tipoMezzo);
-        q.setParameter("tratta", tratta);
-        int num = q.executeUpdate();
-        t.commit();
-        if (num > 0) {
-            System.out.println("Mezzo modificato");
-        } else {
-            System.out.println("Non è stato modificato nulla");
+    public void findByIdAndUpdateState(long id, StatoMezzo statoMezzo) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Query q = em.createQuery("UPDATE Mezzo m SET m.statoMezzo = :statoMezzo WHERE m.id=:id");
+            q.setParameter("id", id);
+            q.setParameter("statoMezzo", statoMezzo);
+            int num = q.executeUpdate();
+            transaction.commit();
+            if (num > 0) {
+                System.out.println("Mezzo modificato");
+            } else {
+                System.out.println("Non è stato modificato nulla");
+            }
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Errore durante la validazione del biglietto." + e);
+            throw e;
         }
-        return num;
     }
 
     public void delete(long id) throws InterruptedException {
@@ -108,6 +110,13 @@ public class MezziDAO {
         return getPeriods.getResultList();
     }
 
+    public Periodi getLastPeriodForTransportAndUpdate(long mezzo_id) {
+        TypedQuery<Periodi> updatePeriod = em.createQuery("UPDATE Periodi p SET p.dataFine = :now WHERE p.mezzo.id = :mezzo_id AND p.dataFine IS NULL", Periodi.class);
+        updatePeriod.setParameter("now", LocalDate.now());
+        updatePeriod.setParameter("mezzo_id", mezzo_id);
+        return updatePeriod.getSingleResult();
+    }
+
     public Long getBigliettiVidimatiPerMezzoPerPeriodo(Long idMezzo, LocalDate inizioPeriodo, LocalDate finePeriodo) {
         TypedQuery<Long> q = null;
         if (inizioPeriodo.isBefore(finePeriodo)
@@ -130,7 +139,5 @@ public class MezziDAO {
         }
         return q != null ? q.getSingleResult() : -1;
     }
-
-
 }
 

@@ -22,15 +22,14 @@ public class Periodi {
 
     @Column(name = "period_type")
     @Enumerated(EnumType.STRING)
-    private StatoMezzo statoMezzo;
+    private StatoMezzo statoMezzo = StatoMezzo.IN_MANUTENZIONE;
 
     public Periodi() {
     }
 
-    public Periodi(LocalDate dataInizio, LocalDate dataFine, Mezzi mezzo, StatoMezzo statoMezzo) {
+    public Periodi(LocalDate dataInizio, LocalDate dataFine, Mezzi mezzo) {
         this.dataInizio = dataInizio;
         this.dataFine = dataFine;
-        this.statoMezzo = statoMezzo;
         this.mezzo = mezzo;
     }
 

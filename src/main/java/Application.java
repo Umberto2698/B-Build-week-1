@@ -1,15 +1,14 @@
 import com.github.javafaker.Faker;
 import dao.*;
 import enteties.*;
-import enums.StatoDistributore;
-import enums.TipoAbbonamento;
-import enums.TipoUser;
+import enums.*;
 import utils.JpaUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class Application {
@@ -61,7 +60,7 @@ public class Application {
         int n;
         long currentUserId = 0;
         int n1;
-        int n2;
+        int n2 = 0;
         User user = null;
 
         System.out.println("0 per interrompere, 1 per registrati sul sito, 2 per accedere ");
@@ -218,12 +217,151 @@ public class Application {
                         }
                         while (n != 0);
                     } else {
-                        //sei un admin.
+                        System.err.println("MENU ADMIN");
+                        System.out.println("Benvenuto " + user.getNome() + user.getCognome() + ".");
                         do {
-                            System.out.println("MENU ADMIN");
-                            n2 = Integer.parseInt(input.nextLine().trim());
+                            System.out.println("Scegli un'azione da svolgere:");
+                            System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Ottieni informazioni sull'andamento della compagnia; 0 - Chiudi il terminale.");
+                            try {
+                                n2 = Integer.parseInt(input.nextLine().trim());
+                                if (n2 < 0 || n2 > 4) System.err.println("Inserisci un valore consentito.");
+                            } catch (NumberFormatException ex) {
+                                System.err.println("Il valore inserito non è un numero.");
+                            } catch (Exception ex) {
+                                System.err.println("Problema generico");
+                            }
                             switch (n2) {
                                 case 1 -> {
+                                    int m = 0;
+                                    do {
+                                        System.out.println("Scegli un'azione da svolgere:");
+                                        System.out.println("1 - Acquista un nuovo mezzo; 2 - Gestisci lo stato di un mezzo; 3 - Vendi un mezzo; 0 - Torna indietro.");
+                                        try {
+                                            m = Integer.parseInt(input.nextLine().trim());
+                                            if (m < 0 || m > 4) System.err.println("Inserisci un valore consentito.");
+                                        } catch (NumberFormatException ex) {
+                                            System.err.println("Il valore inserito non è un numero.");
+                                        } catch (Exception ex) {
+                                            System.err.println("Problema generico");
+                                        }
+                                        switch (m) {
+                                            case 1 -> {
+                                                int k = 0;
+                                                do {
+                                                    System.err.println("Che tipo di mezzo vuoi acquistare?");
+                                                    System.out.println("1 - TRAM; 2 - AUTOBUS; 3 - Ottieni info sui modelli disponibili; 0 - Torna indietro;");
+                                                    try {
+                                                        k = Integer.parseInt(input.nextLine().trim());
+                                                        if (k < 0 || k > 4)
+                                                            System.err.println("Inserisci un valore consentito.");
+                                                    } catch (NumberFormatException ex) {
+                                                        System.err.println("Il valore inserito non è un numero.");
+                                                    } catch (Exception ex) {
+                                                        System.err.println("Problema generico");
+                                                    }
+                                                    switch (k) {
+                                                        case 1 -> {
+                                                            Mezzi mezzo = new Mezzi(TipoMezzo.TRAM);
+                                                            mDAO.save(mezzo);
+                                                            System.err.println("Mezzo acquistato con successo.");
+                                                            System.out.println(mezzo);
+                                                        }
+                                                        case 2 -> {
+                                                            Mezzi mezzo = new Mezzi(TipoMezzo.AUTOBUS);
+                                                            mDAO.save(mezzo);
+                                                            System.err.println("Mezzo acquistato con successo.");
+                                                            System.out.println(mezzo);
+                                                        }
+                                                        case 3 -> {
+                                                            System.out.println("In catalogo sono disponibili un modello di TRAM dalla capienza di 53 posti e un modello di AUTOBUS dalla capienza di 89 posti.");
+                                                        }
+                                                        case 0 -> {
+                                                            System.out.println("Torno indietro");
+                                                            TimeUnit.MILLISECONDS.sleep(500);
+                                                            System.out.println(".");
+                                                            TimeUnit.MILLISECONDS.sleep(500);
+                                                            System.out.println("..");
+                                                            TimeUnit.MILLISECONDS.sleep(500);
+                                                            System.out.println("...");
+                                                        }
+                                                    }
+                                                } while (k < 0 || k > 4);
+                                            }
+                                            case 2 -> {
+                                                try {
+                                                    System.err.println("Lista dei mezzi in servizio:");
+                                                    List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
+                                                    listaMezziInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei mezzi in manutenzione:");
+                                                    List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
+                                                    listaMezziInManutenzione.forEach(System.out::println);
+                                                    long mezzo_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per cambiare il suo stato.");
+                                                        try {
+                                                            mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
+                                                    if (mDAO.getById(mezzo_id) != null) {
+                                                        Mezzi mezzo = mDAO.getById(mezzo_id);
+                                                        if (mezzo.getStatoMezzo() == StatoMezzo.IN_SERVIZIO) {
+                                                            mDAO.findByIdAndUpdateState(mezzo_id, StatoMezzo.IN_MANUTENZIONE);
+                                                            Periodi period = new Periodi(LocalDate.now(), null, mezzo);
+                                                            pDAO.save(period);
+                                                            System.out.println("Il mezzo \n" + mezzo + " ora è in manutenzione.");
+                                                        } else {
+                                                            mDAO.findByIdAndUpdateState(mezzo_id, StatoMezzo.IN_SERVIZIO);
+                                                            mDAO.getLastPeriodForTransportAndUpdate(mezzo_id);
+                                                            System.out.println("Il mezzo \n" + mezzo + " ora è in servizio.");
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 3 -> {
+                                                try {
+                                                    System.err.println("Lista dei mezzi in servizio:");
+                                                    List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
+                                                    listaMezziInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei mezzi in manutenzione:");
+                                                    List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
+                                                    listaMezziInManutenzione.forEach(System.out::println);
+                                                    long mezzo_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per cambiare il suo stato.");
+                                                        try {
+                                                            mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L);
+                                                    if (mDAO.getById(mezzo_id) != null) {
+                                                        mDAO.delete(mezzo_id);
+                                                        System.err.println("Mezzo venduto correttamente.");
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                        }
+                                    } while (m < 0 || m > 4);
                                     try {
                                         LocalDate date1 = ottieniData(input);
                                         LocalDate date2 = ottieniData(input);
@@ -270,14 +408,6 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-                                }
-                                case 3 -> {
-                                    System.err.println("Lista dei mezzi in servizio:");
-                                    List<Mezzi> listaMezziInServizio = mDAO.getAllOnService();
-                                    listaMezziInServizio.forEach(System.out::println);
-                                    System.err.println("Lista dei mezzi in manutenzione:");
-                                    List<Mezzi> listaMezziInManutenzione = mDAO.getAllUnderMaintenance();
-                                    listaMezziInManutenzione.forEach(System.out::println);
                                 }
                                 case 4 -> {
                                     System.err.println("Lista dei distributori in servizio:");
@@ -347,7 +477,6 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-
                                 }
                                 case 7 -> {
                                     try {
@@ -396,7 +525,6 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-
                                 }
                                 case 8 -> {
                                     try {
@@ -521,7 +649,7 @@ public class Application {
                                 }
                             }
                         }
-                        while (n2 != 0);
+                        while (n2 < 0 || n2 > 4);
                     }
                 } else {
                     System.err.println("ID utente non trovato, assicurati di aver inserito l'id corretto!");
@@ -553,9 +681,7 @@ public class Application {
         //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
         //  }
         //CREA UN NUOVO MEZZO
-//        System.out.println("Inserisci il tipo di mezzo: ");
-//        String TipoMezzo = input.next();
-//        System.out.println("Inserisci il numero di posti disponibili: ");
+
     }
 
     public static boolean verificaAnnoBisestile(int anno) {

@@ -310,7 +310,7 @@ public class FillDatabase {
             LocalDate end = faker.date().between(Date.from(start.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                             , Date.from(LocalDate.of(year1, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                     .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            Periodi period = new Periodi(start, end, transport, StatoMezzo.IN_MANUTENZIONE);
+            Periodi period = new Periodi(start, end, transport);
             periods.add(period);
         });
         return periods;
@@ -320,7 +320,7 @@ public class FillDatabase {
         List<Mezzi> transportsUnderMaintenance = mDAO.getAllUnderMaintenance();
         List<Periodi> periods = new ArrayList<>();
         transportsUnderMaintenance.forEach(transport -> {
-            Periodi period = new Periodi(LocalDate.now(), null, transport, StatoMezzo.IN_MANUTENZIONE);
+            Periodi period = new Periodi(LocalDate.now(), null, transport);
             periods.add(period);
         });
         return periods;

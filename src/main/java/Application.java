@@ -247,6 +247,7 @@ public class Application {
                                         switch (m) {
                                             case 1 -> {
                                               //  acquistaMezzoDiTrasporto(input);
+                                                // Controllore(input);
                                                 int k = 0;
                                                 do {
                                                     System.err.println("Che tipo di mezzo vuoi acquistare?");
@@ -842,5 +843,47 @@ public class Application {
                 System.out.println("Annulla l'acquisto.");
         }
         } while (scelta < 0 || scelta > 3);
+    }
+
+    public static void bigliettoValido() {
+        System.out.println("Passeggero con biglietto valido!");
+    }
+    public static void abbonamentoValido() {
+        System.out.println("Passeggero con abbonamento valido!");
+    }
+    public static void abbonamentoScaduto() {
+            System.out.println("Passeggero con abbonamento scaduto!");
+        }
+
+    public static void Controllore(Scanner input) {
+
+        int scelta = 0;
+        do {
+        System.out.println("Seleziona un'opzione: ");
+        System.out.println("1. Passeggero con biglietto valido!");
+        System.out.println("2. Passeggero con abbonamento valido!");
+        System.out.println("3. Passeggero con abbonamento scaduto!");
+        System.out.println("Inserisci la tua scelta: ");
+            try {
+                scelta = Integer.parseInt(input.nextLine().trim());
+                if (scelta < 0 || scelta > 4) System.err.println("Inserisci un valore consentito.");
+            } catch (NumberFormatException ex) {
+                System.err.println("Il valore inserito non è un numero.");
+            } catch (Exception ex) {
+                System.err.println("Problema generico");
+            }
+        switch (scelta) {
+            case 1:
+                bigliettoValido();
+                break;
+            case 2:
+                abbonamentoValido();
+                break;
+            case 3:
+                abbonamentoScaduto();
+            case 0:
+                System.out.println("Annulla l'acquisto.");
+        }
+        } while (scelta < 0 || scelta > 4);
     }
 }

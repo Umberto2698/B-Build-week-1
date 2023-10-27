@@ -338,7 +338,7 @@ public class Application {
                                                     listaMezziInManutenzione.forEach(System.out::println);
                                                     long mezzo_id = 0;
                                                     do {
-                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per cambiare il suo stato.");
+                                                        System.err.println("Scegli l'id di un mezzo dalle liste sopra per venderlo.");
                                                         try {
                                                             mezzo_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
                                                             if (mezzo_id < 1000000000000L || mezzo_id >= 10000000000000L) {
@@ -360,8 +360,181 @@ public class Application {
                                                     System.err.println(e.getMessage());
                                                 }
                                             }
+                                            case 0 -> {
+                                                System.out.println("Torno indietro");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println(".");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("..");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("...");
+                                            }
                                         }
                                     } while (m < 0 || m > 4);
+                                }
+                                case 2 -> {
+                                    int m = 0;
+                                    do {
+                                        System.out.println("Scegli un'azione da svolgere:");
+                                        System.out.println("1 - Acquista un nuovo distributore; 2 - Gestisci lo stato di un distributore; 3 - Vendi un distributore; 4 - Abilita un nuovo rivenditore; 5 - Disabilita un rivenditore; 0 - Torna indietro.");
+                                        try {
+                                            m = Integer.parseInt(input.nextLine().trim());
+                                            if (m < 0 || m > 6) System.err.println("Inserisci un valore consentito.");
+                                        } catch (NumberFormatException ex) {
+                                            System.err.println("Il valore inserito non è un numero.");
+                                        } catch (Exception ex) {
+                                            System.err.println("Problema generico");
+                                        }
+                                        switch (m) {
+                                            case 1 -> {
+                                                try {
+                                                    vDAO.save(new Distributore());
+                                                    System.err.println("Distributore acquistato correttamente.");
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 2 -> {
+                                                try {
+                                                    System.err.println("Lista dei distributori in servizio:");
+                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                    listaDistributoriInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei distributori in manutenzione:");
+                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                    long distributore_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per cambiare il suo stato.");
+                                                        try {
+                                                            distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
+                                                    if (vDAO.getById(distributore_id) != null) {
+                                                        try {
+                                                            Distributore distributore = (Distributore) vDAO.getById(distributore_id);
+                                                            System.out.println("Hai selezionato:\n" + distributore);
+                                                            vDAO.delete(distributore_id);
+                                                            System.err.println("Distributore venduto con successo.");
+                                                        } catch (ClassCastException e) {
+                                                            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 3 -> {
+                                                try {
+                                                    System.err.println("Lista dei distributori in servizio:");
+                                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
+                                                    listaDistributoriInServizio.forEach(System.out::println);
+                                                    System.err.println("Lista dei distributori in manutenzione:");
+                                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
+                                                    listaDistributoriFuoriServizio.forEach(System.out::println);
+                                                    long distributore_id = 0;
+                                                    do {
+                                                        System.err.println("Scegli l'id di un distributore dalle liste sopra per venderlo.");
+                                                        try {
+                                                            distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                    } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
+                                                    if (vDAO.getById(distributore_id) != null) {
+                                                        try {
+                                                            Distributore distributore = (Distributore) vDAO.getById(distributore_id);
+                                                            System.out.println("Hai selezionato:\n" + distributore);
+                                                            if (distributore.getStato() == StatoDistributore.ATTIVO) {
+                                                                vDAO.updateStatoDistributore(distributore_id, StatoDistributore.FUORISERVIZIO);
+                                                            } else {
+                                                                vDAO.updateStatoDistributore(distributore_id, StatoDistributore.ATTIVO);
+                                                            }
+                                                            System.err.println("Risultato operazione");
+                                                            System.out.println(distributore);
+                                                        } catch (ClassCastException e) {
+                                                            System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
+                                                        }
+                                                    } else {
+                                                        throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 4 -> {
+                                                try {
+                                                    System.out.println("Inserisci l'indirizzo del rivenditore che si desidera abilitare.");
+                                                    String address = input.nextLine();
+                                                    Rivenditore rivenditore = new Rivenditore(address);
+                                                    vDAO.save(rivenditore);
+                                                    System.out.println("Hai abilitato il seguente rivenditore " + rivenditore);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 5 -> {
+                                                try {
+                                                    System.err.println("Lista rivenditori abilitati - biglietti venduti.");
+                                                    List<Object[]> list = vDAO.getRivenditoriEBigliettiVenduti();
+                                                    for (Object[] el : list) {
+                                                        Venditore venditore = (Venditore) el[0];
+                                                        long biglietti = (Long) el[1];
+                                                        System.out.println(venditore + " - " + biglietti);
+                                                    }
+                                                    long venditore_id = 0;
+                                                    do {
+                                                        System.out.println("Inserisci l'id del rivenditore che si desidera disabilitare.");
+                                                        try {
+                                                            venditore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                            if (venditore_id < 1000000000000L || venditore_id >= 10000000000000L) {
+                                                                System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                            }
+                                                        } catch (NumberFormatException ex) {
+                                                            System.err.println("Il valore inserito non è un numero.");
+                                                        } catch (Exception ex) {
+                                                            System.err.println("Problema generico");
+                                                        }
+                                                        if (vDAO.getById(venditore_id) != null) {
+                                                            try {
+                                                                Rivenditore venditore = (Rivenditore) vDAO.getById(venditore_id);
+                                                                vDAO.delete(venditore_id);
+                                                                System.err.println("Rivenditore disabilitato con successo.");
+                                                            } catch (ClassCastException e) {
+                                                                System.err.println("Hai inserito l'id di un distributore. Inserisci quello di un rivenditore.");
+                                                            }
+                                                        } else {
+                                                            throw new Exception("Nessuna corrispondenza tra id inserito e rivenditori nel nostro database.");
+                                                        }
+                                                    } while (venditore_id < 1000000000000L || venditore_id >= 10000000000000L);
+                                                } catch (Exception e) {
+                                                    System.err.println(e.getMessage());
+                                                }
+                                            }
+                                            case 0 -> {
+                                                System.out.println("Torno indietro");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println(".");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("..");
+                                                TimeUnit.MILLISECONDS.sleep(500);
+                                                System.out.println("...");
+                                            }
+                                        }
+                                    } while (m < 0 || m > 6);
                                     try {
                                         LocalDate date1 = ottieniData(input);
                                         LocalDate date2 = ottieniData(input);
@@ -374,8 +547,6 @@ public class Application {
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());
                                     }
-                                }
-                                case 2 -> {
                                     try {
                                         LocalDate date1 = ottieniData(input);
                                         LocalDate date2 = ottieniData(input);
@@ -409,14 +580,7 @@ public class Application {
                                         System.err.println(e.getMessage());
                                     }
                                 }
-                                case 4 -> {
-                                    System.err.println("Lista dei distributori in servizio:");
-                                    List<Venditore> listaDistributoriInServizio = vDAO.getAllDistributoriAttivi();
-                                    listaDistributoriInServizio.forEach(System.out::println);
-                                    System.err.println("Lista dei distributori in manutenzione:");
-                                    List<Venditore> listaDistributoriFuoriServizio = vDAO.getAllDistributoriFuoriServizio();
-                                    listaDistributoriFuoriServizio.forEach(System.out::println);
-                                }
+
                                 case 5 -> {
                                     try {
                                         LocalDate date1 = ottieniData(input);
@@ -605,43 +769,6 @@ public class Application {
                                             }
                                         } else {
                                             throw new Exception("Nessuna corrispondenza tra id inserito e mezzi nel nostro database.");
-                                        }
-                                    } catch (Exception e) {
-                                        System.err.println(e.getMessage());
-                                    }
-                                }
-                                case 10 -> {
-                                    try {
-                                        long distributore_id = 0;
-                                        do {
-                                            System.out.println("Insersci id distributore");
-                                            try {
-                                                distributore_id = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                                if (distributore_id < 1000000000000L || distributore_id >= 10000000000000L) {
-                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
-                                                }
-                                            } catch (NumberFormatException ex) {
-                                                System.err.println("Il valore inserito non è un numero.");
-                                            } catch (Exception ex) {
-                                                System.err.println("Problema generico");
-                                            }
-                                        } while (distributore_id < 1000000000000L || distributore_id >= 10000000000000L);
-                                        if (vDAO.getById(distributore_id) != null) {
-                                            try {
-                                                Distributore distributore = (Distributore) vDAO.getById(distributore_id);
-                                                System.out.println("Hai selezionato:\n" + distributore);
-                                                if (distributore.getStato() == StatoDistributore.ATTIVO) {
-                                                    vDAO.updateStatoDistributore(distributore_id, StatoDistributore.FUORISERVIZIO);
-                                                } else {
-                                                    vDAO.updateStatoDistributore(distributore_id, StatoDistributore.ATTIVO);
-                                                }
-                                                System.err.println("Risultato operazione");
-                                                System.out.println(distributore);
-                                            } catch (ClassCastException e) {
-                                                System.err.println("Hai inserito l'id di un rivenditore. Inserisci quello di un distributore.");
-                                            }
-                                        } else {
-                                            throw new Exception("Nessuna corrispondenza tra id inserito e distributori nel nostro database.");
                                         }
                                     } catch (Exception e) {
                                         System.err.println(e.getMessage());

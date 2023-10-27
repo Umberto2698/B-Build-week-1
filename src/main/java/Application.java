@@ -246,6 +246,7 @@ public class Application {
                                         }
                                         switch (m) {
                                             case 1 -> {
+                                              //  acquistaMezzoDiTrasporto(input);
                                                 int k = 0;
                                                 do {
                                                     System.err.println("Che tipo di mezzo vuoi acquistare?");
@@ -681,7 +682,6 @@ public class Application {
         //  Tratta_Mezzo nuovaTrattaMezzo = new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), mDAO.getById(123456789012L), nuovaTratta);
         //  }
         //CREA UN NUOVO MEZZO
-
     }
 
     public static boolean verificaAnnoBisestile(int anno) {
@@ -808,5 +808,39 @@ public class Application {
             }
         }
         return LocalDate.of(year1, month1, day1);
+    }
+    public static void acquistaAutobus() {
+        System.out.println("Hai acquistato un nuovo autobus!");
+    }
+    public static void acquistaTram() {
+        System.out.println("Hai acquistato un nuovo tram!");
+    }
+    public static void acquistaMezzoDiTrasporto(Scanner input) {
+
+        int scelta = 0;
+        do {
+            System.out.println("Scegli il mezzo di trasporto da acquistare:");
+            System.out.println("1. Autobus");
+            System.out.println("2. Tram");
+            System.out.println("0. Termina");
+            try {
+                scelta = Integer.parseInt(input.nextLine().trim());
+                if (scelta < 0 || scelta > 3) System.err.println("Inserisci un valore consentito.");
+            } catch (NumberFormatException ex) {
+                System.err.println("Il valore inserito non è un numero.");
+            } catch (Exception ex) {
+                System.err.println("Problema generico");
+            }
+        switch (scelta) {
+            case 1:
+                acquistaAutobus();
+                break;
+            case 2:
+                acquistaTram();
+                break;
+            case 0:
+                System.out.println("Annulla l'acquisto.");
+        }
+        } while (scelta < 0 || scelta > 3);
     }
 }

@@ -11,7 +11,6 @@ import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class BigliettiDAO {
     private final EntityManager em;
@@ -26,8 +25,8 @@ public class BigliettiDAO {
             transaction.begin();
             em.persist(biglietto);
             transaction.commit();
-            System.err.println("Biglietto emesso correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Biglietto emesso correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(biglietto);
         } catch (Exception e) {
             if (transaction.isActive()) {

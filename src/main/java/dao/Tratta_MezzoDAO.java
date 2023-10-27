@@ -5,7 +5,6 @@ import enteties.Tratta_Mezzo;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.util.concurrent.TimeUnit;
 
 public class Tratta_MezzoDAO {
     private final EntityManager em;
@@ -20,8 +19,8 @@ public class Tratta_MezzoDAO {
             transaction.begin();
             em.persist(trattaMezzo);
             transaction.commit();
-            System.err.println("Tratta assegnata correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Tratta assegnata correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(trattaMezzo);
         } catch (Exception e) {
             if (transaction.isActive()) {

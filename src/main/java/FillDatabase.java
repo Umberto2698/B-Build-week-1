@@ -30,12 +30,12 @@ public class FillDatabase {
         Faker faker = new Faker(Locale.ITALY);
 
         Supplier<User> customerSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().between(Date.from(
-                                LocalDate.of(1940, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                        , Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                LocalDate.of(1960, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                        , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         Supplier<User> adminSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().between(Date.from(
-                                LocalDate.of(1940, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                        , Date.from(LocalDate.of(2017, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                LocalDate.of(1960, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                        , Date.from(LocalDate.of(2000, 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TipoUser.ADMIN);
         Supplier<Rivenditore> rivenditoreSupplier = () -> new Rivenditore(faker.address().streetAddress());
         Supplier<Distributore> distributoreFuoriServizioSupplier = () -> new Distributore(StatoDistributore.FUORISERVIZIO);
@@ -62,11 +62,16 @@ public class FillDatabase {
 
 
         Supplier<Biglietti> bigliettiSupplier = () -> {
+            Biglietti biglietto = null;
             int n = new Random().nextInt(1, allSellers.size());
             int m = new Random().nextInt(1, allUsersSize);
-            return new Biglietti(faker.date().between(Date.from(allUsers.get(m).getDataNascita().plusYears(5).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                            , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
+            int difference = LocalDate.now().getYear() - allUsers.get(m).getDataNascita().getYear();
+            if (difference > 5) {
+                biglietto = new Biglietti(faker.date().between(Date.from(allUsers.get(m).getDataNascita().plusYears(5).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
+            }
+            return biglietto;
         };
 
         try {
@@ -87,7 +92,14 @@ public class FillDatabase {
 //            }
 // ******************************************** SECONDO AVVIO *********************************************
 //            for (int i = 0; i < 200; i++) {
-//                bDAO.save(bigliettiSupplier.get());
+//                Biglietti biglietto = bigliettiSupplier.get();
+//                if (biglietto != null) {
+//                    try {
+//                        bDAO.save(biglietto);
+//                    } catch (Exception e) {
+//                        System.err.println(e.getMessage());
+//                    }
+//                }
 //                tr_m_DAO.save(tratta_mezzoSupplier.get());
 //            }
 //            for (int i = 0; i < allUsersSize; i++) {
@@ -381,35 +393,40 @@ public class FillDatabase {
     public static void validateTicket(BigliettiDAO bDAO, MezziDAO mDAO, Faker faker) {
         List<Biglietti> allTickets = bDAO.getAllTickets();
         List<Mezzi> allTransports = mDAO.getAll();
+        int boundry = 150;
         for (int i = 0; i < allTickets.size(); i++) {
-            if (i < 150) {
-                i++;
+            if (i < boundry) {
                 int n = new Random().nextInt(0, allTransports.size());
                 List<Periodi> validPeriods = mDAO.getPeriodListForTransport(allTransports.get(n).getId()).stream().filter(period -> period.getDataFine() != null).toList();
                 int finalI = i;
                 List<Periodi> allConflictedPeriods = new ArrayList<>();
                 List<Periodi> conflictedPeriods1 = validPeriods.stream().filter(period -> period.getDataInizio().isBefore(allTickets.get(finalI).getDataEmissione())).toList()
-                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 31))).toList();
                 allConflictedPeriods.addAll(conflictedPeriods1);
                 List<Periodi> conflictedPeriods2 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
-                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 31))).toList();
                 allConflictedPeriods.addAll(conflictedPeriods2);
                 List<Periodi> conflictedPeriods3 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
-                        .stream().filter(period -> period.getDataFine().isAfter(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                        .stream().filter(period -> period.getDataFine().isAfter(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 31))).toList();
                 allConflictedPeriods.addAll(conflictedPeriods3);
 
                 LocalDate randomDataValidazione = faker.date().between(Date.from(allTickets.get(i).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                Date.from(LocalDate.of(allTickets.get(i).getDataEmissione().getYear(), 12, 30).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                                Date.from(LocalDate.of(allTickets.get(i).getDataEmissione().getYear(), 12, 31).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                         .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 if (allConflictedPeriods.isEmpty()) {
                     bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
                 } else {
+                    int j = 0;
                     for (int k = 0; k < allConflictedPeriods.size(); k++) {
-                        if (!(randomDataValidazione.isAfter(allConflictedPeriods.get(k).getDataInizio()) && randomDataValidazione.isBefore(allConflictedPeriods.get(k).getDataFine()))) {
-                            bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
-                        } else {
-                            i--;
+                        if (j == 0) {
+                            if (!(randomDataValidazione.isAfter(allConflictedPeriods.get(k).getDataInizio()) && randomDataValidazione.isBefore(allConflictedPeriods.get(k).getDataFine()))) {
+                                bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
+                                j++;
+                            }
                         }
+                    }
+                    if (j == 0) {
+                        boundry++;
                     }
                 }
             }

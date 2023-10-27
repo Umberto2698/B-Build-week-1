@@ -22,8 +22,8 @@ public class AbbonamentiDAO {
             transaction.begin();
             em.persist(abbonamento);
             transaction.commit();
-            System.err.println("Abbonamento registrato correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Abbonamento registrato correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(abbonamento);
         } catch (Exception e) {
             if (transaction.isActive()) {

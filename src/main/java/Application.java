@@ -119,8 +119,18 @@ public class Application {
                                     }
                                 }
                                 case 2 -> {
-                                    System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                    int piano = 0;
+                                    while (piano != 1 && piano != 2) {
+                                        System.out.println("Inserisci 1 per comprare il piano mensile, 2 per il piano settimanale: ");
+                                        try {
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2) {
+                                                System.err.println("Inserisci un valore valido tra 1 o 2");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido tra 1 o 2");
+                                        }
+                                    }
                                     if (piano == 1) {
                                         try {
                                             int nVenditoreRandom = new Random().nextInt(1, allSellersSize);
@@ -183,22 +193,49 @@ public class Application {
                                     }
                                 }
                                 case 7 -> {
-                                    System.out.println("inserisci una via per controllare quali Rivenditori ci sono : ");
-                                    String viaInput = input.nextLine();
-                                    List<Venditore> listaVenditoriInZOna = vDAO.getVenditoriInZona(viaInput);
-                                    listaVenditoriInZOna.forEach(System.out::println);
+                                    System.out.println("Inserisci una via per controllare quali Rivenditori ci sono: ");
+                                    String viaInput = input.nextLine().trim();
+                                    //////////////CONTROLLO SE LA VIA è vuota////////////////////
+                                    if (viaInput.isEmpty()) {
+                                        System.err.println("inserisci una via valida.");
+                                    } else {
+                                        List<Venditore> listaVenditoriInZona = vDAO.getVenditoriInZona(viaInput);
+                                        if (listaVenditoriInZona.isEmpty()) {
+                                            System.err.println("Nessun Rivenditore trovato in questa zona o la via non è valida.");
+                                        } else {
+                                            listaVenditoriInZona.forEach(System.out::println);
+                                        }
+                                    }
                                 }
                                 case 8 -> {
-                                    System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea : ");
-                                    int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
-                                    if (piano == 1) {
+                                    int piano = 0;
+                                    while (piano != 1 && piano != 2) {
+                                        System.out.println("inserisci 1 per vedere il tempo medio tramite id, 2 per vedere il tempo medio scrivendto punto di partenza e capolinea : ");
                                         try {
-                                            System.out.println("inserisci un id per vedere il tempo medio di quella tratta : ");
-                                            long trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
-                                            Tratta buddy = trDAO.getTempoMedioById(trattaid);
-                                            System.out.println("Tempo stimato : " + buddy.getTempoMedio());
-                                        } catch (Exception e) {
-                                            System.err.println(e);
+                                            piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
+                                            if (piano != 1 && piano != 2) {
+                                                System.err.println("Inserisci un valore valido 1 o 2");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Inserisci un valore numerico valido 1 o 2");
+                                        }
+                                    }
+                                    if (piano == 1) {
+                                        long trattaid = 0;
+                                        while (trattaid < 1000000000000L || trattaid >= 10000000000000L) {
+                                            try {
+                                                System.out.println("inserisci l'id della tratta per vedere il tempo medio : ");
+                                                trattaid = Long.parseLong(input.nextLine().trim().replaceAll(" ", ""));
+                                                if (trattaid < 1000000000000L || trattaid >= 10000000000000L) {
+                                                    System.err.println("Inserisci un id valido (un codice di 13 cifre)");
+                                                    Tratta buddy = trDAO.getTempoMedioById(trattaid);
+                                                    System.out.println("Tempo stimato : " + buddy.getTempoMedio());
+                                                } else {
+                                                    System.err.println("Nessuna tratta trovata");
+                                                }
+                                            } catch (Exception e) {
+                                                System.err.println("Nessuna tratta trovata");
+                                            }
                                         }
                                     } else if (piano == 2) {
                                         try {
@@ -867,3 +904,4 @@ public class Application {
         return LocalDate.of(year1, month1, day1);
     }
 }
+

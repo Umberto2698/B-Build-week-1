@@ -47,6 +47,22 @@ public class BigliettiDAO {
         return getAllTickets.getResultList();
     }
 
+    public long getAllSelledTickets() {
+        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Biglietti b", Long.class);
+        return getAllTickets.getSingleResult();
+    }
+
+    public long getAllValidatedTickets() {
+        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataValidazione IS NOT NULL", Long.class);
+        return getAllTickets.getSingleResult();
+    }
+
+    public long getAllSelledTicketsForSeller(long seller_id) {
+        TypedQuery<Long> getAllTickets = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.venditore = :seller_id", Long.class);
+        getAllTickets.setParameter("seller_id", seller_id);
+        return getAllTickets.getSingleResult();
+    }
+
     public long getNumberOfTicketsInTimeIntervall(LocalDate date1, LocalDate date2) {
         TypedQuery<Long> getCount = null;
         if (date1.isBefore(date2)) {
@@ -81,12 +97,46 @@ public class BigliettiDAO {
         return getCount != null ? getCount.getSingleResult() : -1;
     }
 
+
     public long bigliettiValidatiSuUnMezzo(long id) {
         TypedQuery<Long> bigliettiValidatiSuUnMezzo = em.createQuery("SELECT COUNT(b) FROM Biglietti b JOIN b.mezzo m WHERE m.id = :id", Long.class);
         bigliettiValidatiSuUnMezzo.setParameter("id", id);
         return bigliettiValidatiSuUnMezzo.getSingleResult();
     }
 
+    public long bigliettiValidatiSuUnMezzoPerIntervallo(LocalDate date1, LocalDate date2) {
+        TypedQuery<Long> getCount = null;
+        if (date1.isBefore(date2)) {
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataValidazione >= :date1 AND b.dataValidazione <= :date2", Long.class);
+            getCount.setParameter("date1", date1);
+            getCount.setParameter("date2", date2);
+        } else if (date1.isAfter(date2)) {
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataValidazione >= :date2 AND b.dataValidazione <= :date1", Long.class);
+            getCount.setParameter("date2", date2);
+            getCount.setParameter("date1", date1);
+        } else {
+            System.err.println("Inserisci due date diverse");
+        }
+        return getCount != null ? getCount.getSingleResult() : -1;
+    }
+
+    public long bigliettiValidatiSuUnMezzoPerIntervallo(LocalDate date1, LocalDate date2, long mezzo_id) {
+        TypedQuery<Long> getCount = null;
+        if (date1.isBefore(date2)) {
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataValidazione >= :date1 AND b.dataValidazione <= :date2 AND b.mezzo.id = :mezzo_id", Long.class);
+            getCount.setParameter("date1", date1);
+            getCount.setParameter("date2", date2);
+            getCount.setParameter("mezzo_id", mezzo_id);
+        } else if (date1.isAfter(date2)) {
+            getCount = em.createQuery("SELECT COUNT(b) FROM Biglietti b WHERE b.dataValidazione >= :date2 AND b.dataValidazione <= :date1 AND b.mezzo.id = :mezzo_id", Long.class);
+            getCount.setParameter("date2", date2);
+            getCount.setParameter("date1", date1);
+            getCount.setParameter("mezzo_id", mezzo_id);
+        } else {
+            System.err.println("Inserisci due date diverse");
+        }
+        return getCount != null ? getCount.getSingleResult() : -1;
+    }
 
     public List<Biglietti> findNonValidatedTicketForUser(long userId) {
         TypedQuery<Biglietti> query = em.createQuery(

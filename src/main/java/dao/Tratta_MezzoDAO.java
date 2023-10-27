@@ -32,14 +32,32 @@ public class Tratta_MezzoDAO {
         }
     }
 
+    public long getAll() {
+        TypedQuery<Long> getElements = em.createQuery("SELECT COUNT(tm) FROM Tratta_Mezzo tm ", Long.class);
+        return getElements.getSingleResult();
+    }
+
     public Tratta_Mezzo getById(long id) {
         return em.find(Tratta_Mezzo.class, id);
     }
+
 
     public Long getNumVolteMezzoPercorsoTratta(long mezzoId, long trattaID) {
         TypedQuery<Long> query = em.createQuery("SELECT COUNT(tm) FROM Tratta_Mezzo tm WHERE tm.mezzo.id = :mezzoId AND tm.tratta.id = :trattaId", Long.class);
         query.setParameter("mezzoId", mezzoId);
         query.setParameter("trattaId", trattaID);
+        return query.getSingleResult();
+    }
+
+    public Long getNumVolteMezzo(long mezzoId) {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(tm) FROM Tratta_Mezzo tm WHERE tm.mezzo.id = :mezzoId", Long.class);
+        query.setParameter("mezzoId", mezzoId);
+        return query.getSingleResult();
+    }
+
+    public Long getNumVolteTratta(long trattaId) {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(tm) FROM Tratta_Mezzo tm WHERE tm.tratta.id = :trattaId", Long.class);
+        query.setParameter("mezzoId", trattaId);
         return query.getSingleResult();
     }
 }

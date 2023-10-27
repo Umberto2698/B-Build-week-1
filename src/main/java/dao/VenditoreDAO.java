@@ -104,7 +104,6 @@ public class VenditoreDAO {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-
             Query updateDistributoreQuery = em.createQuery("UPDATE Distributore d SET d.stato = :nuovoStato WHERE d.id = :distributorId");
             updateDistributoreQuery.setParameter("nuovoStato", nuovoStato);
             updateDistributoreQuery.setParameter("distributorId", distributorId);

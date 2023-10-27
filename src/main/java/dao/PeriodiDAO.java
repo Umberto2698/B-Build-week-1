@@ -4,7 +4,6 @@ import enteties.Periodi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.util.concurrent.TimeUnit;
 
 public class PeriodiDAO {
     private final EntityManager em;
@@ -19,8 +18,8 @@ public class PeriodiDAO {
             transaction.begin();
             em.persist(periodi);
             transaction.commit();
-            System.err.println("Periodo salvato correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Periodo salvato correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(periodi);
         } catch (Exception e) {
             if (transaction.isActive()) {

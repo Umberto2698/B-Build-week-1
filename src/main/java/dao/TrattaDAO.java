@@ -22,8 +22,8 @@ public class TrattaDAO {
             transaction.begin();
             em.persist(tratta);
             transaction.commit();
-            System.err.println("Tratta salvata correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Tratta salvata correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(tratta);
         } catch (Exception e) {
             if (transaction.isActive()) {

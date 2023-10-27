@@ -23,8 +23,8 @@ public class VenditoreDAO {
             transaction.begin();
             em.persist(venditore);
             transaction.commit();
-            System.err.println("Venditore abilitato correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Venditore abilitato correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(venditore);
         } catch (Exception e) {
             if (transaction.isActive()) {

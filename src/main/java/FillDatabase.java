@@ -26,6 +26,7 @@ public class FillDatabase {
         TrattaDAO trDAO = new TrattaDAO(em);
         Tratta_MezzoDAO tr_m_DAO = new Tratta_MezzoDAO(em);
 
+
         Faker faker = new Faker(Locale.ITALY);
 
         Supplier<User> customerSupplier = () -> new User(faker.name().firstName(), faker.name().lastName(), faker.date().between(Date.from(
@@ -44,12 +45,13 @@ public class FillDatabase {
         Supplier<Mezzi> tramInServizioSupplier = () -> new Mezzi(TipoMezzo.TRAM);
         Supplier<Mezzi> tramInManutenzioneSupplier = () -> new Mezzi(TipoMezzo.TRAM, StatoMezzo.IN_MANUTENZIONE);
         Supplier<Tratta> trattaSupplier = () -> new Tratta(faker.address().cityName(), faker.address().cityName(), Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")));
+
         Supplier<Tratta_Mezzo> tratta_mezzoSupplier = () -> {
             List<Mezzi> allTransport = mDAO.getAll();
             int n = new Random().nextInt(1, allTransport.size());
-            List<Tratta> allRoutes = trDAO.gettAllRoutes();
-            int n1 = new Random().nextInt(1, allRoutes.size());
-            return new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), allTransport.get(n), allRoutes.get(n1));
+            List<Tratta> tratte = trDAO.gettAllRoutes();
+            int n1 = new Random().nextInt(1, tratte.size());
+            return new Tratta_Mezzo(Double.parseDouble(new DecimalFormat("0.0").format(new Random().nextDouble(0.1, 2)).replaceAll(",", ".")), allTransport.get(n), tratte.get(n1));
         };
 
         List<Venditore> allSellers = vDAO.getAllSellers();
@@ -84,134 +86,134 @@ public class FillDatabase {
 //                mDAO.save(autobusInServizioSupplier.get());
 //            }
 // ******************************************** SECONDO AVVIO *********************************************
-            for (int i = 0; i < 200; i++) {
-                bDAO.save(bigliettiSupplier.get());
-                tr_m_DAO.save(tratta_mezzoSupplier.get());
-            }
-            for (int i = 0; i < allUsersSize; i++) {
-                Tessera tessera = null;
-                if (i < 20) {
-                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-                } else if (i >= 20 && i < 30) {
-                    tessera = new Tessera(faker.date().between(Date.from(LocalDate.now().minusMonths(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-                } else if (i >= 30 && i < 40) {
-                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-                                    , Date.from(LocalDate.now().minusYears(2).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
-                }
-                if (tessera != null) {
-                    tDAO.save(tessera);
-                }
-            }
-            periodiPerAnno(mDAO, faker, 2010).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2011).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2012).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2013).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2014).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2015).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2016).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2017).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2018).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2019).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2020).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2021).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2022).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerAnno(mDAO, faker, 2023).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            periodiPerMezziAttualmenteInManutenzione(mDAO, faker).forEach(period -> {
-                try {
-                    pDAO.save(period);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+//            for (int i = 0; i < 200; i++) {
+//                bDAO.save(bigliettiSupplier.get());
+//                tr_m_DAO.save(tratta_mezzoSupplier.get());
+//            }
+//            for (int i = 0; i < allUsersSize; i++) {
+//                Tessera tessera = null;
+//                if (i < 20) {
+//                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+//                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+//                } else if (i >= 20 && i < 30) {
+//                    tessera = new Tessera(faker.date().between(Date.from(LocalDate.now().minusMonths(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+//                                    , Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+//                } else if (i >= 30 && i < 40) {
+//                    tessera = new Tessera(faker.date().between(Date.from(allUsers.get(i).getDataNascita().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+//                                    , Date.from(LocalDate.now().minusYears(2).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+//                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(i));
+//                }
+//                if (tessera != null) {
+//                    tDAO.save(tessera);
+//                }
+//            }
+//            periodiPerAnno(mDAO, faker, 2010).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2011).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2012).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2013).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2014).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2015).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2016).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2017).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2018).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2019).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2020).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2021).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2022).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerAnno(mDAO, faker, 2023).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            periodiPerMezziAttualmenteInManutenzione(mDAO, faker).forEach(period -> {
+//                try {
+//                    pDAO.save(period);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
 // ******************************************** TERZO AVVIO *********************************************
 //            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
 //                try {
@@ -381,31 +383,32 @@ public class FillDatabase {
         List<Mezzi> allTransports = mDAO.getAll();
         for (int i = 0; i < allTickets.size(); i++) {
             if (i < 150) {
-                for (int j = 0; j < allTransports.size(); j++) {
-                    int n = new Random().nextInt(0, allTransports.size());
-                    List<Periodi> validPeriods = mDAO.getPeriodListForTransport(allTransports.get(n).getId()).stream().filter(period -> period.getDataFine() != null).toList();
-                    int finalI = i;
-                    List<Periodi> allConflictedPeriods = new ArrayList<>();
-                    List<Periodi> conflictedPeriods1 = validPeriods.stream().filter(period -> period.getDataInizio().isBefore(allTickets.get(finalI).getDataEmissione())).toList()
-                            .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
-                    allConflictedPeriods.addAll(conflictedPeriods1);
-                    List<Periodi> conflictedPeriods2 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
-                            .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
-                    allConflictedPeriods.addAll(conflictedPeriods2);
-                    List<Periodi> conflictedPeriods3 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
-                            .stream().filter(period -> period.getDataFine().isAfter(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
-                    allConflictedPeriods.addAll(conflictedPeriods3);
+                i++;
+                int n = new Random().nextInt(0, allTransports.size());
+                List<Periodi> validPeriods = mDAO.getPeriodListForTransport(allTransports.get(n).getId()).stream().filter(period -> period.getDataFine() != null).toList();
+                int finalI = i;
+                List<Periodi> allConflictedPeriods = new ArrayList<>();
+                List<Periodi> conflictedPeriods1 = validPeriods.stream().filter(period -> period.getDataInizio().isBefore(allTickets.get(finalI).getDataEmissione())).toList()
+                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                allConflictedPeriods.addAll(conflictedPeriods1);
+                List<Periodi> conflictedPeriods2 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
+                        .stream().filter(period -> period.getDataFine().isBefore(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                allConflictedPeriods.addAll(conflictedPeriods2);
+                List<Periodi> conflictedPeriods3 = validPeriods.stream().filter(period -> period.getDataInizio().isAfter(allTickets.get(finalI).getDataEmissione())).toList()
+                        .stream().filter(period -> period.getDataFine().isAfter(LocalDate.of(allTickets.get(finalI).getDataEmissione().getYear(), 12, 30))).toList();
+                allConflictedPeriods.addAll(conflictedPeriods3);
 
-                    LocalDate randomDataValidazione = faker.date().between(Date.from(allTickets.get(i).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                    Date.from(LocalDate.of(allTickets.get(i).getDataEmissione().getYear(), 12, 30).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    if (allConflictedPeriods.isEmpty()) {
-                        bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
-                    } else {
-                        for (int k = 0; k < allConflictedPeriods.size(); k++) {
-                            if (!(randomDataValidazione.isAfter(allConflictedPeriods.get(k).getDataInizio()) && randomDataValidazione.isBefore(allConflictedPeriods.get(k).getDataFine()))) {
-                                bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
-                            }
+                LocalDate randomDataValidazione = faker.date().between(Date.from(allTickets.get(i).getDataEmissione().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                Date.from(LocalDate.of(allTickets.get(i).getDataEmissione().getYear(), 12, 30).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                if (allConflictedPeriods.isEmpty()) {
+                    bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
+                } else {
+                    for (int k = 0; k < allConflictedPeriods.size(); k++) {
+                        if (!(randomDataValidazione.isAfter(allConflictedPeriods.get(k).getDataInizio()) && randomDataValidazione.isBefore(allConflictedPeriods.get(k).getDataFine()))) {
+                            bDAO.validateTicketWithTransport(allTransports.get(n), allTickets.get(i), randomDataValidazione);
+                        } else {
+                            i--;
                         }
                     }
                 }

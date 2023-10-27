@@ -25,8 +25,8 @@ public class MezziDAO {
             transaction.begin();
             em.persist(mezzo);
             transaction.commit();
-            System.err.println("Mezzo registrato correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("Mezzo registrato correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(mezzo);
         } catch (Exception e) {
             if (transaction.isActive()) {

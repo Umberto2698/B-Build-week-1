@@ -22,8 +22,8 @@ public class UserDAO {
             transaction.begin();
             em.persist(user);
             transaction.commit();
-            System.err.println("User salvato correttamente");
-            TimeUnit.MILLISECONDS.sleep(1000);
+//            System.err.println("User salvato correttamente");
+//            TimeUnit.MILLISECONDS.sleep(1000);
             System.out.println(user);
         } catch (Exception ex) {
             if (transaction.isActive()) {

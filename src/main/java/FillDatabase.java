@@ -214,84 +214,84 @@ public class FillDatabase {
 //                }
 //            });
 // ******************************************** TERZO AVVIO *********************************************
-//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
-//                try {
-//                    aDAO.save(abbonamento);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            validateTicket(bDAO, mDAO, faker);
+            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiMensili(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            abbonamentiSettimanali(uDAO, vDAO, faker).forEach(abbonamento -> {
+                try {
+                    aDAO.save(abbonamento);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            validateTicket(bDAO, mDAO, faker);
         } catch (Exception e) {
             System.out.println(e);
         } finally {

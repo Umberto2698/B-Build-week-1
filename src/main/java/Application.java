@@ -354,6 +354,8 @@ public class Application {
                                     long idDistributoreLong = Long.parseLong(idDistributore);
                                     Venditore distributoreSelezionato = vDAO.getById(idDistributoreLong);
                                     System.out.println("Hai selezionato : " + distributoreSelezionato);
+
+
                                     System.out.println("Inserisci 1 PER :  ATTIVO  ----    INSERISCI 2 : FUORISERVIZIO");
                                     String numeroScelto = input.nextLine();
                                     int numeroSceltoInt = Integer.parseInt(numeroScelto);

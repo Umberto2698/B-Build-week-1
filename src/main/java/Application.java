@@ -98,8 +98,12 @@ public class Application {
                 if (user != null) {
                     currentUserId = user.getId();
                     if (user.getTipoUser() == TipoUser.CUSTOMER) {
+                        System.out.println("---------------------------------------------------------------------------------MENU CUSTOMER---------------------------------------------------------------------------------");
+                        System.out.println("                                                          Bentornato " + user.getNome() + " " + user.getCognome() + ", scegli una aziona da fare");
                         do {
-                            System.out.println("0 per interrompere, 1 per comprare un biglietto, 2 per comprare un abbonamento, 7 per controllare i rivenditori in una zona, 8 per vedere il tempo medio di una tratta ");
+                            System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                            System.out.println("- 1 compra un biglietto; - 2 compra un abbonamento; - 3 compra una tessera; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
+                            System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
                             n = Integer.parseInt(input.nextLine().trim());
                             switch (n) {
                                 case 0 -> {
@@ -213,15 +217,27 @@ public class Application {
                                         }
                                     }
                                 }
+                                case 9 -> {
+                                    try {
+
+                                        Tessera tesseraUser = tDAO.getTesseraByUserId(user.getId());
+                                        System.out.println("La tua tessera : " + tesseraUser);
+                                        tDAO.isTesseraScadutaById(tesseraUser.getId());
+                                    } catch (NullPointerException nullE) {
+                                        System.err.println(nullE.getMessage());
+                                    }
+                                }
                             }
                         }
                         while (n != 0);
                     } else {
-                        System.err.println("MENU ADMIN");
-                        System.out.println("Benvenuto " + user.getNome() + user.getCognome() + ".");
+                        System.out.println("---------------------------------------------------------------------------------MENU ADMIN---------------------------------------------------------------------------------");
+                        System.out.println("                                                        Bentornato " + user.getNome() + " " + user.getCognome() + ", scegli una aziona da fare");
                         do {
-                            System.out.println("Scegli un'azione da svolgere:");
-                            System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Ottieni informazioni sull'andamento della compagnia; 0 - Chiudi il terminale.");
+                            System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                            System.out.println("- 1 Gestisci il reparto mezzi; - 2 Gestisci il reparto vendite; - 3 Ottieni informazioni sull'andamento della compagnia; - 4 verificha se hai una tessera; - 5 valida un biglietto; - 6 verifica se il tuo abbonamento è scaduto; ");
+                            System.out.println("                         - 7 controlla i rivenditori in una zona; - 8 vedi il tempo medio di una tratta; - 9 rinnova la tua tessera; - 0 termina il programma ");
+                            // System.out.println("1 - Gestisci il reparto mezzi; 2 - Gestisci il reparto vendite; 3 - Ottieni informazioni sull'andamento della compagnia; 0 - Chiudi il terminale.");
                             try {
                                 n2 = Integer.parseInt(input.nextLine().trim());
                                 if (n2 < 0 || n2 > 4) System.err.println("Inserisci un valore consentito.");

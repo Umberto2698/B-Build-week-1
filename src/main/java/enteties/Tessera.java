@@ -42,6 +42,10 @@ public class Tessera {
         return dataScadenza;
     }
 
+    public void setDataScadenza(LocalDate dataScadenza) {
+        this.dataScadenza = dataScadenza;
+    }
+
     public long getId() {
         return id;
     }

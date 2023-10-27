@@ -4,6 +4,7 @@ import enteties.Tessera;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 
@@ -62,11 +63,15 @@ public class TesseraDAO {
         LocalDate dataScadenza = tesseraDaVerificare.getDataScadenza();
 
         if (currentDate.isBefore(dataScadenza)) {
-            System.out.println("La tessera è valida, scadra' il:" + tesseraDaVerificare.getDataScadenza());
+            System.out.println("La tessera è valida, scadra' il : " + tesseraDaVerificare.getDataScadenza());
 
         } else {
-
-            System.out.println("La tessera è Scaduta , Rinnovala!");
+            tesseraDaVerificare.setDataScadenza(LocalDate.now().plusYears(1));
+            Query validaQuery = em.createQuery("UPDATE Tessera t SET t.dataScadenza = :nuovaScadenza WHERE t.id = :id");
+            validaQuery.setParameter("nuovaScadenza", tesseraDaVerificare.getDataScadenza());
+            validaQuery.setParameter("id", tesseraId);
+            System.out.println("La tessera è Scaduta , Rinnovata!");
+            System.out.println(tesseraDaVerificare);
             ;
         }
     }

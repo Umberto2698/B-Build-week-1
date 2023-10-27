@@ -25,10 +25,10 @@ public class Mezzi {
     @OneToMany(mappedBy = "mezzo", cascade = CascadeType.REMOVE)
     private Set<Tratta_Mezzo> tratteMezzo = new HashSet<>();
 
-    @OneToMany(mappedBy = "mezzo")
+    @OneToMany(mappedBy = "mezzo", cascade = CascadeType.REMOVE)
     private Set<Biglietti> biglietti = new HashSet<>();
 
-    @OneToMany(mappedBy = "mezzo")
+    @OneToMany(mappedBy = "mezzo", cascade = CascadeType.REMOVE)
     private Set<Periodi> periodi = new HashSet<>();
 
     public Mezzi() {
@@ -53,7 +53,7 @@ public class Mezzi {
 
     @Override
     public String toString() {
-        return "Mezzi{" +
+        return "Mezzo{" +
                 "id=" + id +
                 ", tipoMezzo=" + tipoMezzo +
                 ", statoMezzo=" + statoMezzo +

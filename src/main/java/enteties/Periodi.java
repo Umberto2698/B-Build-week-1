@@ -22,15 +22,14 @@ public class Periodi {
 
     @Column(name = "period_type")
     @Enumerated(EnumType.STRING)
-    private StatoMezzo statoMezzo;
+    private StatoMezzo statoMezzo = StatoMezzo.IN_MANUTENZIONE;
 
     public Periodi() {
     }
 
-    public Periodi(LocalDate dataInizio, LocalDate dataFine, Mezzi mezzo, StatoMezzo statoMezzo) {
+    public Periodi(LocalDate dataInizio, LocalDate dataFine, Mezzi mezzo) {
         this.dataInizio = dataInizio;
         this.dataFine = dataFine;
-        this.statoMezzo = statoMezzo;
         this.mezzo = mezzo;
     }
 
@@ -76,12 +75,12 @@ public class Periodi {
 
     @Override
     public String toString() {
-        return "Periodi{" +
-                "mezzo=" + mezzo +
-                ", id=" + id +
+        return "Periodo{" +
+                "id=" + id +
                 ", dataInizio=" + dataInizio +
                 ", dataFine=" + dataFine +
                 ", statoMezzo=" + statoMezzo +
+                ", mezzo=" + mezzo +
                 '}';
     }
 }

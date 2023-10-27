@@ -123,7 +123,7 @@ public class Application {
                                     }
                                 }
                                 case 2 -> {
-                                    System.out.println("inserisci 1 per comprare il piano mensile, 2 per il piano settimanale : ");
+                                    System.out.println("- 1 per compra piano mensile; - 2 compra piano settimanale : ");
                                     int piano = Integer.parseInt(input.nextLine().trim().replaceAll(" ", ""));
                                     if (piano == 1) {
                                         try {

@@ -59,15 +59,27 @@ public class FillDatabase {
         int allUsersSize = allUsers.size();
         List<User> allUsersWithValidCard = uDAO.getAllUsersWithValidCard();
         int allUsersWithValidCardsSize = allUsersWithValidCard.size();
+        LocalDate start = LocalDate.of(2010, 1, 1);
 
 
         Supplier<Biglietti> bigliettiSupplier = () -> {
             Biglietti biglietto = null;
             int n = new Random().nextInt(1, allSellers.size());
             int m = new Random().nextInt(1, allUsersSize);
-            int difference = LocalDate.now().getYear() - allUsers.get(m).getDataNascita().getYear();
-            if (difference > 5) {
+            int difference1 = start.getYear() - allUsers.get(m).getDataNascita().getYear();
+            int difference2 = LocalDate.now().getYear() - allUsers.get(m).getDataNascita().getYear();
+            if (difference1 <= 0) {
+                if (difference2 > 5) {
+                    biglietto = new Biglietti(faker.date().between(Date.from(allUsers.get(m).getDataNascita().plusYears(5).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                    , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                            .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
+                }
+            } else if (difference1 <= 5) {
                 biglietto = new Biglietti(faker.date().between(Date.from(allUsers.get(m).getDataNascita().plusYears(5).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                                , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
+            } else {
+                biglietto = new Biglietti(faker.date().between(Date.from(LocalDate.of(2010, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                                 , Date.from(LocalDate.now().minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                         .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), allUsers.get(m), allSellers.get(n));
             }
@@ -121,104 +133,16 @@ public class FillDatabase {
 //                    tDAO.save(tessera);
 //                }
 //            }
-//            periodiPerAnno(mDAO, faker, 2010).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2011).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2012).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2013).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2014).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2015).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2016).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2017).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2018).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2019).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2020).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2021).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2022).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            periodiPerAnno(mDAO, faker, 2023).forEach(period -> {
-//                try {
-//                    pDAO.save(period);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
+//            for (int i = start.getYear(); i < LocalDate.now().getYear(); i++) {
+//                periodiPerAnno(mDAO, faker, i).forEach(period -> {
+//                    try {
+//                        pDAO.save(period);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//
+//                });
+//            }
 //            periodiPerMezziAttualmenteInManutenzione(mDAO, faker).forEach(period -> {
 //                try {
 //                    pDAO.save(period);
